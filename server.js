@@ -27,16 +27,16 @@ io.on('connection', function(socket) {
     });
     socket.on('movement', function(data) {
         var player = players[socket.id] || {};
-        if (data.left) {
+        if (data.left && player.x >= 5) {
             player.x -= 5;
         }
-        if (data.up) {
+        if (data.up && player.y >= 5) {
             player.y -= 5;
         }
-        if (data.right) {
+        if (data.right && player.x <= 795) {
             player.x += 5;
         }
-        if (data.down) {
+        if (data.down && player.y <= 595) {
             player.y += 5;
         }
     });
