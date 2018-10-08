@@ -12,6 +12,7 @@ app.use('/static', express.static(__dirname + '/static'));
 app.get('/', function(request, response) {
     response.sendFile(path.join(__dirname, 'index.html'));
 });
+
 // Starts the server.
 server.listen(5000, function() {
     console.log('Starting server on port 5000');
@@ -20,6 +21,7 @@ server.listen(5000, function() {
 var players = {};
 io.on('connection', function(socket) {
     socket.on('new player', function() {
+        console.log('New Player: ' + socket.id);
         players[socket.id] = {
             x: 300,
             y: 300
@@ -41,7 +43,7 @@ io.on('connection', function(socket) {
         }
     });
     socket.on('disconnect', function() {
-        // remove disconnected player
+        // Remove disconnected player
         console.log('Removing player: ' + socket.id);
         delete players[socket.id];
     });
