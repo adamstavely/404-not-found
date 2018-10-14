@@ -3,11 +3,11 @@ socket.on('message', function(data) {
     console.log(data);
 });
 
-const canvas = document.getElementById('canvas');
-const context = canvas.getContext('2d');
 const username = document.getElementById('username');
 const loginForm = document.getElementById('loginForm');
 const loginMessage = document.getElementById('loginMessage');
+const canvas = document.getElementById('canvas');
+const context = canvas.getContext('2d');
 
 canvas.width = 800;
 canvas.height = 600;
