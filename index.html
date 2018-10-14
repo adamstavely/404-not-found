@@ -1,17 +1,22 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Clue-Less</title>
-    <style>
-        canvas {
-            width: 800px;
-            height: 600px;
-            border: 5px solid black;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <title>Clue-Less Login</title>
     <script src="/socket.io/socket.io.js"></script>
+    <link href="/static/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/index.css" rel="stylesheet">
 </head>
-<body>
-<canvas id="canvas"></canvas>
+<body class="text-center">
+<div class="login-form" id="loginForm">
+    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+    <label for="username" class="sr-only">Username</label>
+    <input type="text" id="username" name="user[name]" class="form-control" placeholder="Username" required=""
+           autofocus="">
+    <input class="btn btn-lg btn-primary btn-block" type="submit" value="Sign in" onclick="login()">
+    <p id="loginMessage"></p>
+</div>
+<canvas id="canvas" class="invisible"></canvas>
 </body>
 <script src="/static/game.js"></script>
 </html>

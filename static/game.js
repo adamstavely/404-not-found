@@ -1,9 +1,18 @@
-var socket = io();
+const socket = io();
 socket.on('message', function(data) {
     console.log(data);
 });
 
-var movement = {
+const canvas = document.getElementById('canvas');
+const context = canvas.getContext('2d');
+const username = document.getElementById('username');
+const loginForm = document.getElementById('loginForm');
+const loginMessage = document.getElementById('loginMessage');
+
+canvas.width = 800;
+canvas.height = 600;
+
+const movement = {
     up: false,
     down: false,
     left: false,
@@ -44,26 +53,32 @@ document.addEventListener('keyup', function(event) {
     }
 });
 
-socket.emit('new player');
-
 setInterval(function() {
     socket.emit('movement', movement);
 }, 1000 / 60);
 
-var canvas = document.getElementById('canvas');
-
-canvas.width = 800;
-canvas.height = 600;
-
-var context = canvas.getContext('2d');
-
 socket.on('state', function(players) {
     context.clearRect(0, 0, 800, 600);
     context.fillStyle = 'green';
-    for (var id in players) {
-        var player = players[id];
+    for (let id in players) {
+        let player = players[id];
         context.beginPath();
         context.arc(player.x, player.y, 10, 0, 2 * Math.PI);
         context.fill();
     }
 });
+
+function login() {
+    if (username.value) {
+        socket.emit('new player', username.value, function(result){
+            if (result) {
+                loginMessage.innerHTML = '';
+                loginForm.classList.add("invisible");
+                canvas.classList.remove('invisible');
+            } else {
+                loginMessage.innerHTML = 'Username already exists!';
+            }
+        });
+    }
+    username.value = "";
+}

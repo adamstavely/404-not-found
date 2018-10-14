@@ -1,33 +1,44 @@
 // Dependencies
-var express = require('express');
-var http = require('http');
-var path = require('path');
-var socketIO = require('socket.io');
-var app = express();
-var server = http.Server(app);
-var io = socketIO(server);
+const express = require('express');
+const http = require('http');
+const path = require('path');
+const socketIO = require('socket.io');
+const app = express();
+const server = http.Server(app);
+const io = socketIO(server);
+
 app.set('port', 5000);
 app.use('/static', express.static(__dirname + '/static'));
+
 // Routing
-app.get('/', function(request, response) {
+app.get('/', function (request, response) {
     response.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Starts the server.
-server.listen(5000, function() {
+server.listen(5000, function () {
     console.log('Starting server on port 5000');
 });
 
-var players = {};
-io.on('connection', function(socket) {
-    socket.on('new player', function() {
-        console.log('New Player: ' + socket.id);
-        players[socket.id] = {
-            x: 300,
-            y: 300
-        };
+const players = {};
+const usernames = new Set();
+
+io.on('connection', function (socket) {
+    socket.on('new player', function (username, callback) {
+        if (!usernames.has(username) && !players.hasOwnProperty(socket.id)) {
+            console.log('New Player: ' + socket.id + ' - ' + username);
+            socket.username = username;
+            usernames.add(username);
+            players[socket.id] = {
+                x: 300,
+                y: 300
+            };
+            callback(true);
+        } else {
+            callback(false);
+        }
     });
-    socket.on('movement', function(data) {
+    socket.on('movement', function (data) {
         var player = players[socket.id] || {};
         if (data.left && player.x >= 5) {
             player.x -= 5;
@@ -42,13 +53,16 @@ io.on('connection', function(socket) {
             player.y += 5;
         }
     });
-    socket.on('disconnect', function() {
+    socket.on('disconnect', function () {
         // Remove disconnected player
-        console.log('Removing player: ' + socket.id);
-        delete players[socket.id];
+        if (socket.id in players) {
+            console.log('Removing player: ' + socket.id + ' - ' + socket.username);
+            usernames.delete(socket.username);
+            delete players[socket.id];
+        }
     });
 });
 
-setInterval(function() {
+setInterval(function () {
     io.sockets.emit('state', players);
 }, 1000 / 60);
