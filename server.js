@@ -39,7 +39,7 @@ io.on('connection', function (socket) {
         }
     });
     socket.on('movement', function (data) {
-        var player = players[socket.id] || {};
+        const player = players[socket.id] || {};
         if (data.left && player.x >= 5) {
             player.x -= 5;
         }
