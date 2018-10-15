@@ -48,3 +48,14 @@ canvas {
     height: 600px;
     border: 5px solid black;
 }
+
+#usernames {
+    width: 200px;
+    height: 600px;
+    border: 5px solid black;
+    margin-left: 15px;
+}
+
+#usernames p {
+    padding: 10px;
+}

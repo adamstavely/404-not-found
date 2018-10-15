@@ -1,13 +1,10 @@
 const socket = io();
-socket.on('message', function(data) {
-    console.log(data);
-});
-
 const username = document.getElementById('username');
 const loginForm = document.getElementById('loginForm');
 const loginMessage = document.getElementById('loginMessage');
 const canvas = document.getElementById('canvas');
 const context = canvas.getContext('2d');
+const usernameList = document.getElementById('usernames');
 
 canvas.width = 800;
 canvas.height = 600;
@@ -19,7 +16,7 @@ const movement = {
     right: false
 };
 
-document.addEventListener('keydown', function(event) {
+document.addEventListener('keydown', function (event) {
     switch (event.keyCode) {
         case 65: // A
             movement.left = true;
@@ -36,7 +33,7 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
-document.addEventListener('keyup', function(event) {
+document.addEventListener('keyup', function (event) {
     switch (event.keyCode) {
         case 65: // A
             movement.left = false;
@@ -53,11 +50,31 @@ document.addEventListener('keyup', function(event) {
     }
 });
 
-setInterval(function() {
+setInterval(function () {
     socket.emit('movement', movement);
 }, 1000 / 60);
 
-socket.on('state', function(players) {
+function login() {
+    if (username.value) {
+        socket.emit('new player', username.value, function (result) {
+            if (result) {
+                loginMessage.innerHTML = '';
+                loginForm.classList.add("invisible");
+                canvas.classList.remove('invisible');
+                usernames.classList.remove('invisible');
+            } else {
+                loginMessage.innerHTML = 'Username already exists!';
+            }
+        });
+    }
+    username.value = "";
+}
+
+socket.on('message', function (data) {
+    console.log(data);
+});
+
+socket.on('state', function (players) {
     context.clearRect(0, 0, 800, 600);
     context.fillStyle = 'green';
     for (let id in players) {
@@ -68,17 +85,7 @@ socket.on('state', function(players) {
     }
 });
 
-function login() {
-    if (username.value) {
-        socket.emit('new player', username.value, function(result){
-            if (result) {
-                loginMessage.innerHTML = '';
-                loginForm.classList.add("invisible");
-                canvas.classList.remove('invisible');
-            } else {
-                loginMessage.innerHTML = 'Username already exists!';
-            }
-        });
-    }
-    username.value = "";
-}
+socket.on('usernames', function (usernames) {
+    console.log(usernames);
+    usernameList.innerHTML = '<p>' + usernames.join('<br/>') + '</p>';
+});

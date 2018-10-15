@@ -21,18 +21,19 @@ server.listen(5000, function () {
 });
 
 const players = {};
-const usernames = new Set();
+const usernames = [];
 
 io.on('connection', function (socket) {
     socket.on('new player', function (username, callback) {
-        if (!usernames.has(username) && !players.hasOwnProperty(socket.id)) {
+        if (!usernames.includes(username) && !players.hasOwnProperty(socket.id)) {
             console.log('New Player: ' + socket.id + ' - ' + username);
             socket.username = username;
-            usernames.add(username);
+            usernames.push(username);
             players[socket.id] = {
                 x: 300,
                 y: 300
             };
+            updateUsernames();
             callback(true);
         } else {
             callback(false);
@@ -57,11 +58,17 @@ io.on('connection', function (socket) {
         // Remove disconnected player
         if (socket.id in players) {
             console.log('Removing player: ' + socket.id + ' - ' + socket.username);
-            usernames.delete(socket.username);
+            usernames.splice(usernames.indexOf(socket.username));
             delete players[socket.id];
+            updateUsernames();
         }
     });
 });
+
+function updateUsernames() {
+    console.log('Emitting usernames: ' + usernames);
+    io.sockets.emit('usernames', usernames);
+}
 
 setInterval(function () {
     io.sockets.emit('state', players);
