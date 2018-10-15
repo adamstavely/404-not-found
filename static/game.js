@@ -50,10 +50,6 @@ document.addEventListener('keyup', function (event) {
     }
 });
 
-setInterval(function () {
-    socket.emit('movement', movement);
-}, 1000 / 60);
-
 function login() {
     if (username.value) {
         socket.emit('new player', username.value, function (result) {
@@ -89,3 +85,7 @@ socket.on('usernames', function (usernames) {
     console.log(usernames);
     usernameList.innerHTML = '<p>' + usernames.join('<br/>') + '</p>';
 });
+
+setInterval(function () {
+    socket.emit('movement', movement);
+}, 1000 / 60);

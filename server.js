@@ -25,10 +25,10 @@ const usernames = [];
 
 io.on('connection', function (socket) {
     socket.on('new player', function (username, callback) {
-        if (!usernames.includes(username) && !players.hasOwnProperty(socket.id)) {
+        if (!usernames.includes(username.toLowerCase()) && !players.hasOwnProperty(socket.id)) {
             console.log('New Player: ' + socket.id + ' - ' + username);
             socket.username = username;
-            usernames.push(username);
+            usernames.push(username.toLowerCase());
             players[socket.id] = {
                 x: 300,
                 y: 300
