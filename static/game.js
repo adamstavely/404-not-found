@@ -74,10 +74,12 @@ socket.on('state', function (players) {
     context.clearRect(0, 0, 800, 600);
     context.fillStyle = 'green';
     for (let id in players) {
-        let player = players[id];
-        context.beginPath();
-        context.arc(player.x, player.y, 10, 0, 2 * Math.PI);
-        context.fill();
+        if (players.hasOwnProperty(id)) {
+            let player = players[id];
+            context.beginPath();
+            context.arc(player.x, player.y, 10, 0, 2 * Math.PI);
+            context.fill();
+        }
     }
 });
 
