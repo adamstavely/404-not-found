@@ -6,9 +6,13 @@ const socketIO = require('socket.io');
 const app = express();
 const server = http.Server(app);
 const io = socketIO(server);
+const sqlite3 = require('sqlite3').verbose();
 
 app.set('port', 5000);
 app.use('/static', express.static(__dirname + '/static'));
+
+// Open connection to the database
+let db = new sqlite3.Database('clueless.db');
 
 // Routing
 app.get('/', function (request, response) {
@@ -24,17 +28,21 @@ const players = {};
 const usernames = [];
 
 io.on('connection', function (socket) {
-    socket.on('new player', function (username, callback) {
+    socket.on('new player', function ([username, password], callback) {
         if (!usernames.includes(username.toLowerCase()) && !players.hasOwnProperty(socket.id)) {
-            console.log('New Player: ' + socket.id + ' - ' + username);
-            socket.username = username;
-            usernames.push(username.toLowerCase());
-            players[socket.id] = {
-                x: 300,
-                y: 300
-            };
-            updateUsernames();
-            callback(true);
+            if (password === 'password') {
+                console.log('New Player: ' + socket.id + ' - ' + username);
+                socket.username = username;
+                usernames.push(username.toLowerCase());
+                players[socket.id] = {
+                    x: 300,
+                    y: 300
+                };
+                updateUsernames();
+                callback(true);
+            } else {
+                callback(false);
+            }
         } else {
             callback(false);
         }

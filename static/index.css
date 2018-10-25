@@ -23,15 +23,15 @@ body {
 }
 
 .login-form {
-    max-width: 380px;
+    width: 380px;
     position: absolute;
     padding: 15px 35px 15px;
     margin: 0 auto;
     background-color: #fff;
-    border: 1px solid rgba(0,0,0,0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.login-form input[type="text"] {
+.login-form input {
     margin-bottom: 10px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;

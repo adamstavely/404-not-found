@@ -1,5 +1,6 @@
 const socket = io();
 const username = document.getElementById('username');
+const password = document.getElementById('password');
 const loginForm = document.getElementById('loginForm');
 const loginMessage = document.getElementById('loginMessage');
 const canvas = document.getElementById('canvas');
@@ -51,19 +52,20 @@ document.addEventListener('keyup', function (event) {
 });
 
 function login() {
-    if (username.value) {
-        socket.emit('new player', username.value, function (result) {
+    if (username.value && password.value) {
+        socket.emit('new player', [username.value, password.value], function (result) {
             if (result) {
                 loginMessage.innerHTML = '';
                 loginForm.classList.add("invisible");
                 canvas.classList.remove('invisible');
                 usernames.classList.remove('invisible');
             } else {
-                loginMessage.innerHTML = 'Username already exists!';
+                loginMessage.innerHTML = 'The username or password is incorrect';
             }
         });
     }
     username.value = "";
+    password.value = "";
 }
 
 socket.on('message', function (data) {
