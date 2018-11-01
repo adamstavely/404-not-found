@@ -98,7 +98,7 @@ io.on('connection', function (socket) {
         if (data.up && player.y >= 5) {
             player.y -= 5;
         }
-        if (data.right && player.x <= 795) {
+        if (data.right && player.x <= 595) {
             player.x += 5;
         }
         if (data.down && player.y <= 595) {

@@ -8,7 +8,7 @@ const canvas = document.getElementById('canvas');
 const context = canvas.getContext('2d');
 const usernameList = document.getElementById('usernames');
 
-canvas.width = 800;
+canvas.width = 600;
 canvas.height = 600;
 
 const movement = {
@@ -99,7 +99,7 @@ socket.on('message', function (data) {
 });
 
 socket.on('state', function (players) {
-    context.clearRect(0, 0, 800, 600);
+    context.clearRect(0, 0, 600, 600);
     context.fillStyle = 'green';
     for (let id in players) {
         if (players.hasOwnProperty(id)) {
