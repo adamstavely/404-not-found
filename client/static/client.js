@@ -70,7 +70,7 @@ function login() {
     } else {
         loginMessage.innerHTML = 'Please enter a username and password';
     }
-    username.value = "";
+    password.value = "";
 }
 
 function register() {
