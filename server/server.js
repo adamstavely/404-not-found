@@ -11,11 +11,11 @@ const Database = require('./database');
 const User = require('./user');
 
 app.set('port', 5000);
-app.use('/static', express.static(__dirname + '/static'));
+app.use('/static', express.static(__dirname + '/../client/static'));
 
 // Routing
 app.get('/', function (request, response) {
-    response.sendFile(path.join(__dirname, 'index.html'));
+    response.sendFile(path.join(__dirname, '/../client/index.html'));
 });
 
 // Starts the server.
