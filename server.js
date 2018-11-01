@@ -6,13 +6,12 @@ const socketIO = require('socket.io');
 const app = express();
 const server = http.Server(app);
 const io = socketIO(server);
-const sqlite3 = require('sqlite3').verbose();
+const Promise = require('bluebird');
+const Database = require('./database');
+const User = require('./user');
 
 app.set('port', 5000);
 app.use('/static', express.static(__dirname + '/static'));
-
-// Open connection to the database
-let db = new sqlite3.Database('clueless.db');
 
 // Routing
 app.get('/', function (request, response) {
@@ -27,25 +26,69 @@ server.listen(5000, function () {
 const players = {};
 const usernames = [];
 
+const db = new Database('./clueless.sqlite3');
+const user = new User(db);
+
+user.createTable();
+
 io.on('connection', function (socket) {
-    socket.on('new player', function ([username, password], callback) {
-        if (!usernames.includes(username.toLowerCase()) && !players.hasOwnProperty(socket.id)) {
-            if (password === 'password') {
-                console.log('New Player: ' + socket.id + ' - ' + username);
-                socket.username = username;
-                usernames.push(username.toLowerCase());
-                players[socket.id] = {
-                    x: 300,
-                    y: 300
-                };
-                updateUsernames();
-                callback(true);
+    socket.on('login', function ([username, password], callback) {
+        user.getByUsername(username).then((result) => {
+            if (result) {
+                if (!usernames.includes(username.toLowerCase()) && !players.hasOwnProperty(socket.id)) {
+                    if (result.password === password) {
+                        console.log('Player has logged in: ' + socket.id + ' - ' + username);
+                        socket.username = username;
+                        usernames.push(username);
+                        players[socket.id] = {
+                            x: 300,
+                            y: 300
+                        };
+                        updateUsernames();
+                        callback(true);
+                    } else {
+                        console.log('Incorrect password');
+                        callback(false);
+                    }
+                } else {
+                    console.log('User is already logged in');
+                    callback(false);
+                }
             } else {
+                console.log('Username does not exist');
                 callback(false);
             }
-        } else {
-            callback(false);
-        }
+        });
+    });
+    socket.on('register', function ([username, password], callback) {
+        user.getByUsername(username).then((result) => {
+            if (!result) {
+                if (!usernames.includes(username.toLowerCase()) && !players.hasOwnProperty(socket.id)) {
+                    user.create(username, password).then((result) => {
+                        if (result) {
+                            console.log('Player has registered: ' + socket.id + ' - ' + username);
+                            socket.username = username;
+                            usernames.push(username);
+                            players[socket.id] = {
+                                x: 300,
+                                y: 300
+                            };
+                            updateUsernames();
+                            callback(true);
+                        } else {
+                            console.log('Registration failed');
+                            callback(false);
+                        }
+                    });
+                } else {
+                    console.log('User is already logged in');
+                    callback(false);
+                }
+            } else {
+                console.log('Username already exist');
+                callback(false);
+            }
+        });
     });
     socket.on('movement', function (data) {
         const player = players[socket.id] || {};

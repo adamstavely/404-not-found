@@ -1,7 +1,8 @@
 const socket = io();
+const loginForm = document.getElementById('loginForm');
 const username = document.getElementById('username');
 const password = document.getElementById('password');
-const loginForm = document.getElementById('loginForm');
+const loginButton = document.getElementById('loginButton');
 const loginMessage = document.getElementById('loginMessage');
 const canvas = document.getElementById('canvas');
 const context = canvas.getContext('2d');
@@ -48,21 +49,46 @@ document.addEventListener('keyup', function (event) {
         case 83: // S
             movement.down = false;
             break;
+        case 13: // Enter
+            loginButton.click();
     }
 });
 
 function login() {
     if (username.value && password.value) {
-        socket.emit('new player', [username.value, password.value], function (result) {
+        socket.emit('login', [username.value, password.value], function (result) {
             if (result) {
                 loginMessage.innerHTML = '';
                 loginForm.classList.add("invisible");
                 canvas.classList.remove('invisible');
                 usernames.classList.remove('invisible');
+                loginMessage.innerHTML = "";
             } else {
                 loginMessage.innerHTML = 'The username or password is incorrect';
             }
         });
+    } else {
+        loginMessage.innerHTML = 'Please enter a username and password';
+    }
+    username.value = "";
+    password.value = "";
+}
+
+function register() {
+    if (username.value && password.value) {
+        socket.emit('register', [username.value, password.value], function (result) {
+            if (result) {
+                loginMessage.innerHTML = '';
+                loginForm.classList.add("invisible");
+                canvas.classList.remove('invisible');
+                usernames.classList.remove('invisible');
+                loginMessage.innerHTML = "";
+            } else {
+                loginMessage.innerHTML = 'Failed to register user';
+            }
+        });
+    } else {
+        loginMessage.innerHTML = 'Please enter a username and password';
     }
     username.value = "";
     password.value = "";
