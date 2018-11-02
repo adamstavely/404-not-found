@@ -81,7 +81,7 @@ function login() {
                 loginForm.classList.add("invisible");
                 canvas.classList.remove('invisible');
                 chatContainer.classList.remove('invisible');
-                usernames.classList.remove('invisible');
+                usernameList.classList.remove('invisible');
                 loginMessage.innerHTML = "";
             } else {
                 loginMessage.innerHTML = 'The username or password is incorrect';
@@ -101,7 +101,7 @@ function register() {
                 loginForm.classList.add("invisible");
                 canvas.classList.remove('invisible');
                 chatContainer.classList.remove('invisible');
-                usernames.classList.remove('invisible');
+                usernameList.classList.remove('invisible');
                 loginMessage.innerHTML = "";
             } else {
                 loginMessage.innerHTML = 'Failed to register user';
