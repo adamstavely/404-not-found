@@ -5,8 +5,12 @@ const password = document.getElementById('password');
 const loginButton = document.getElementById('loginButton');
 const loginMessage = document.getElementById('loginMessage');
 const canvas = document.getElementById('canvas');
-const context = canvas.getContext('2d');
+const chatContainer = document.getElementById('chatContainer');
 const usernameList = document.getElementById('usernames');
+const chatMessages = document.getElementById('chatMessages');
+const chatText = document.getElementById('chatText');
+const chatSend = document.getElementById('chatSend');
+const context = canvas.getContext('2d');
 
 canvas.width = 600;
 canvas.height = 600;
@@ -49,8 +53,23 @@ document.addEventListener('keyup', function (event) {
         case 83: // S
             movement.down = false;
             break;
+    }
+});
+
+password.addEventListener('keyup', function (event) {
+    switch (event.keyCode) {
         case 13: // Enter
             loginButton.click();
+            break;
+    }
+});
+
+chatText.addEventListener('keydown', function (event) {
+    switch (event.keyCode) {
+        case 13: // Enter
+            event.preventDefault();
+            chatSend.click();
+            break;
     }
 });
 
@@ -61,6 +80,7 @@ function login() {
                 loginMessage.innerHTML = '';
                 loginForm.classList.add("invisible");
                 canvas.classList.remove('invisible');
+                chatContainer.classList.remove('invisible');
                 usernames.classList.remove('invisible');
                 loginMessage.innerHTML = "";
             } else {
@@ -80,6 +100,7 @@ function register() {
                 loginMessage.innerHTML = '';
                 loginForm.classList.add("invisible");
                 canvas.classList.remove('invisible');
+                chatContainer.classList.remove('invisible');
                 usernames.classList.remove('invisible');
                 loginMessage.innerHTML = "";
             } else {
@@ -93,8 +114,23 @@ function register() {
     password.value = "";
 }
 
-socket.on('message', function (data) {
-    console.log(data);
+function sendChat() {
+    if (chatText.value) {
+        socket.emit('message', chatText.value);
+        chatText.value = "";
+    }
+}
+
+socket.on('message', function (message) {
+    chatMessages.innerHTML += message + '<br/>';
+});
+
+socket.on('chat history', function (chatHistory) {
+    console.log(chatHistory);
+    if (chatHistory && chatHistory.length) {
+        chatMessages.innerHTML = chatHistory.join('<br/>');
+        chatMessages.innerHTML += '<br/>';
+    }
 });
 
 socket.on('state', function (players) {

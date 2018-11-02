@@ -50,11 +50,39 @@ canvas {
     background-size: contain;
 }
 
+#chatContainer {
+    width: 400px;
+    height: 600px;
+    border: 5px solid black;
+    margin-left: 15px;
+}
+
+#chatMessagesWrapper {
+    width: 400px;
+    height: 525px;
+}
+
+#chatMessages {
+    padding: 10px;
+}
+
+#chatText {
+    margin-left: 5px;
+    resize: none;
+    width: 80%;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#chatSend {
+    display: inline-block;
+    vertical-align: middle;
+}
+
 #usernames {
     width: 200px;
     height: 600px;
     border: 5px solid black;
-    margin-left: 15px;
 }
 
 #usernames p {

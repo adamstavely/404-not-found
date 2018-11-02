@@ -25,6 +25,7 @@ server.listen(5000, function () {
 
 const players = {};
 const usernames = [];
+const chatHistory = [];
 
 const db = new Database('./clueless.sqlite3');
 const user = new User(db);
@@ -45,6 +46,7 @@ io.on('connection', function (socket) {
                             y: 300
                         };
                         updateUsernames();
+                        updateChatWindow(socket);
                         callback(true);
                     } else {
                         console.log('Incorrect password');
@@ -74,6 +76,7 @@ io.on('connection', function (socket) {
                                 y: 300
                             };
                             updateUsernames();
+                            updateChatWindow(socket);
                             callback(true);
                         } else {
                             console.log('Registration failed');
@@ -89,6 +92,12 @@ io.on('connection', function (socket) {
                 callback(false);
             }
         });
+    });
+    socket.on('message', function(message) {
+       const newMessage = socket.username + ': ' + message;
+       console.log('Received message from ' + socket.username + ': ' + message);
+       chatHistory.push(newMessage);
+       io.sockets.emit('message', newMessage);
     });
     socket.on('movement', function (data) {
         const player = players[socket.id] || {};
@@ -119,6 +128,11 @@ io.on('connection', function (socket) {
 function updateUsernames() {
     console.log('Emitting usernames: ' + usernames);
     io.sockets.emit('usernames', usernames);
+}
+
+function updateChatWindow(socket) {
+    console.log('Emitting chat history');
+    socket.emit('chat history', chatHistory);
 }
 
 setInterval(function () {
