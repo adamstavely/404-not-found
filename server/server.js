@@ -3,12 +3,14 @@ const express = require('express');
 const http = require('http');
 const path = require('path');
 const socketIO = require('socket.io');
-const app = express();
-const server = http.Server(app);
-const io = socketIO(server);
 const Promise = require('bluebird');
 const Database = require('./database');
 const User = require('./user');
+
+// Create the server
+const app = express();
+const server = http.Server(app);
+const io = socketIO(server);
 
 app.set('port', 5000);
 app.use('/static', express.static(__dirname + '/../client/static'));
@@ -93,11 +95,11 @@ io.on('connection', function (socket) {
             }
         });
     });
-    socket.on('message', function(message) {
-       const newMessage = socket.username + ': ' + message;
-       console.log('Received message from ' + socket.username + ': ' + message);
-       chatHistory.push(newMessage);
-       io.sockets.emit('message', newMessage);
+    socket.on('message', function (message) {
+        const newMessage = socket.username + ': ' + message;
+        console.log('Received message from ' + socket.username + ': ' + message);
+        chatHistory.push(newMessage);
+        io.sockets.emit('message', newMessage);
     });
     socket.on('movement', function (data) {
         const player = players[socket.id] || {};
