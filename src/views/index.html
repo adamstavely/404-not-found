@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Clue-Less</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <link href="../static/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/index.css" rel="stylesheet">
+</head>
+<body>
+<h1 class="text-center" id="title">Clue-Less</h1>
+<div id="content">
+    <!--<div class="login-form" id="loginForm">-->
+        <!--<h1 class="h3 mb-3 font-weight-normal">Please login</h1>-->
+        <!--<label for="username" class="sr-only">Username</label>-->
+        <!--<input type="text" id="username" name="user[name]" class="form-control" placeholder="Username" required-->
+               <!--autofocus="">-->
+        <!--<label for="password" class="sr-only">Password</label>-->
+        <!--<input type="password" id="password" name="user[password]" class="form-control" placeholder="Password" required-->
+               <!--autofocus="">-->
+        <!--<button id="loginButton" class="btn btn-lg btn-primary btn-block" type="submit" onclick="login()">Login</button>-->
+        <!--<button id="registerButton" class="btn btn-lg btn-primary btn-block" type="submit" onclick="register()">-->
+            <!--Register-->
+        <!--</button>-->
+        <!--<p id="loginMessage"></p>-->
+    <!--</div>-->
+    <canvas id="canvas"></canvas>
+    <div id="chatContainer">
+        <div id="chatMessagesWrapper">
+            <p id="chatMessages"></p>
+        </div>
+        <div id="chatInput">
+            <textarea id="chatText" cols="1" rows="2"></textarea>
+            <button id="chatSend" class="btn" type="submit" onclick="sendChat()">Send</button>
+        </div>
+    </div>
+    <div id="usernames"></div>
+</div>
+</body>
+<script src="../static/client.js"></script>
+</html>

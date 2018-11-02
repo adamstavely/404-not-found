@@ -1,11 +1,5 @@
 const socket = io();
-const loginForm = document.getElementById('loginForm');
-const username = document.getElementById('username');
-const password = document.getElementById('password');
-const loginButton = document.getElementById('loginButton');
-const loginMessage = document.getElementById('loginMessage');
 const canvas = document.getElementById('canvas');
-const chatContainer = document.getElementById('chatContainer');
 const usernameList = document.getElementById('usernames');
 const chatMessages = document.getElementById('chatMessages');
 const chatText = document.getElementById('chatText');
@@ -56,14 +50,6 @@ document.addEventListener('keyup', function (event) {
     }
 });
 
-password.addEventListener('keyup', function (event) {
-    switch (event.keyCode) {
-        case 13: // Enter
-            loginButton.click();
-            break;
-    }
-});
-
 chatText.addEventListener('keydown', function (event) {
     switch (event.keyCode) {
         case 13: // Enter
@@ -72,47 +58,6 @@ chatText.addEventListener('keydown', function (event) {
             break;
     }
 });
-
-function login() {
-    if (username.value && password.value) {
-        socket.emit('login', [username.value, password.value], function (result) {
-            if (result) {
-                loginMessage.innerHTML = '';
-                loginForm.classList.add("invisible");
-                canvas.classList.remove('invisible');
-                chatContainer.classList.remove('invisible');
-                usernameList.classList.remove('invisible');
-                loginMessage.innerHTML = "";
-            } else {
-                loginMessage.innerHTML = 'The username or password is incorrect';
-            }
-        });
-    } else {
-        loginMessage.innerHTML = 'Please enter a username and password';
-    }
-    password.value = "";
-}
-
-function register() {
-    if (username.value && password.value) {
-        socket.emit('register', [username.value, password.value], function (result) {
-            if (result) {
-                loginMessage.innerHTML = '';
-                loginForm.classList.add("invisible");
-                canvas.classList.remove('invisible');
-                chatContainer.classList.remove('invisible');
-                usernameList.classList.remove('invisible');
-                loginMessage.innerHTML = "";
-            } else {
-                loginMessage.innerHTML = 'Failed to register user';
-            }
-        });
-    } else {
-        loginMessage.innerHTML = 'Please enter a username and password';
-    }
-    username.value = "";
-    password.value = "";
-}
 
 function sendChat() {
     if (chatText.value) {
