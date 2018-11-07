@@ -53,13 +53,13 @@ let sessionChecker = (req, res, next) => {
 
 // Routing
 app.get('/', sessionChecker, (req, res) => {
-    res.redirect('/login');
+    res.redirect('/index');
 });
 
 // Route for user signup
 app.route('/signup')
     .get(sessionChecker, (req, res) => {
-        res.sendFile(__dirname + '/views/signup.html');
+        res.redirect('/index');
     })
     .post((req, res) => {
         const username = req.body.username.toLowerCase();
@@ -76,16 +76,16 @@ app.route('/signup')
                             res.redirect('/game');
                         } else {
                             console.log('Registration failed');
-                            res.redirect('/signup');
+                            res.redirect('/index');
                         }
                     });
                 } else {
                     console.log('User is already logged in');
-                    res.redirect('/signup');
+                    res.redirect('/index');
                 }
             } else {
-                console.log('Username already exist');
-                res.redirect('/signup');
+                console.log('Username already exists');
+                res.redirect('/index');
             }
         });
     });
@@ -93,9 +93,10 @@ app.route('/signup')
 // Route for user Login
 app.route('/login')
     .get(sessionChecker, (req, res) => {
-        res.sendFile(__dirname + '/views/login.html');
+        res.redirect('/index');
     })
     .post((req, res) => {
+        console.log(req.body);
         const username = req.body.username.toLowerCase();
         const password = req.body.password;
 
@@ -109,25 +110,31 @@ app.route('/login')
                         res.redirect('/game');
                     } else {
                         console.log('Incorrect password');
-                        res.redirect('/login');
+                        res.redirect('/index');
                     }
                 } else {
                     console.log('User is already logged in');
-                    res.redirect('/login');
+                    res.redirect('/index');
                 }
             } else {
                 console.log('Username does not exist');
-                res.redirect('/login');
+                res.redirect('/index');
             }
         });
+    });
+
+// Route for index page
+app.route('/index')
+    .get(sessionChecker, (req, res) => {
+        res.sendFile(__dirname + '/views/index.html');
     });
 
 // Route for main game
 app.get('/game', (req, res) => {
     if (req.session.user && req.cookies.user_sid) {
-        res.sendFile(path.join(__dirname, '/views/index.html'));
+        res.sendFile(path.join(__dirname, '/views/game.html'));
     } else {
-        res.redirect('/login');
+        res.sendFile(__dirname + '/views/index.html');
     }
 });
 
@@ -139,7 +146,7 @@ app.get('/logout', (req, res) => {
         // updateUsernames();
         res.redirect('/');
     } else {
-        res.redirect('/login');
+        res.sendFile(__dirname + '/views/index.html');
     }
 });
 
