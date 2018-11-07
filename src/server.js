@@ -73,6 +73,7 @@ app.route('/signup')
                             console.log('Player has registered: ' + username);
                             usernames.push(username);
                             req.session.user = username;
+                            res.redirect('/game');
                         } else {
                             console.log('Registration failed');
                             res.redirect('/signup');
