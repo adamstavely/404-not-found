@@ -1,6 +1,7 @@
 const socket = io();
 const canvas = document.getElementById('canvas');
 const usernameList = document.getElementById('usernames');
+const chatWindow = document.getElementById('chatMessagesWrapper');
 const chatMessages = document.getElementById('chatMessages');
 const chatText = document.getElementById('chatText');
 const chatSend = document.getElementById('chatSend');
@@ -68,10 +69,12 @@ function sendChat() {
 
 socket.on('message', function (message) {
     chatMessages.innerHTML += message + '<br/>';
+    scrollToBottom();
 });
 
 socket.on('event', function (eventMessage) {
     chatMessages.innerHTML += '<i>' + eventMessage + '</i><br/>';
+    scrollToBottom();
 });
 
 socket.on('chat history', function (chatHistory) {
@@ -79,6 +82,7 @@ socket.on('chat history', function (chatHistory) {
     if (chatHistory && chatHistory.length) {
         chatMessages.innerHTML = chatHistory.join('<br/>');
         chatMessages.innerHTML += '<br/>';
+        scrollToBottom();
     }
 });
 
@@ -99,6 +103,10 @@ socket.on('usernames', function (usernames) {
     console.log(usernames);
     usernameList.innerHTML = '<p>' + usernames.join('<br/>') + '</p>';
 });
+
+function scrollToBottom() {
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+}
 
 setInterval(function () {
     socket.emit('movement', movement);
