@@ -178,8 +178,12 @@ io.on('connection', function (socket) {
         x: 300,
         y: 300
     };
+
     updateUsernames();
+
+    const eventMessage = socket.username + ' has joined the game';
     updateChatWindow(socket);
+    io.sockets.emit('event', eventMessage);
 
     socket.on('message', function (message) {
         const newMessage = socket.username + ': ' + message;
@@ -209,6 +213,9 @@ io.on('connection', function (socket) {
             usernames.splice(usernames.indexOf(socket.username), 1);
             delete players[socket.id];
             updateUsernames();
+
+            const eventMessage = socket.username + ' has left the game';
+            io.sockets.emit('event', eventMessage);
         }
     });
 });

@@ -70,6 +70,10 @@ socket.on('message', function (message) {
     chatMessages.innerHTML += message + '<br/>';
 });
 
+socket.on('event', function (eventMessage) {
+    chatMessages.innerHTML += '<i>' + eventMessage + '</i><br/>';
+});
+
 socket.on('chat history', function (chatHistory) {
     console.log(chatHistory);
     if (chatHistory && chatHistory.length) {
