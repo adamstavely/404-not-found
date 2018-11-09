@@ -160,64 +160,69 @@ const user = new User(db);
 user.createTable();
 
 io.on('connection', function (socket) {
-    socket.username = socket.request.session.user;
+    try {
+        socket.username = socket.request.session.user;
 
-    if (!usernames.includes(socket.username.toLowerCase())) {
-        usernames.push(socket.username.toLowerCase());
+        if (!usernames.includes(socket.username.toLowerCase())) {
+            usernames.push(socket.username.toLowerCase());
 
-        players[socket.username.toLowerCase()] = {
-            x: 300,
-            y: 300,
-            disconnected: false
-        };
+            players[socket.username.toLowerCase()] = {
+                x: 300,
+                y: 300,
+                disconnected: false
+            };
 
-        const eventMessage = socket.username + ' has joined the game';
-        io.sockets.emit('event', eventMessage);
-    } else {
-        players[socket.username.toLowerCase()].disconnected = false;
-    }
-
-    updateUsernames();
-    updateChatWindow(socket);
-
-    socket.on('message', function (message) {
-        const newMessage = socket.username + ': ' + message;
-        console.log('Received message from ' + socket.username + ': ' + message);
-        chatHistory.push(newMessage);
-        io.sockets.emit('message', newMessage);
-    });
-    socket.on('movement', function (data) {
-        const player = players[socket.username.toLowerCase()] || {};
-        if (data.left && player.x >= 5) {
-            player.x -= 5;
+            const eventMessage = socket.username + ' has joined the game';
+            io.sockets.emit('event', eventMessage);
+        } else {
+            players[socket.username.toLowerCase()].disconnected = false;
         }
-        if (data.up && player.y >= 5) {
-            player.y -= 5;
-        }
-        if (data.right && player.x <= 595) {
-            player.x += 5;
-        }
-        if (data.down && player.y <= 595) {
-            player.y += 5;
-        }
-    });
-    socket.on('disconnect', function () {
-        // Remove disconnected player after timeout
-        players[socket.username.toLowerCase()].disconnected = true;
-        setTimeout(function () {
-            if (socket.username.toLowerCase() in players) {
-                if (players[socket.username.toLowerCase()].disconnected) {
-                    console.log('Removing player: ' + socket.id + ' - ' + socket.username);
-                    usernames.splice(usernames.indexOf(socket.username.toLowerCase()), 1);
-                    delete players[socket.username.toLowerCase()];
-                    updateUsernames();
 
-                    const eventMessage = socket.username + ' has left the game';
-                    io.sockets.emit('event', eventMessage);
-                }
+        updateUsernames();
+        updateChatWindow(socket);
+
+
+        socket.on('message', function (message) {
+            const newMessage = socket.username + ': ' + message;
+            console.log('Received message from ' + socket.username + ': ' + message);
+            chatHistory.push(newMessage);
+            io.sockets.emit('message', newMessage);
+        });
+        socket.on('movement', function (data) {
+            const player = players[socket.username.toLowerCase()] || {};
+            if (data.left && player.x >= 5) {
+                player.x -= 5;
             }
-        }, 1000);
-    });
+            if (data.up && player.y >= 5) {
+                player.y -= 5;
+            }
+            if (data.right && player.x <= 595) {
+                player.x += 5;
+            }
+            if (data.down && player.y <= 595) {
+                player.y += 5;
+            }
+        });
+        socket.on('disconnect', function () {
+            // Remove disconnected player after timeout
+            players[socket.username.toLowerCase()].disconnected = true;
+            setTimeout(function () {
+                if (socket.username.toLowerCase() in players) {
+                    if (players[socket.username.toLowerCase()].disconnected) {
+                        console.log('Removing player: ' + socket.id + ' - ' + socket.username);
+                        usernames.splice(usernames.indexOf(socket.username.toLowerCase()), 1);
+                        delete players[socket.username.toLowerCase()];
+                        updateUsernames();
+
+                        const eventMessage = socket.username + ' has left the game';
+                        io.sockets.emit('event', eventMessage);
+                    }
+                }
+            }, 1000);
+        });
+    } catch (error) {
+        console.log(error.message);
+    }
 });
 
 function updateUsernames() {
