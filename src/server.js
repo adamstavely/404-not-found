@@ -90,12 +90,12 @@ app.route('/login')
         res.redirect('/index');
     })
     .post((req, res) => {
-        const username = req.body.username.toLowerCase();
+        const username = req.body.username;
         const password = req.body.password;
 
-        user.getByUsername(username).then((result) => {
+        user.getByUsername(username.toLowerCase()).then((result) => {
             if (result) {
-                if (!usernames.includes(username)) {
+                if (!usernames.includes(username.toLowerCase())) {
                     if (result.password === password) {
                         console.log('Player has logged in: ' + username);
                         req.session.user = username;
@@ -133,9 +133,7 @@ app.get('/game', (req, res) => {
 // Route for user logout
 app.get('/logout', (req, res) => {
     if (req.session.user && req.cookies.user_sid) {
-        // usernames.splice(usernames.indexOf(req.session.user));
         res.clearCookie('user_sid');
-        // updateUsernames();
         res.redirect('/');
     } else {
         res.sendFile(__dirname + '/views/index.html');
@@ -164,10 +162,10 @@ user.createTable();
 io.on('connection', function (socket) {
     socket.username = socket.request.session.user;
 
-    if (!usernames.includes(socket.username)) {
-        usernames.push(socket.username);
+    if (!usernames.includes(socket.username.toLowerCase())) {
+        usernames.push(socket.username.toLowerCase());
 
-        players[socket.username] = {
+        players[socket.username.toLowerCase()] = {
             x: 300,
             y: 300,
             disconnected: false
@@ -176,7 +174,7 @@ io.on('connection', function (socket) {
         const eventMessage = socket.username + ' has joined the game';
         io.sockets.emit('event', eventMessage);
     } else {
-        players[socket.username].disconnected = false;
+        players[socket.username.toLowerCase()].disconnected = false;
     }
 
     updateUsernames();
@@ -189,7 +187,7 @@ io.on('connection', function (socket) {
         io.sockets.emit('message', newMessage);
     });
     socket.on('movement', function (data) {
-        const player = players[socket.username] || {};
+        const player = players[socket.username.toLowerCase()] || {};
         if (data.left && player.x >= 5) {
             player.x -= 5;
         }
@@ -205,13 +203,13 @@ io.on('connection', function (socket) {
     });
     socket.on('disconnect', function () {
         // Remove disconnected player after timeout
-        players[socket.username].disconnected = true;
+        players[socket.username.toLowerCase()].disconnected = true;
         setTimeout(function () {
-            if (socket.username in players) {
-                if (players[socket.username].disconnected) {
+            if (socket.username.toLowerCase() in players) {
+                if (players[socket.username.toLowerCase()].disconnected) {
                     console.log('Removing player: ' + socket.id + ' - ' + socket.username);
-                    usernames.splice(usernames.indexOf(socket.username), 1);
-                    delete players[socket.username];
+                    usernames.splice(usernames.indexOf(socket.username.toLowerCase()), 1);
+                    delete players[socket.username.toLowerCase()];
                     updateUsernames();
 
                     const eventMessage = socket.username + ' has left the game';
