@@ -7,6 +7,6 @@
 * Change directory into the cloned repository:
 > $ cd 404-not-found
 * Install Node dependencies:
-> $ npm install --save express socket.io
+> $ npm install --save bluebird body-parser cookie-parser express express-session socket.io sqlite3 nodemon
 * Run the server:
-> $ node server.js
+> $ nodemon server.js
