@@ -67,22 +67,16 @@ app.route('/signup')
 
         user.getByUsername(username).then((result) => {
             if (!result) {
-                if (!usernames.includes(username)) {
-                    user.create(username, password).then((result) => {
-                        if (result) {
-                            console.log('Player has registered: ' + username);
-                            usernames.push(username);
-                            req.session.user = username;
-                            res.redirect('/game');
-                        } else {
-                            console.log('Registration failed');
-                            res.redirect('/index');
-                        }
-                    });
-                } else {
-                    console.log('User is already logged in');
-                    res.redirect('/index');
-                }
+                user.create(username, password).then((result) => {
+                    if (result) {
+                        console.log('Player has registered: ' + username);
+                        req.session.user = username;
+                        res.redirect('/game');
+                    } else {
+                        console.log('Registration failed');
+                        res.redirect('/index');
+                    }
+                });
             } else {
                 console.log('Username already exists');
                 res.redirect('/index');
@@ -96,7 +90,6 @@ app.route('/login')
         res.redirect('/index');
     })
     .post((req, res) => {
-        console.log(req.body);
         const username = req.body.username.toLowerCase();
         const password = req.body.password;
 
@@ -105,7 +98,6 @@ app.route('/login')
                 if (!usernames.includes(username)) {
                     if (result.password === password) {
                         console.log('Player has logged in: ' + username);
-                        usernames.push(username);
                         req.session.user = username;
                         res.redirect('/game');
                     } else {
@@ -171,19 +163,24 @@ user.createTable();
 
 io.on('connection', function (socket) {
     socket.username = socket.request.session.user;
+
     if (!usernames.includes(socket.username)) {
         usernames.push(socket.username);
+
+        players[socket.username] = {
+            x: 300,
+            y: 300,
+            disconnected: false
+        };
+
+        const eventMessage = socket.username + ' has joined the game';
+        io.sockets.emit('event', eventMessage);
+    } else {
+        players[socket.username].disconnected = false;
     }
-    players[socket.id] = {
-        x: 300,
-        y: 300
-    };
 
     updateUsernames();
-
-    const eventMessage = socket.username + ' has joined the game';
     updateChatWindow(socket);
-    io.sockets.emit('event', eventMessage);
 
     socket.on('message', function (message) {
         const newMessage = socket.username + ': ' + message;
@@ -192,7 +189,7 @@ io.on('connection', function (socket) {
         io.sockets.emit('message', newMessage);
     });
     socket.on('movement', function (data) {
-        const player = players[socket.id] || {};
+        const player = players[socket.username] || {};
         if (data.left && player.x >= 5) {
             player.x -= 5;
         }
@@ -207,16 +204,21 @@ io.on('connection', function (socket) {
         }
     });
     socket.on('disconnect', function () {
-        // Remove disconnected player
-        if (socket.id in players) {
-            console.log('Removing player: ' + socket.id + ' - ' + socket.username);
-            usernames.splice(usernames.indexOf(socket.username), 1);
-            delete players[socket.id];
-            updateUsernames();
+        // Remove disconnected player after timeout
+        players[socket.username].disconnected = true;
+        setTimeout(function () {
+            if (socket.username in players) {
+                if (players[socket.username].disconnected) {
+                    console.log('Removing player: ' + socket.id + ' - ' + socket.username);
+                    usernames.splice(usernames.indexOf(socket.username), 1);
+                    delete players[socket.username];
+                    updateUsernames();
 
-            const eventMessage = socket.username + ' has left the game';
-            io.sockets.emit('event', eventMessage);
-        }
+                    const eventMessage = socket.username + ' has left the game';
+                    io.sockets.emit('event', eventMessage);
+                }
+            }
+        }, 1000);
     });
 });
 
