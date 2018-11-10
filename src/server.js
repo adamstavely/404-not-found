@@ -62,12 +62,13 @@ app.route('/signup')
         res.redirect('/index');
     })
     .post((req, res) => {
-        const username = req.body.username.toLowerCase();
+        const username = req.body.username;
+        const email = req.body.email.toLowerCase();
         const password = req.body.password;
 
-        user.getByUsername(username).then((result) => {
+        user.getByUsername(username.toLowerCase()).then((result) => {
             if (!result) {
-                user.create(username, password).then((result) => {
+                user.create(username.toLowerCase(), email, password).then((result) => {
                     if (result) {
                         console.log('Player has registered: ' + username);
                         req.session.user = username;
