@@ -218,7 +218,7 @@ io.on('connection', function (socket) {
                         io.sockets.emit('event', eventMessage);
                     }
                 }
-            }, 1000);
+            }, 5000);
         });
     } catch (error) {
         console.log(error.message);
