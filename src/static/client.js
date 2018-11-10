@@ -1,5 +1,6 @@
 const socket = io();
 const canvas = document.getElementById('canvas');
+const startButton = document.getElementById('startButton');
 const usernameList = document.getElementById('usernames');
 const chatWindow = document.getElementById('chatMessagesWrapper');
 const chatMessages = document.getElementById('chatMessages');
@@ -67,6 +68,14 @@ function sendChat() {
     }
 }
 
+function startGame() {
+    socket.emit('start game');
+}
+
+function scrollToBottom() {
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
 socket.on('message', function (message) {
     chatMessages.innerHTML += message + '<br/>';
     scrollToBottom();
@@ -102,11 +111,10 @@ socket.on('state', function (players) {
 socket.on('usernames', function (usernames) {
     console.log(usernames);
     usernameList.innerHTML = '<p>' + usernames.join('<br/>') + '</p>';
+    if (usernames.length >= 3) {
+        startButton.removeAttribute('disabled');
+    }
 });
-
-function scrollToBottom() {
-    chatWindow.scrollTop = chatWindow.scrollHeight;
-}
 
 setInterval(function () {
     socket.emit('movement', movement);

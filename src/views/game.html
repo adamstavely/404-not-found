@@ -24,13 +24,18 @@
     </div>
 </nav>
 <div id="content">
-    <canvas id="canvas"></canvas>
+    <div id="canvasWrapper">
+        <div class="overlay">
+            <button id="startButton" class="btn btn-secondary" onclick="startGame()" disabled>Start Game</button>
+        </div>
+        <canvas id="canvas"></canvas>
+    </div>
     <div id="chatContainer">
         <div id="chatMessagesWrapper">
             <p id="chatMessages"></p>
         </div>
         <div id="chatInput">
-            <textarea id="chatText" cols="1" rows="2"></textarea>
+            <textarea id="chatText" aria-label="Chat input text" cols="1" rows="2"></textarea>
             <button id="chatSend" class="btn btn-secondary" type="submit" onclick="sendChat()">Send</button>
         </div>
     </div>
@@ -38,4 +43,5 @@
 </div>
 
 <script src="../static/client.js"></script>
+</body>
 </html>
