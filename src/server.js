@@ -154,6 +154,7 @@ server.listen(5000, function () {
 const players = {};
 const usernames = [];
 const chatHistory = [];
+let isGameStarted = false;
 
 const db = new Database('./clueless.sqlite3');
 const user = new User(db);
@@ -181,13 +182,19 @@ io.on('connection', function (socket) {
 
         updateUsernames();
         updateChatWindow(socket);
-
+        updateGameState(socket);
 
         socket.on('message', function (message) {
             const newMessage = socket.username + ': ' + message;
             console.log('Received message from ' + socket.username + ': ' + message);
             chatHistory.push(newMessage);
             io.sockets.emit('message', newMessage);
+        });
+        socket.on('start game', function () {
+            console.log('Start game initiated by ' + socket.username);
+            // TODO: Initialize game
+            isGameStarted = true;
+            io.sockets.emit('start game', usernames);
         });
         socket.on('movement', function (data) {
             const player = players[socket.username.toLowerCase()] || {};
@@ -234,6 +241,11 @@ function updateUsernames() {
 function updateChatWindow(socket) {
     console.log('Emitting chat history');
     socket.emit('chat history', chatHistory);
+}
+
+function updateGameState(socket) {
+    console.log('Emitting chat history');
+    socket.emit('game state', isGameStarted);
 }
 
 setInterval(function () {

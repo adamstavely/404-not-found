@@ -1,4 +1,5 @@
 const socket = io();
+const overlay = document.getElementById('overlay');
 const canvas = document.getElementById('canvas');
 const startButton = document.getElementById('startButton');
 const usernameList = document.getElementById('usernames');
@@ -114,6 +115,18 @@ socket.on('usernames', function (usernames) {
     if (usernames.length >= 3) {
         startButton.removeAttribute('disabled');
     }
+});
+
+socket.on('game state', function (isGameStarted) {
+    console.log('Received game state from server: ' + isGameStarted);
+    if (isGameStarted) {
+        overlay.parentNode.removeChild(overlay);
+    }
+});
+
+socket.on('start game', function (usernames) {
+    console.log('Game has started with ' + usernames.length + ' players');
+    overlay.parentNode.removeChild(overlay);
 });
 
 setInterval(function () {
