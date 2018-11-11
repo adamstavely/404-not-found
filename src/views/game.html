@@ -28,8 +28,24 @@
         <div id="overlay">
             <button id="startButton" class="btn btn-secondary" onclick="startGame()" disabled>Start Game</button>
         </div>
+        <div id="modalCharacterSelect" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Select character</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p>Miss Scarlet . . .</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" onclick="selectCharacter()">Continue</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <canvas id="canvas"></canvas>
     </div>
+
     <div id="chatContainer">
         <div id="chatMessagesWrapper">
             <p id="chatMessages"></p>
@@ -39,9 +55,9 @@
             <button id="chatSend" class="btn btn-secondary" type="submit" onclick="sendChat()">Send</button>
         </div>
     </div>
+
     <div id="usernames"></div>
 </div>
-
 <script src="../static/client.js"></script>
 </body>
 </html>

@@ -73,6 +73,11 @@ function startGame() {
     socket.emit('start game');
 }
 
+function selectCharacter() {
+    socket.emit('select character');
+    $('#modalCharacterSelect').modal('hide');
+}
+
 function scrollToBottom() {
     chatWindow.scrollTop = chatWindow.scrollHeight;
 }
@@ -127,6 +132,7 @@ socket.on('game state', function (isGameStarted) {
 socket.on('start game', function (usernames) {
     console.log('Game has started with ' + usernames.length + ' players');
     overlay.parentNode.removeChild(overlay);
+    $('#modalCharacterSelect').modal({backdrop: 'static', keyboard: false});
 });
 
 setInterval(function () {

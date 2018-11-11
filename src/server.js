@@ -196,6 +196,11 @@ io.on('connection', function (socket) {
             isGameStarted = true;
             io.sockets.emit('start game', usernames);
         });
+        socket.on('select character', function (id) {
+            // TODO: Check for available character
+            // TODO: Send callback for success
+            // TODO: Emit selection to all sockets
+        });
         socket.on('movement', function (data) {
             const player = players[socket.username.toLowerCase()] || {};
             if (data.left && player.x >= 5) {
