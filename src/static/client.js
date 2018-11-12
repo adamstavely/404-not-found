@@ -8,6 +8,7 @@ const chatMessages = document.getElementById('chatMessages');
 const chatText = document.getElementById('chatText');
 const chatSend = document.getElementById('chatSend');
 const context = canvas.getContext('2d');
+let character = null;
 
 canvas.width = 600;
 canvas.height = 600;
@@ -74,8 +75,14 @@ function startGame() {
 }
 
 function selectCharacter() {
-    socket.emit('select character');
-    $('#modalCharacterSelect').modal('hide');
+    const choice = $('input[name=characterSelect]:checked').val();
+    console.log(choice);
+    socket.emit('select character', choice, function (result) {
+        if (result) {
+            character = choice;
+            $('#modalCharacterSelect').modal('hide');
+        }
+    });
 }
 
 function scrollToBottom() {
@@ -117,9 +124,9 @@ socket.on('state', function (players) {
 socket.on('usernames', function (usernames) {
     console.log(usernames);
     usernameList.innerHTML = '<p>' + usernames.join('<br/>') + '</p>';
-    if (usernames.length >= 3) {
-        startButton.removeAttribute('disabled');
-    }
+    // if (usernames.length >= 3) {
+    startButton.removeAttribute('disabled');
+    // }
 });
 
 socket.on('game state', function (isGameStarted) {
@@ -134,6 +141,14 @@ socket.on('start game', function (usernames) {
     overlay.parentNode.removeChild(overlay);
     $('#modalCharacterSelect').modal({backdrop: 'static', keyboard: false});
 });
+
+socket.on('character selected', function(id) {
+    const input = $('input[name=characterSelect][value=' + id + ']');
+    input.prop('disabled', true);
+    input.prop('checked', false);
+    console.log('Character ' + id + ' has been selected');
+});
+
 
 setInterval(function () {
     socket.emit('movement', movement);

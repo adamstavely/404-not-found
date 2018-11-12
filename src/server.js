@@ -6,9 +6,9 @@ const cookieParser = require('cookie-parser');
 const http = require('http');
 const path = require('path');
 const socketIO = require('socket.io');
-const Promise = require('bluebird');
 const Database = require('./models/database');
 const User = require('./models/user');
+const characters = require('./models/characters');
 
 // Create the server
 const app = express();
@@ -171,7 +171,8 @@ io.on('connection', function (socket) {
             players[socket.username.toLowerCase()] = {
                 x: 300,
                 y: 300,
-                disconnected: false
+                disconnected: false,
+                character: null
             };
 
             const eventMessage = socket.username + ' has joined the game';
@@ -196,10 +197,21 @@ io.on('connection', function (socket) {
             isGameStarted = true;
             io.sockets.emit('start game', usernames);
         });
-        socket.on('select character', function (id) {
+        socket.on('select character', function (id, callback) {
             // TODO: Check for available character
             // TODO: Send callback for success
             // TODO: Emit selection to all sockets
+            for (let player in players) {
+                if (players.hasOwnProperty(player)) {
+                    if (player.character === id) {
+                        console.log('Character ' + id + ' has already been selected');
+                        callback(false);
+                    }
+                }
+            }
+            console.log('Player ' + socket.username + ' selected character ' + id);
+            io.sockets.emit('character selected', id);
+            callback(true);
         });
         socket.on('movement', function (data) {
             const player = players[socket.username.toLowerCase()] || {};
