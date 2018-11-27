@@ -77,12 +77,16 @@ function startGame() {
 function selectCharacter() {
     const choice = $('input[name=characterSelect]:checked').val();
     console.log(choice);
-    socket.emit('select character', choice, function (result) {
-        if (result) {
-            character = choice;
-            $('#modalCharacterSelect').modal('hide');
-        }
-    });
+    if (choice) {
+        socket.emit('select character', choice, function (result) {
+            if (result) {
+                character = choice;
+                $('#modalCharacterSelect').modal('hide');
+            }
+        });
+    } else {
+        alert('You must select a character');
+    }
 }
 
 function scrollToBottom() {
