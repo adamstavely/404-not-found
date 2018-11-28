@@ -19,6 +19,8 @@ app.set('port', 5000);
 app.use('/static', express.static(__dirname + '/static'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
 
 const sessionMiddleware = session({
     key: 'user_sid',
@@ -119,15 +121,15 @@ app.route('/login')
 // Route for index page
 app.route('/index')
     .get(sessionChecker, (req, res) => {
-        res.sendFile(__dirname + '/views/index.html');
+        res.render('index');
     });
 
 // Route for main game
 app.get('/game', (req, res) => {
     if (req.session.user && req.cookies.user_sid) {
-        res.sendFile(path.join(__dirname, '/views/game.html'));
+        res.render('game');
     } else {
-        res.sendFile(__dirname + '/views/index.html');
+        res.render('index');
     }
 });
 
@@ -137,7 +139,7 @@ app.get('/logout', (req, res) => {
         res.clearCookie('user_sid');
         res.redirect('/');
     } else {
-        res.sendFile(__dirname + '/views/index.html');
+        res.render( 'index');
     }
 });
 
@@ -261,7 +263,7 @@ function updateChatWindow(socket) {
 }
 
 function updateGameState(socket) {
-    console.log('Emitting chat history');
+    console.log('Emitting game state');
     socket.emit('game state', isGameStarted);
 }
 
