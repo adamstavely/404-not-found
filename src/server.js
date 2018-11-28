@@ -127,7 +127,9 @@ app.route('/index')
 // Route for main game
 app.get('/game', (req, res) => {
     if (req.session.user && req.cookies.user_sid) {
-        res.render('game');
+        res.render('game', {
+            username: req.session.user
+        });
     } else {
         res.render('index');
     }
@@ -245,7 +247,7 @@ io.on('connection', function (socket) {
                         io.sockets.emit('event', eventMessage);
                     }
                 }
-            }, 5000);
+            }, 1000);
         });
     } catch (error) {
         console.log(error.message);
