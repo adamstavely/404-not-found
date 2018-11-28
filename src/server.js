@@ -141,7 +141,7 @@ app.get('/logout', (req, res) => {
         res.clearCookie('user_sid');
         res.redirect('/');
     } else {
-        res.render( 'index');
+        res.render('index');
     }
 });
 

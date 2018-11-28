@@ -146,7 +146,7 @@ socket.on('start game', function (usernames) {
     $('#modalCharacterSelect').modal({backdrop: 'static', keyboard: false});
 });
 
-socket.on('character selected', function(id) {
+socket.on('character selected', function (id) {
     const input = $('input[name=characterSelect][value=' + id + ']');
     input.prop('disabled', true);
     input.prop('checked', false);
