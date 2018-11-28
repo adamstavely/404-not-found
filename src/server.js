@@ -202,9 +202,6 @@ io.on('connection', function (socket) {
             io.sockets.emit('start game', usernames);
         });
         socket.on('select character', function (id, callback) {
-            // TODO: Check for available character
-            // TODO: Send callback for success
-            // TODO: Emit selection to all sockets
             for (let player in players) {
                 if (players.hasOwnProperty(player)) {
                     if (player.character === id) {
@@ -214,6 +211,7 @@ io.on('connection', function (socket) {
                 }
             }
             console.log('Player ' + socket.username + ' selected character ' + id);
+            players[socket.username.toLowerCase()].character = id;
             io.sockets.emit('character selected', id);
             callback(true);
         });
