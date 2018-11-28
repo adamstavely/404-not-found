@@ -127,7 +127,6 @@ socket.on('state', function (players) {
 });
 
 socket.on('username', function(username) {
-   console.log('My username is', username);
    myUsername = username;
 });
 
@@ -139,10 +138,15 @@ socket.on('usernames', function (usernames) {
     // }
 });
 
-socket.on('game state', function (isGameStarted) {
+socket.on('game state', function (isGameStarted, players) {
     console.log('Received game state from server: ' + isGameStarted);
     if (isGameStarted) {
         overlay.parentNode.removeChild(overlay);
+        if (players) {
+            if (!players[myUsername].character) {
+                $('#modalCharacterSelect').modal({backdrop: 'static', keyboard: false});
+            }
+        }
     }
 });
 

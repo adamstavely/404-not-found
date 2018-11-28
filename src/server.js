@@ -266,7 +266,7 @@ function updateChatWindow(socket) {
 
 function updateGameState(socket) {
     console.log('Emitting game state');
-    socket.emit('game state', isGameStarted);
+    socket.emit('game state', isGameStarted, players);
 }
 
 setInterval(function () {
