@@ -29,24 +29,26 @@ html(lang='en')
                             .modal-header
                                 h3 Select character
                             .modal-body
-                                label
-                                    input(type='radio' name='characterSelect' value='0')
-                                    img(src='http://placehold.it/100x150/b0f/fff&text=MISS_SCARLETT')
-                                label
-                                    input(type='radio' name='characterSelect' value='1')
-                                    img(src='http://placehold.it/100x150/b0f/fff&text=COL_MUSTARD')
-                                label
-                                    input(type='radio' name='characterSelect' value='2')
-                                    img(src='http://placehold.it/100x150/b0f/fff&text=MRS_WHITE')
-                                label
-                                    input(type='radio' name='characterSelect' value='3')
-                                    img(src='http://placehold.it/100x150/b0f/fff&text=MR_GREEN')
-                                label
-                                    input(type='radio' name='characterSelect' value='4')
-                                    img(src='http://placehold.it/100x150/b0f/fff&text=MRS_PEACOCK')
-                                label
-                                    input(type='radio' name='characterSelect' value='5')
-                                    img(src='http://placehold.it/100x150/b0f/fff&text=PROF_PLUM')
+                                .text-center
+                                    label
+                                        input(type='radio' name='characterSelect' value='0')
+                                        img(src='http://placehold.it/100x150/b0f/fff&text=MISS_SCARLETT')
+                                    label
+                                        input(type='radio' name='characterSelect' value='1')
+                                        img(src='http://placehold.it/100x150/b0f/fff&text=COL_MUSTARD')
+                                    label
+                                        input(type='radio' name='characterSelect' value='2')
+                                        img(src='http://placehold.it/100x150/b0f/fff&text=MRS_WHITE')
+                                .text-center
+                                    label
+                                        input(type='radio' name='characterSelect' value='3')
+                                        img(src='http://placehold.it/100x150/b0f/fff&text=MR_GREEN')
+                                    label
+                                        input(type='radio' name='characterSelect' value='4')
+                                        img(src='http://placehold.it/100x150/b0f/fff&text=MRS_PEACOCK')
+                                    label
+                                        input(type='radio' name='characterSelect' value='5')
+                                        img(src='http://placehold.it/100x150/b0f/fff&text=PROF_PLUM')
                             .modal-footer
                                 button.btn.btn-primary(onclick='selectCharacter()') Continue
                 canvas#canvas

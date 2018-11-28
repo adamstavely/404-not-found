@@ -28,7 +28,7 @@ const sessionMiddleware = session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        expires: 600000
+        expires: false
     }
 });
 
