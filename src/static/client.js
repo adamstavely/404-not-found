@@ -8,6 +8,7 @@ const chatMessages = document.getElementById('chatMessages');
 const chatText = document.getElementById('chatText');
 const chatSend = document.getElementById('chatSend');
 const context = canvas.getContext('2d');
+let myUsername = '';
 let character = null;
 
 canvas.width = 600;
@@ -123,6 +124,11 @@ socket.on('state', function (players) {
             context.fill();
         }
     }
+});
+
+socket.on('username', function(username) {
+   console.log('My username is', username);
+   myUsername = username;
 });
 
 socket.on('usernames', function (usernames) {

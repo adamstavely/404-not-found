@@ -185,6 +185,8 @@ io.on('connection', function (socket) {
             players[socket.username.toLowerCase()].disconnected = false;
         }
 
+        socket.emit('username', socket.username.toLowerCase());
+
         updateUsernames();
         updateChatWindow(socket);
         updateGameState(socket);
