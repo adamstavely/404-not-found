@@ -11,4 +11,4 @@
 
 > $ npm install
 * Run the server:
-> $ nodemon server.js
+> $ nodemon src/server.js
