@@ -9,6 +9,7 @@ const socketIO = require('socket.io');
 const Database = require('./models/database');
 const User = require('./models/user');
 const characters = require('./models/characters');
+const Player = require('./models/Player');
 
 // Create the server
 const app = express();
