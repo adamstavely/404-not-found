@@ -1,6 +1,5 @@
 class Game {
     constructor(numPlayers) {
-        this.boardSpace;
         this.cards;
         this.solution;
         this.players;
@@ -24,7 +23,27 @@ class Game {
 
     dealCards() {
         // already removed solution
-        let shuffledArray = shuffleArray(cards);
+        let shuffledArray = this.shuffleArray(this.cards);
+        this.solution = {
+            "Character": null,
+            "Room":null,
+            "Weapon": null
+        };
+        for (let i = 0; i<this.cards.length(); i++) {
+            if (this.solution == null && this.cards[i].type == "Character") {
+                this.solution["Character"] = this.cards[i];
+            }
+            else if (this.solution == null && this.cards[i].type == "Room") {
+                this.solution["Room"] = this.cards[i];
+            }
+            else if (this.solution == null && this.cards[i].type == "Weapon"){
+                this.solution["Weapon"] = this.cards[i];
+            }
+        }
+        this.cards.splice(this.cards.indexOf(this.solution["Character"]),1);
+        this.cards.splice(this.cards.indexOf(this.solution["Room"]),1);
+        this.cards.splice(this.cards.indexOf(this.solution["Weapon"]),1);
+
         let allHands = [];
         for (let i = this.numPlayers; i>0; i--){
             allHands.push([]);
