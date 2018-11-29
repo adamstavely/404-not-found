@@ -1,65 +1,70 @@
 class Player {
-    // Private fields, default constructor (I think?)
-    #id = null;
-    #position = 0;
-    #cards = [];
-    #hasAccused = false;
-    #characterName = null;
+
+    constructor() {
+        // Private fields, default constructor (I think?)
+        this.id = 0;
+        this.position = 0;
+        this.cards = [];
+        this.hasAccused = false;
+        this.characterName = 'null';
+        this.isHuman = false;
+    }
 
     // Parameterized constructor
-    constructor(id, position, cards, characterName) {
-        this.#id = id;
-        this.#position = position;
-        this.#cards = cards;
-        this.#hasAccused = false;
-        this.#characterName = characterName;
+    /*constructor(id, position, cards, characterName, isHuman) {
+        this.id = id;
+        this.position = position;
+        this.cards = cards;
+        this.hasAccused = false;
+        this.characterName = characterName;
+        this.isHuman = isHuman;
+    } */
+
+    getId() {
+        return this.id;
     }
 
-    get id() {
-        return this.#id;
+    setId(playerId) {
+        this.id = playerId;
     }
 
-    set id(playerId) {
-        this.#id = playerId;
+    getPosition() {
+        return this.position;
     }
 
-    get position() {
-        return this.#position;
+    setPosition(newPosition) {
+        this.position = newPosition;
     }
 
-    set position(newPosition) {
-        this.#position = newPosition;
+    setHasAccused(status) {
+        this.hasAccused = status;
     }
 
-    set hasAccused(status) {
-        this.#hasAccused = status;
-    }
-
-    get cards() {
-        return this.#cards;
+    getCards() {
+        return this.cards;
     }
 
     addCard(newCard) {
-        this.#cards.push(newCard);
+        this.cards.push(newCard);
     }
 
     checkSuggestion(character, room, weapon) {
         var currentCards = [];
         var tempCard;
 
-        tempCard = this.#cards.find(character);
+        tempCard = this.cards.find(character);
         // If the character card exists within Player's cards
         if('undefined' !== typeof tempCard){
             currentCards.push(tempCard)
         }
 
-        tempCard = this.#cards.find(room);
+        tempCard = this.cards.find(room);
         // If the room card exists within Player's cards
         if('undefined' !== typeof tempCard){
             currentCards.push(tempCard)
         }
 
-        tempCard = this.#cards.find(weapon);
+        tempCard = this.cards.find(weapon);
         // If the weapon card exists within Player's cards
         if('undefined' !== typeof tempCard){
             currentCards.push(tempCard)
