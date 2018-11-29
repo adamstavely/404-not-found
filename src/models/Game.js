@@ -19,7 +19,7 @@ class Game {
             Player.Player('COL_MUSTARD'),
             Player.Player('MRS_WHITE'),
             Player.Player('MR_GREEN'),
-            Player.Player('MRS_PEACOCK'), 
+            Player.Player('MRS_PEACOCK'),
             Player.Player('PROF_PLUM')];
         this.MAX_TIME = 180000;
         this.turnOver;
