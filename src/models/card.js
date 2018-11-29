@@ -8,7 +8,8 @@
 const CARD_TYPE = {
   SUSPECT: 0,
   ROOM: 1,
-  WEAPON: 2
+  WEAPON: 2,
+  INVALID: 3
 };
 
 // Card names: suspect, room or weapon
@@ -37,8 +38,18 @@ const CARD_NAME = {
 };
 
 class Card {
-  constructor(intType, cardName){
-    this.type = intType;
+  constructor(cardName){
+    if(cardName >= CARD_NAME.MISS_SCARLETT_CARD && cardName <= CARD_NAME.PROF_PLUM_CARD){
+      this.type = CARD_TYPE.SUSPECT;
+    } else if(cardName > CARD_NAME.PROF_PLUM_CARD && cardName <= CARD_NAME.STUDY_CARD){
+      this.type = CARD_TYPE.ROOM;
+    } else if(cardName > CARD_NAME.STUDY_CARD && cardName <= CARD_NAME.SPANNER_CARD){
+      this.type = CARD_TYPE.WEAPON;
+    } else {
+      // invalid
+      this.type = CARD_TYPE.INVALID;
+    }
+
     this.name = cardName;
   }
 
