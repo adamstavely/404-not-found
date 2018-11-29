@@ -1,5 +1,3 @@
-
-
 class Game {
     constructor(numPlayers) {
         this.boardSpace;
@@ -11,6 +9,11 @@ class Game {
         this.timeLimit;
         this.playerOrder;
     }
+
+    const MAX_TIME = 180000;
+    let turnOver;
+    let turn = 0;
+    let current_turn = 0;
 
     shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
@@ -162,5 +165,20 @@ class Game {
         }
         accuserPlayer.hasAccused = true;
     }
+
+  startTimer(){
+   turnTime = setTimeout(() => {
+     nextTurn();
+   },MAX_TIME)
+  }
+  resetTimer(){
+    if(typeof turnTime == MAX_TIME){
+      clearTimeout(turnOver);
+    }
+  }
+  nextTurn(){
+    turn = current_turn++ % numPlayers -1;
+    startTimer();
+  }
 
 }
