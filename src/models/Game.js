@@ -1,21 +1,58 @@
 const characters = require('./models/characters');
+const Player = require('./models/Player');
+const card = require('.models/card')
 
 
 class Game {
     constructor(numPlayers) {
-        this.cards;
-        this.solution;
-        this.players;
+        this.deck=[];
+        this.solution = {
+            "Suspect": null,
+            "Room":null,
+            "Weapon": null};
+        //this.players;
         this.numPlayers = numPlayers;
         this.currentPlayerTurn;
         this.timeLimit;
-        this.playerOrder;
+        this.playerOrder = [
+            Player.Player('MISS_SCARLET'),
+            Player.Player('COL_MUSTARD'),
+            Player.Player('MRS_WHITE'),
+            Player.Player('MR_GREEN'),
+            Player.Player('MRS_PEACOCK'), 
+            Player.Player('PROF_PLUM')];
+        this.MAX_TIME = 180000;
+        this.turnOver;
+        this.turn = 0;
+        this.current_turn = 0;
     }
 
-    const MAX_TIME = 180000;
-    let turnOver;
-    let turn = 0;
-    let current_turn = 0;
+    initDeck() {
+        let cardNames = ['MISS_SCARLETT_CARD',
+            'COL_MUSTARD_CARD',
+            'MRS_WHITE_CARD',
+            'MR_GREEN_CARD',
+            'MRS_PEACOCK_CARD',
+            'PROF_PLUM_CARD',
+            'KITCHEN_CARD',
+            'BALLROOM_CARD',
+            'CONSERVATORY_CARD',
+            'DINING_ROOM_CARD',
+            'BILLIARD_ROOM_CARD',
+            'LIBRARY_CARD',
+            'LOUNGE_CARD',
+            'HALL_CARD',
+            'STUDY_CARD',
+            'CANDLESTICK_CARD',
+            'DAGGER_CARD',
+            'LEAD_PIPE_CARD',
+            'REVOLVER_CARD',
+            'ROPE_CARD',
+            'SPANNER_CARD'];
+        for (let i = 0; i<cardNames.length; i++) {
+            this.deck[0] = card.Card(cardNames[i]);
+        }
+    }
 
     shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
@@ -25,27 +62,21 @@ class Game {
     }
 
     dealCards() {
-        // already removed solution
-        let shuffledArray = this.shuffleArray(this.cards);
-        this.solution = {
-            "Character": null,
-            "Room":null,
-            "Weapon": null
-        };
-        for (let i = 0; i<this.cards.length(); i++) {
-            if (this.solution == null && this.cards[i].type == "Character") {
-                this.solution["Character"] = this.cards[i];
+        let shuffledArray = this.shuffleArray(this.deck);
+        for (let i = 0; i<this.deck.length(); i++) {
+            if (this.solution == null && this.deck[i].type == "Suspect") {
+                this.solution["Suspect"] = this.deck[i];
             }
-            else if (this.solution == null && this.cards[i].type == "Room") {
-                this.solution["Room"] = this.cards[i];
+            else if (this.solution == null && this.deck[i].type == "Room") {
+                this.solution["Room"] = this.deck[i];
             }
-            else if (this.solution == null && this.cards[i].type == "Weapon"){
-                this.solution["Weapon"] = this.cards[i];
+            else if (this.solution == null && this.deck[i].type == "Weapon"){
+                this.solution["Weapon"] = this.deck[i];
             }
         }
-        this.cards.splice(this.cards.indexOf(this.solution["Character"]),1);
-        this.cards.splice(this.cards.indexOf(this.solution["Room"]),1);
-        this.cards.splice(this.cards.indexOf(this.solution["Weapon"]),1);
+        this.deck.splice(this.deck.indexOf(this.solution["Suspect"]),1);
+        this.deck.splice(this.deck.indexOf(this.solution["Room"]),1);
+        this.deck.splice(this.deck.indexOf(this.solution["Weapon"]),1);
 
         let allHands = [];
         for (let i = this.numPlayers; i>0; i--){
@@ -57,7 +88,7 @@ class Game {
         // assign to each player here
         for (let i = 0; i<this.numPlayers; i++) {
             let p = this.playerOrder[i];
-            p.hand = allHands[i]
+            p.cards = allHands[i]
         }
     }
 
@@ -91,7 +122,7 @@ class Game {
         26- 18          Spawn Green
         27- 20          Spawn White
          */
-        var dict = {
+        let dict = {
             1:  [2,6,21],
             2:  [1,3],
             3:  [2,4,7],
@@ -121,7 +152,7 @@ class Game {
             27: [20]
         };
 
-        var sourceInt = player.position;
+        let sourceInt = player.position;
         if (dict[sourceInt].includes(destInt)){
             return true;
         }
@@ -161,18 +192,17 @@ class Game {
         5: Wrench
         6: Knife
          */
-        movePlayer(suspect, suggesterPlayer.position(), true);
-        moveWeapon(weaponID, suggesterPlayer.position());
-        let playInt = playerOrder.indexOf(suggesterPlayer)+1;
-        let checkingPlayer = playerOrder[playInt%this.numPlayers];
+        this.movePlayer(suspect, suggesterPlayer.position(), true);
+        let playInt = this.playerOrder.indexOf(suggesterPlayer.characterName)+1;
+        let checkingPlayer = this.playerOrder[playInt%this.numPlayers];
         let shownCard = null;
         while (checkingPlayer != suggesterPlayer) {
-            shownCard = checkingPlayer.checkCardsForSuggestion(suspect, suggesterPlayer.position(), weaponID);
+            shownCard = checkingPlayer.checkSuggestion(suspect, suggesterPlayer.position(), weaponID);
             if (shownCard != null) {
                 return shownCard;
             }
         }
-        // No one had any of the suggested cards
+        // No one had any of the suggested deck
         return null;
     }
 

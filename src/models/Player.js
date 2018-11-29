@@ -1,20 +1,20 @@
 class Player {
 
-    constructor() {
+    constructor(characterName) {
         // Private fields, default constructor (I think?)
-        this.id = 0;
+        this.id = null;
         this.position = 0;
         this.cards = [];
         this.hasAccused = false;
-        this.characterName = 'null';
+        this.characterName = characterName;
         this.isHuman = false;
     }
 
     // Parameterized constructor
-    /*constructor(id, position, cards, characterName, isHuman) {
+    /*constructor(id, position, deck, characterName, isHuman) {
         this.id = id;
         this.position = position;
-        this.cards = cards;
+        this.deck = deck;
         this.hasAccused = false;
         this.characterName = characterName;
         this.isHuman = isHuman;
@@ -73,19 +73,19 @@ class Player {
         var tempCard;
 
         tempCard = this.cards.find(character);
-        // If the character card exists within Player's cards
+        // If the character card exists within Player's deck
         if('undefined' !== typeof tempCard){
             currentCards.push(tempCard)
         }
 
         tempCard = this.cards.find(room);
-        // If the room card exists within Player's cards
+        // If the room card exists within Player's deck
         if('undefined' !== typeof tempCard){
             currentCards.push(tempCard)
         }
 
         tempCard = this.cards.find(weapon);
-        // If the weapon card exists within Player's cards
+        // If the weapon card exists within Player's deck
         if('undefined' !== typeof tempCard){
             currentCards.push(tempCard)
         }
@@ -96,7 +96,7 @@ class Player {
     // Placeholder for showCard
     showCard() {
         // Prompt user to declare a card to show.
-        // would this be on the client side?  Or we could use the cards
+        // would this be on the client side?  Or we could use the deck
         // returned from checkSuggestion to prompt the user (client side)
     }
 
