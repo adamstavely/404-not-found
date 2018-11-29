@@ -1,3 +1,6 @@
+const characters = require('./models/characters');
+
+
 class Game {
     constructor(numPlayers) {
         this.cards;
