@@ -2,3 +2,4 @@
 node_modules/*
 *.html
 clueless.sqlite3
+*.psd
