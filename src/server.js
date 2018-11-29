@@ -6,9 +6,9 @@ const cookieParser = require('cookie-parser');
 const http = require('http');
 const path = require('path');
 const socketIO = require('socket.io');
-const Promise = require('bluebird');
 const Database = require('./models/database');
 const User = require('./models/user');
+const characters = require('./models/characters');
 
 // Create the server
 const app = express();
@@ -19,6 +19,8 @@ app.set('port', 5000);
 app.use('/static', express.static(__dirname + '/static'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
 
 const sessionMiddleware = session({
     key: 'user_sid',
@@ -26,7 +28,7 @@ const sessionMiddleware = session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        expires: 600000
+        expires: false
     }
 });
 
@@ -62,12 +64,13 @@ app.route('/signup')
         res.redirect('/index');
     })
     .post((req, res) => {
-        const username = req.body.username.toLowerCase();
+        const username = req.body.username;
+        const email = req.body.email.toLowerCase();
         const password = req.body.password;
 
-        user.getByUsername(username).then((result) => {
+        user.getByUsername(username.toLowerCase()).then((result) => {
             if (!result) {
-                user.create(username, password).then((result) => {
+                user.create(username.toLowerCase(), email, password).then((result) => {
                     if (result) {
                         console.log('Player has registered: ' + username);
                         req.session.user = username;
@@ -118,15 +121,17 @@ app.route('/login')
 // Route for index page
 app.route('/index')
     .get(sessionChecker, (req, res) => {
-        res.sendFile(__dirname + '/views/index.html');
+        res.render('index');
     });
 
 // Route for main game
 app.get('/game', (req, res) => {
     if (req.session.user && req.cookies.user_sid) {
-        res.sendFile(path.join(__dirname, '/views/game.html'));
+        res.render('game', {
+            username: req.session.user
+        });
     } else {
-        res.sendFile(__dirname + '/views/index.html');
+        res.render('index');
     }
 });
 
@@ -136,7 +141,7 @@ app.get('/logout', (req, res) => {
         res.clearCookie('user_sid');
         res.redirect('/');
     } else {
-        res.sendFile(__dirname + '/views/index.html');
+        res.render('index');
     }
 });
 
@@ -153,6 +158,7 @@ server.listen(5000, function () {
 const players = {};
 const usernames = [];
 const chatHistory = [];
+let isGameStarted = false;
 
 const db = new Database('./clueless.sqlite3');
 const user = new User(db);
@@ -169,7 +175,8 @@ io.on('connection', function (socket) {
             players[socket.username.toLowerCase()] = {
                 x: 300,
                 y: 300,
-                disconnected: false
+                disconnected: false,
+                character: null
             };
 
             const eventMessage = socket.username + ' has joined the game';
@@ -178,15 +185,37 @@ io.on('connection', function (socket) {
             players[socket.username.toLowerCase()].disconnected = false;
         }
 
+        socket.emit('username', socket.username.toLowerCase());
+
         updateUsernames();
         updateChatWindow(socket);
-
+        updateGameState(socket);
 
         socket.on('message', function (message) {
             const newMessage = socket.username + ': ' + message;
             console.log('Received message from ' + socket.username + ': ' + message);
             chatHistory.push(newMessage);
             io.sockets.emit('message', newMessage);
+        });
+        socket.on('start game', function () {
+            console.log('Start game initiated by ' + socket.username);
+            // TODO: Initialize game
+            isGameStarted = true;
+            io.sockets.emit('start game', usernames);
+        });
+        socket.on('select character', function (id, callback) {
+            for (let player in players) {
+                if (players.hasOwnProperty(player)) {
+                    if (player.character === id) {
+                        console.log('Character ' + id + ' has already been selected');
+                        callback(false);
+                    }
+                }
+            }
+            console.log('Player ' + socket.username + ' selected character ' + id);
+            players[socket.username.toLowerCase()].character = id;
+            io.sockets.emit('character selected', id);
+            callback(true);
         });
         socket.on('movement', function (data) {
             const player = players[socket.username.toLowerCase()] || {};
@@ -233,6 +262,11 @@ function updateUsernames() {
 function updateChatWindow(socket) {
     console.log('Emitting chat history');
     socket.emit('chat history', chatHistory);
+}
+
+function updateGameState(socket) {
+    console.log('Emitting game state');
+    socket.emit('game state', isGameStarted, players);
 }
 
 setInterval(function () {

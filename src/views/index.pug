@@ -1,0 +1,60 @@
+doctype html
+html(lang='en')
+    head
+        title Clue-Less Home
+        script(src='../static/jquery-3.3.1.min.js')
+        script(src='../static/bootstrap.min.js')
+        link(rel='stylesheet' href='../static/bootstrap.min.css')
+        link(rel='stylesheet' href='../static/index.css')
+    body
+        nav.navbar.navbar-expand-sm.navbar-dark.bg-dark.fixed-top(role='navigation')
+            .container
+                a.navbar-brand(href='/') 404 Name Not Found
+                button.navbar-toggler.border-0(type='button' data-toggle='collapse' data-target='#exCollapsingNavbar') &#9776
+                div.collapse.navbar-collapse#exCollapsingNavbar
+                    ul.nav.navbar-nav.flex-row.justify-content-between.ml-auto
+                        li.dropdown.order-1
+                            a.nav-link.active(href='' data-toggle='dropdown') Login
+                            ul.dropdown-menu.dropdown-menu-right.mt-2
+                                li.px-3.py-2
+                                    form.form(role='form' action='/login' method='post')
+                                        .form-group
+                                            input.form-control.form-control-sm#usernameInputLogin(name='username'
+                                            placeholder='Username' type='text' required)
+                                        .form-group
+                                            input.form-control.form-control-sm#passwordInputLogin(name='password'
+                                            placeholder='Password' type='password' required)
+                                        .form-group
+                                            button.btn.btn-primary.btn-block(type='submit') Login
+                                        .form-group.text-center
+                                            small
+                                                a(href='#' data-toggle='modal' data-target='#modalPassword') Forgot password?
+                        li.dropdown.order-2
+                            a.nav-link(href='' data-toggle='dropdown') Sign up
+                            ul.dropdown-menu.dropdown-menu-right.mt-2
+                                li.px-3.py-2
+                                    form.form(role='form' action='/signup' method='post')
+                                        .form-group
+                                            input.form-control.form-control-sm#usernameInputSignup(name='username'
+                                            placeholder='Username' type='text' required)
+                                        .form-group
+                                            input.form-control.form-control-sm#emailInputSignup(name='email'
+                                            placeholder='Email' type='email' required)
+                                        .form-group
+                                            input.form-control.form-control-sm#passwordInputSignup(name='password'
+                                            placeholder='Password' type='password' required)
+                                        .form-group
+                                            button.btn.btn-primary.btn-block(type='submit') Sign up
+        div.modal.fade#modalPassword(tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true')
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        h3 Forgot password
+                        button.close.font-weight-light(type='button' data-dismiss='modal' aria-hidden='true') x
+                    .modal-body
+                        p Reset your password...
+                    .modal-footer
+                        button.btn(data-dismiss='modal' aria-hidden='true') Close
+                        button.btn.btn-primary Save changes
+
+        h1#banner Can you figure out who killed Mr. Boddy?

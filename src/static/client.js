@@ -1,11 +1,15 @@
 const socket = io();
+const overlay = document.getElementById('overlay');
 const canvas = document.getElementById('canvas');
+const startButton = document.getElementById('startButton');
 const usernameList = document.getElementById('usernames');
 const chatWindow = document.getElementById('chatMessagesWrapper');
 const chatMessages = document.getElementById('chatMessages');
 const chatText = document.getElementById('chatText');
 const chatSend = document.getElementById('chatSend');
 const context = canvas.getContext('2d');
+let myUsername = '';
+let character = null;
 
 canvas.width = 600;
 canvas.height = 600;
@@ -67,6 +71,29 @@ function sendChat() {
     }
 }
 
+function startGame() {
+    socket.emit('start game');
+}
+
+function selectCharacter() {
+    const choice = $('input[name=characterSelect]:checked').val();
+    console.log(choice);
+    if (choice) {
+        socket.emit('select character', choice, function (result) {
+            if (result) {
+                character = choice;
+                $('#modalCharacterSelect').modal('hide');
+            }
+        });
+    } else {
+        alert('You must select a character');
+    }
+}
+
+function scrollToBottom() {
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
 socket.on('message', function (message) {
     chatMessages.innerHTML += message + '<br/>';
     scrollToBottom();
@@ -99,14 +126,43 @@ socket.on('state', function (players) {
     }
 });
 
+socket.on('username', function(username) {
+   myUsername = username;
+});
+
 socket.on('usernames', function (usernames) {
     console.log(usernames);
     usernameList.innerHTML = '<p>' + usernames.join('<br/>') + '</p>';
+    // if (usernames.length >= 3) {
+    startButton.removeAttribute('disabled');
+    // }
 });
 
-function scrollToBottom() {
-    chatWindow.scrollTop = chatWindow.scrollHeight;
-}
+socket.on('game state', function (isGameStarted, players) {
+    console.log('Received game state from server: ' + isGameStarted);
+    if (isGameStarted) {
+        overlay.parentNode.removeChild(overlay);
+        if (players) {
+            if (!players[myUsername].character) {
+                $('#modalCharacterSelect').modal({backdrop: 'static', keyboard: false});
+            }
+        }
+    }
+});
+
+socket.on('start game', function (usernames) {
+    console.log('Game has started with ' + usernames.length + ' players');
+    overlay.parentNode.removeChild(overlay);
+    $('#modalCharacterSelect').modal({backdrop: 'static', keyboard: false});
+});
+
+socket.on('character selected', function (id) {
+    const input = $('input[name=characterSelect][value=' + id + ']');
+    input.prop('disabled', true);
+    input.prop('checked', false);
+    console.log('Character ' + id + ' has been selected');
+});
+
 
 setInterval(function () {
     socket.emit('movement', movement);

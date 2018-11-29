@@ -1,0 +1,62 @@
+doctype html
+html(lang='en')
+    head
+        meta(charset='UTF-8')
+        title Clue-Less Game
+        script(src='/socket.io/socket.io.js')
+        script(src='../static/jquery-3.3.1.min.js')
+        script(src='../static/bootstrap.min.js')
+        link(rel='stylesheet' href='../static/bootstrap.min.css')
+        link(rel='stylesheet' href='../static/index.css')
+    body
+        nav.navbar.navbar-expand-sm.navbar-dark.bg-dark.fixed-top(role='navigation')
+            .container
+                a.navbar-brand(href='/') 404 Name Not Found
+                button.navbar-toggler.border-0(type='button' data-toggle='collapse' data-target='#exCollapsingNavbar') &#9776
+                div.collapse.navbar-collapse#exCollapsingNavbar
+                    ul.nav.navbar-nav.flex-row.justify-content-between.ml-auto
+                        li.nav-item.dropdown.active
+                            a.nav-link.dropdown-toggle(href='' role='button' data-toggle='dropdown') #{username}
+                            .dropdown-menu.dropdown-menu-right
+                                a.dropdown-item(href='/logout') Logout
+        #content
+            #canvasWrapper
+                #overlay
+                    button.btn.btn-secondary#startButton(onclick='startGame()' disabled) Start Game
+                div.modal.fade#modalCharacterSelect(role='dialog')
+                    .modal-dialog
+                        .modal-content
+                            .modal-header
+                                h3 Select character
+                            .modal-body
+                                .text-center
+                                    label
+                                        input(type='radio' name='characterSelect' value='0')
+                                        img(src='http://placehold.it/100x150/b0f/fff&text=MISS_SCARLETT')
+                                    label
+                                        input(type='radio' name='characterSelect' value='1')
+                                        img(src='http://placehold.it/100x150/b0f/fff&text=COL_MUSTARD')
+                                    label
+                                        input(type='radio' name='characterSelect' value='2')
+                                        img(src='http://placehold.it/100x150/b0f/fff&text=MRS_WHITE')
+                                .text-center
+                                    label
+                                        input(type='radio' name='characterSelect' value='3')
+                                        img(src='http://placehold.it/100x150/b0f/fff&text=MR_GREEN')
+                                    label
+                                        input(type='radio' name='characterSelect' value='4')
+                                        img(src='http://placehold.it/100x150/b0f/fff&text=MRS_PEACOCK')
+                                    label
+                                        input(type='radio' name='characterSelect' value='5')
+                                        img(src='http://placehold.it/100x150/b0f/fff&text=PROF_PLUM')
+                            .modal-footer
+                                button.btn.btn-primary(onclick='selectCharacter()') Continue
+                canvas#canvas
+            #chatContainer
+                #chatMessagesWrapper
+                    p#chatMessages
+                #chatInput
+                    textarea#chatText(aria-label='Chat input text' cols='1' rows='2')
+                    button.btn.btn-secondary#chatSend(type='submit' onclick='sendChat()') Send
+            #usernames
+        script(src='../static/client.js')
