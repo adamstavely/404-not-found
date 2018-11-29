@@ -36,8 +36,20 @@ class Player {
         this.position = newPosition;
     }
 
+    getHasAccused() {
+        return this.hasAccused;
+    }
+
     setHasAccused(status) {
         this.hasAccused = status;
+    }
+
+    setCharacterName(name){
+        this.characterName = name;
+    }
+
+    getCharacterName(){
+        return this.characterName;
     }
 
     getCards() {
@@ -46,6 +58,14 @@ class Player {
 
     addCard(newCard) {
         this.cards.push(newCard);
+    }
+
+    getIsHuman(){
+        return this.isHuman;
+    }
+
+    setIsHuman(ishuman){
+        this.isHuman = ishuman;
     }
 
     checkSuggestion(character, room, weapon) {
