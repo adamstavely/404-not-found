@@ -1,6 +1,6 @@
 const characters = require('./models/characters');
 const Player = require('./models/Player');
-const card = require('.models/card')
+const card = require('./models/card');
 
 
 class Game {
