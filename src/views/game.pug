@@ -58,5 +58,19 @@ html(lang='en')
                 #chatInput
                     textarea#chatText(aria-label='Chat input text' cols='1' rows='2')
                     button.btn.btn-secondary#chatSend(type='submit' onclick='sendChat()') Send
-            #usernames
+            #usernamesAndGameButtonsContainer
+                #usernamesWrapper
+                    #usernames
+                #timerWrapper
+                #gameButtonsWrapper
+                    div.modal-body
+                        .text-center
+                            button.btn.btn-primary#moveButton(type='submit' onclick='methodGoesHere') MOVE
+                        .text-center
+                            button.btn.btn-primary#suggestButton(type='submit' onclick='methodGoesHere') SUGGEST
+                        .text-center
+                            button.btn.btn-primary#revealButton(type='submit' onclick='methodGoesHere') REVEAL
+                        .text-center
+                            button.btn.btn-primary#accuseButton(type='submit' onclick='methodGoesHere') ACCUSE
+
         script(src='../static/client.js')
