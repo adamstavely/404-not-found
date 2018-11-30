@@ -3,3 +3,5 @@ node_modules/*
 *.html
 clueless.sqlite3
 *.psd
+package-lock.json
+package.json

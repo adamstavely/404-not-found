@@ -1,6 +1,6 @@
-const characters = require('./models/characters');
-const Player = require('./models/Player');
-const card = require('.models/card')
+const characters = require('./characters');
+const player = require('./Player');
+const card = require('./card');
 
 
 class Game {
@@ -15,12 +15,12 @@ class Game {
         this.currentPlayerTurn;
         this.timeLimit;
         this.playerOrder = [
-            Player.Player('MISS_SCARLET'),
-            Player.Player('COL_MUSTARD'),
-            Player.Player('MRS_WHITE'),
-            Player.Player('MR_GREEN'),
-            Player.Player('MRS_PEACOCK'),
-            Player.Player('PROF_PLUM')];
+            player.Player('MISS_SCARLET'),
+            player.Player('COL_MUSTARD'),
+            player.Player('MRS_WHITE'),
+            player.Player('MR_GREEN'),
+            player.Player('MRS_PEACOCK'),
+            player.Player('PROF_PLUM')];
         this.MAX_TIME = 180000;
         this.turnOver;
         this.turn = 0;
@@ -63,7 +63,7 @@ class Game {
 
     dealCards() {
         let shuffledArray = this.shuffleArray(this.deck);
-        for (let i = 0; i<this.deck.length(); i++) {
+        for (let i = 0; i<this.deck.length; i++) {
             if (this.solution == null && this.deck[i].type == "Suspect") {
                 this.solution["Suspect"] = this.deck[i];
             }
