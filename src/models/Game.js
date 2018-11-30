@@ -1,7 +1,16 @@
-const characters = require('./models/characters');
-const Player = require('./models/Player');
-const card = require('./models/card');
+const characters = require('./characters');
+const Player = require('./Player');
+const card = require('./card');
 
+// Create players
+const missScarlet = new Player('MISS_SCARLET');
+const colMustard = new Player('COL_MUSTARD');
+const mrsWhite = new Player('MRS_WHITE');
+const mrGreen = new Player('MR_GREEN');
+const mrsPeacock = new Player('MRS_PEACOCK');
+const profPlum = new Player('PROF_PLUM');
+
+const deckSize = 21;
 
 class Game {
     constructor(numPlayers) {
@@ -15,12 +24,12 @@ class Game {
         this.currentPlayerTurn;
         this.timeLimit;
         this.playerOrder = [
-            Player.Player('MISS_SCARLET'),
-            Player.Player('COL_MUSTARD'),
-            Player.Player('MRS_WHITE'),
-            Player.Player('MR_GREEN'),
-            Player.Player('MRS_PEACOCK'),
-            Player.Player('PROF_PLUM')];
+            missScarlet,
+            colMustard,
+            mrsWhite,
+            mrGreen,
+            mrsPeacock,
+            profPlum];
         this.MAX_TIME = 180000;
         this.turnOver;
         this.turn = 0;
@@ -28,29 +37,8 @@ class Game {
     }
 
     initDeck() {
-        let cardNames = ['MISS_SCARLETT_CARD',
-            'COL_MUSTARD_CARD',
-            'MRS_WHITE_CARD',
-            'MR_GREEN_CARD',
-            'MRS_PEACOCK_CARD',
-            'PROF_PLUM_CARD',
-            'KITCHEN_CARD',
-            'BALLROOM_CARD',
-            'CONSERVATORY_CARD',
-            'DINING_ROOM_CARD',
-            'BILLIARD_ROOM_CARD',
-            'LIBRARY_CARD',
-            'LOUNGE_CARD',
-            'HALL_CARD',
-            'STUDY_CARD',
-            'CANDLESTICK_CARD',
-            'DAGGER_CARD',
-            'LEAD_PIPE_CARD',
-            'REVOLVER_CARD',
-            'ROPE_CARD',
-            'SPANNER_CARD'];
-        for (let i = 0; i<cardNames.length; i++) {
-            this.deck[0] = card.Card(cardNames[i]);
+        for (let i = 0; i<deckSize; i++) {
+            this.deck[i] = new card(i);
         }
     }
 
@@ -234,3 +222,5 @@ class Game {
   }
 
 }
+
+module.exports = Game;
