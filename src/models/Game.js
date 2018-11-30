@@ -219,18 +219,18 @@ class Game {
     }
 
   startTimer(){
-   turnTime = setTimeout(() => {
-     nextTurn();
-   },MAX_TIME)
+    this.turnTime = setTimeout(() => {
+        nextTurn();
+    },MAX_TIME)
   }
   resetTimer(){
-    if(typeof turnTime == MAX_TIME){
-      clearTimeout(turnOver);
-    }
+        if(typeof turnTime == MAX_TIME){
+            clearTimeout(turnOver);
+        }
   }
   nextTurn(){
-    turn = current_turn++ % numPlayers -1;
-    startTimer();
+        this.turn = current_turn++ % numPlayers -1;
+        this.startTimer();
   }
 
 }
