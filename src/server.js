@@ -9,8 +9,8 @@ const socketIO = require('socket.io');
 const Database = require('./models/database');
 const User = require('./models/user');
 const characters = require('./models/characters');
-const Game = require('./models/Game');
 const Player = require('./models/Player');
+const Game = require('./models/Game');
 
 // Create the server
 const app = express();
@@ -30,7 +30,7 @@ const sessionMiddleware = session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        expires: new Date(253402300000000)
+        expires: false
     }
 });
 
@@ -161,9 +161,11 @@ const players = {};
 const usernames = [];
 const chatHistory = [];
 let isGameStarted = false;
+let numPlayers = 0;
 
 const db = new Database('./clueless.sqlite3');
 const user = new User(db);
+const game = new Game();
 
 user.createTable();
 
@@ -183,6 +185,9 @@ io.on('connection', function (socket) {
 
             const eventMessage = socket.username + ' has joined the game';
             io.sockets.emit('event', eventMessage);
+
+            // Increment numPlayers
+            numPlayers++;
         } else {
             players[socket.username.toLowerCase()].disconnected = false;
         }
@@ -200,13 +205,19 @@ io.on('connection', function (socket) {
             io.sockets.emit('message', newMessage);
         });
         socket.on('start game', function () {
-            if (!isGameStarted) {
-                console.log('Start game initiated by ' + socket.username);
-                const game = new Game(Object.keys(players).length);
-                isGameStarted = true;
-                io.sockets.emit('start game', usernames);
+            // Check that there are enough players
+            if(numPlayers < 1){
+              console.log('Cannot start game yet...not enough players!');
             } else {
-                console.log('Game has already started!');
+              console.log('Start game initiated by ' + socket.username);
+
+              // Initialize game
+              game.setNumPlayers(numPlayers);
+              game.initDeck();
+              game.dealCards();
+
+              isGameStarted = true;
+              io.sockets.emit('start game', usernames);
             }
         });
         socket.on('select character', function (id, callback) {
@@ -218,7 +229,12 @@ io.on('connection', function (socket) {
                     }
                 }
             }
+
+            // Initialize character position
+            playerPosition = game.initPlayerPosition(id);
+
             console.log('Player ' + socket.username + ' selected character ' + id);
+            console.log('Player ' + socket.username + ' position: ' + playerPosition)
             players[socket.username.toLowerCase()].character = id;
             io.sockets.emit('character selected', id);
             callback(true);
@@ -248,6 +264,9 @@ io.on('connection', function (socket) {
                         usernames.splice(usernames.indexOf(socket.username.toLowerCase()), 1);
                         delete players[socket.username.toLowerCase()];
                         updateUsernames();
+
+                        // Decrement numPlayers
+                        numPlayers--;
 
                         const eventMessage = socket.username + ' has left the game';
                         io.sockets.emit('event', eventMessage);

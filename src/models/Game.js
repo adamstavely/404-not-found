@@ -1,56 +1,59 @@
 const characters = require('./characters');
-const player = require('./Player');
+const Player = require('./Player');
 const card = require('./card');
 
+// Create players
+const missScarlet = new Player('MISS_SCARLET');
+const colMustard = new Player('COL_MUSTARD');
+const mrsWhite = new Player('MRS_WHITE');
+const mrGreen = new Player('MR_GREEN');
+const mrsPeacock = new Player('MRS_PEACOCK');
+const profPlum = new Player('PROF_PLUM');
+
+const deckSize = 21;
+
+// Player position enum
+const PLAYER_POS = {
+  MISS_SCARLET_POS: 22,
+  COL_MUSTARD_POS: 23,
+  MRS_WHITE: 24,
+  MR_GREEN: 25,
+  MRS_PEACOCK: 26,
+  PROF_PLUM: 27,
+  INVALID: 0
+}
 
 class Game {
-    constructor(numPlayers) {
+    constructor() {
         this.deck=[];
         this.solution = {
             "Suspect": null,
             "Room":null,
             "Weapon": null};
         //this.players;
-        this.numPlayers = numPlayers;
+        this.numPlayers = 0;
         this.currentPlayerTurn;
         this.timeLimit;
         this.playerOrder = [
-            player.Player('MISS_SCARLET'),
-            player.Player('COL_MUSTARD'),
-            player.Player('MRS_WHITE'),
-            player.Player('MR_GREEN'),
-            player.Player('MRS_PEACOCK'),
-            player.Player('PROF_PLUM')];
+            missScarlet,
+            colMustard,
+            mrsWhite,
+            mrGreen,
+            mrsPeacock,
+            profPlum];
         this.MAX_TIME = 180000;
         this.turnOver;
         this.turn = 0;
         this.current_turn = 0;
     }
 
+    setNumPlayers(numPlayers){
+      this.numPlayers = numPlayers;
+    }
+
     initDeck() {
-        let cardNames = ['MISS_SCARLETT_CARD',
-            'COL_MUSTARD_CARD',
-            'MRS_WHITE_CARD',
-            'MR_GREEN_CARD',
-            'MRS_PEACOCK_CARD',
-            'PROF_PLUM_CARD',
-            'KITCHEN_CARD',
-            'BALLROOM_CARD',
-            'CONSERVATORY_CARD',
-            'DINING_ROOM_CARD',
-            'BILLIARD_ROOM_CARD',
-            'LIBRARY_CARD',
-            'LOUNGE_CARD',
-            'HALL_CARD',
-            'STUDY_CARD',
-            'CANDLESTICK_CARD',
-            'DAGGER_CARD',
-            'LEAD_PIPE_CARD',
-            'REVOLVER_CARD',
-            'ROPE_CARD',
-            'SPANNER_CARD'];
-        for (let i = 0; i<cardNames.length; i++) {
-            this.deck[0] = card.Card(cardNames[i]);
+        for (let i = 0; i<deckSize; i++) {
+            this.deck[i] = new card(i);
         }
     }
 
@@ -59,6 +62,8 @@ class Game {
             const j = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];
         }
+
+        return array;
     }
 
     dealCards() {
@@ -89,6 +94,44 @@ class Game {
         for (let i = 0; i<this.numPlayers; i++) {
             let p = this.playerOrder[i];
             p.cards = allHands[i]
+        }
+    }
+
+    // Initialize player positions based on players
+    initPlayerPosition(characterId){
+        switch(Number(characterId)){
+          case 0: // MISS_SCARLET
+              missScarlet.setPosition(PLAYER_POS.MISS_SCARLET_POS);
+              missScarlet.setId(characterId);
+
+              return PLAYER_POS.MISS_SCARLET_POS;
+          case 1: // COL_MUSTARD
+              colMustard.setPosition(PLAYER_POS.COL_MUSTARD_POS);
+              colMustard.setId(characterId);
+
+              return PLAYER_POS.COL_MUSTARD_POS;
+          case 2: // MRS_WHITE
+              mrsWhite.setPosition(PLAYER_POS.MRS_WHITE);
+              mrsWhite.setId(characterId);
+
+              return PLAYER_POS.MRS_WHITE;
+          case 3: // MR_GREEN
+              mrGreen.setPosition(PLAYER_POS.MR_GREEN);
+              mrGreen.setId(characterId);
+
+              return PLAYER_POS.MR_GREEN;
+          case 4: // MRS_PEACOCK
+              mrsPeacock.setPosition(PLAYER_POS.MRS_PEACOCK);
+              mrsPeacock.setId(characterId);
+
+              return PLAYER_POS.MRS_PEACOCK;
+          case 5: // PROF_PLUM
+              profPlum.setPosition(PLAYER_POS.PROF_PLUM);
+              profPlum.setId(characterId);
+
+              return PLAYER_POS.PROF_PLUM;
+          default:
+              return PLAYER_POS.INVALID;
         }
     }
 
@@ -219,18 +262,18 @@ class Game {
     }
 
   startTimer(){
-    this.turnTime = setTimeout(() => {
-        nextTurn();
-    },MAX_TIME)
+   turnTime = setTimeout(() => {
+     nextTurn();
+   },MAX_TIME)
   }
   resetTimer(){
-        if(typeof turnTime == MAX_TIME){
-            clearTimeout(turnOver);
-        }
+    if(typeof turnTime == MAX_TIME){
+      clearTimeout(turnOver);
+    }
   }
   nextTurn(){
-        this.turn = current_turn++ % numPlayers -1;
-        this.startTimer();
+    turn = current_turn++ % numPlayers -1;
+    startTimer();
   }
 
 }
