@@ -165,6 +165,7 @@ let numPlayers = 0;
 
 const db = new Database('./clueless.sqlite3');
 const user = new User(db);
+const game = new Game();
 
 user.createTable();
 
@@ -211,7 +212,7 @@ io.on('connection', function (socket) {
               console.log('Start game initiated by ' + socket.username);
 
               // Initialize game
-              const game = new Game(numPlayers);
+              game.setNumPlayers(numPlayers);
               game.initDeck();
               game.dealCards();
 
@@ -228,7 +229,12 @@ io.on('connection', function (socket) {
                     }
                 }
             }
+
+            // Initialize character position
+            playerPosition = game.initPlayerPosition(id);
+
             console.log('Player ' + socket.username + ' selected character ' + id);
+            console.log('Player ' + socket.username + ' position: ' + playerPosition)
             players[socket.username.toLowerCase()].character = id;
             io.sockets.emit('character selected', id);
             callback(true);
