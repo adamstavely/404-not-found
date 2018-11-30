@@ -160,8 +160,11 @@ server.listen(5000, function () {
 const players = {};
 const usernames = [];
 const chatHistory = [];
+var humanArr = [];
+
 let isGameStarted = false;
 let numPlayers = 0;
+let charCount = 0;
 
 const db = new Database('./clueless.sqlite3');
 const user = new User(db);
@@ -214,7 +217,6 @@ io.on('connection', function (socket) {
               // Initialize game
               game.setNumPlayers(numPlayers);
               game.initDeck();
-              game.dealCards();
 
               isGameStarted = true;
               io.sockets.emit('start game', usernames);
@@ -232,9 +234,18 @@ io.on('connection', function (socket) {
 
             // Initialize character position
             playerPosition = game.initPlayerPosition(id);
+            charCount++;
 
             console.log('Player ' + socket.username + ' selected character ' + id);
             console.log('Player ' + socket.username + ' position: ' + playerPosition)
+
+            // If all players have selected characters
+            if(charCount == numPlayers){
+                humanArr = game.dealCards();
+                console.log('All players have selected characters - dealing cards!');
+                updatePlayers();
+            }
+
             players[socket.username.toLowerCase()].character = id;
             io.sockets.emit('character selected', id);
             callback(true);
@@ -282,6 +293,11 @@ io.on('connection', function (socket) {
 function updateUsernames() {
     console.log('Emitting usernames: ' + usernames);
     io.sockets.emit('usernames', usernames);
+}
+
+function updatePlayers() {
+    console.log('Emitting players');
+    io.sockets.emit('players', humanArr);
 }
 
 function updateChatWindow(socket) {

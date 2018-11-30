@@ -67,6 +67,9 @@ class Game {
     }
 
     dealCards() {
+        // create array of players to return
+        var humanArray = new Array(this.numPlayers);
+
         let shuffledArray = this.shuffleArray(this.deck);
         for (let i = 0; i<this.deck.length; i++) {
             if (this.solution == null && this.deck[i].type == "Suspect") {
@@ -91,10 +94,17 @@ class Game {
             allHands[i%this.numPlayers].push(shuffledArray[i]);
         }
         // assign to each player here
-        for (let i = 0; i<this.numPlayers; i++) {
+        let count = 0;
+        for (let i = 0; i<this.playerOrder.length; i++) {
             let p = this.playerOrder[i];
-            p.cards = allHands[i]
+            if(this.playerOrder[i].isHuman){
+                p.cards = allHands[count];
+                humanArray[count] = p;
+                count++;
+            }
         }
+
+        return humanArray;
     }
 
     // Initialize player positions based on players
@@ -103,31 +113,37 @@ class Game {
           case 0: // MISS_SCARLET
               missScarlet.setPosition(PLAYER_POS.MISS_SCARLET_POS);
               missScarlet.setId(characterId);
+              missScarlet.setIsHuman(true);
 
               return PLAYER_POS.MISS_SCARLET_POS;
           case 1: // COL_MUSTARD
               colMustard.setPosition(PLAYER_POS.COL_MUSTARD_POS);
               colMustard.setId(characterId);
+              colMustard.setIsHuman(true);
 
               return PLAYER_POS.COL_MUSTARD_POS;
           case 2: // MRS_WHITE
               mrsWhite.setPosition(PLAYER_POS.MRS_WHITE);
               mrsWhite.setId(characterId);
+              mrsWhite.setIsHuman(true);
 
               return PLAYER_POS.MRS_WHITE;
           case 3: // MR_GREEN
               mrGreen.setPosition(PLAYER_POS.MR_GREEN);
               mrGreen.setId(characterId);
+              mrGreen.setIsHuman(true);
 
               return PLAYER_POS.MR_GREEN;
           case 4: // MRS_PEACOCK
               mrsPeacock.setPosition(PLAYER_POS.MRS_PEACOCK);
               mrsPeacock.setId(characterId);
+              mrsPeacock.setIsHuman(true);
 
               return PLAYER_POS.MRS_PEACOCK;
           case 5: // PROF_PLUM
               profPlum.setPosition(PLAYER_POS.PROF_PLUM);
               profPlum.setId(characterId);
+              profPlum.setIsHuman(true);
 
               return PLAYER_POS.PROF_PLUM;
           default:

@@ -8,6 +8,7 @@ const chatMessages = document.getElementById('chatMessages');
 const chatText = document.getElementById('chatText');
 const chatSend = document.getElementById('chatSend');
 const context = canvas.getContext('2d');
+//const Player = require('../models/Player');
 let myUsername = '';
 let character = null;
 
@@ -136,6 +137,10 @@ socket.on('usernames', function (usernames) {
     // if (usernames.length >= 3) {
     startButton.removeAttribute('disabled');
     // }
+});
+
+socket.on('players', function(humanArr) {
+    // emit the deck for the current player
 });
 
 socket.on('game state', function (isGameStarted, players) {
