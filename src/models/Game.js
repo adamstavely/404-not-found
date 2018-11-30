@@ -47,11 +47,13 @@ class Game {
             const j = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];
         }
+
+        return array;
     }
 
     dealCards() {
         let shuffledArray = this.shuffleArray(this.deck);
-        for (let i = 0; i<this.deck.length(); i++) {
+        for (let i = 0; i<this.deck.length; i++) {
             if (this.solution == null && this.deck[i].type == "Suspect") {
                 this.solution["Suspect"] = this.deck[i];
             }

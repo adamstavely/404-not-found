@@ -205,7 +205,7 @@ io.on('connection', function (socket) {
         });
         socket.on('start game', function () {
             // Check that there are enough players
-            if(numPlayers < 3){
+            if(numPlayers < 1){
               console.log('Cannot start game yet...not enough players!');
             } else {
               console.log('Start game initiated by ' + socket.username);
@@ -213,6 +213,7 @@ io.on('connection', function (socket) {
               // Initialize game
               const game = new Game(numPlayers);
               game.initDeck();
+              game.dealCards();
 
               isGameStarted = true;
               io.sockets.emit('start game', usernames);
