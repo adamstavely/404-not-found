@@ -214,7 +214,6 @@ class Game {
         return dict[sourceInt].includes(destInt);
     }
 
-
     movePlayer(player, destInt, isMoved) {
         // isMoved is a boolean that tells if:
         // True: being moved as part of a suggestion
@@ -270,20 +269,20 @@ class Game {
     }
 
     startTimer() {
-        turnTime = setTimeout(() => {
-            nextTurn();
-        }, MAX_TIME)
+        this.timeLimit = setTimeout(() => {
+            this.nextTurn();
+        }, this.MAX_TIME)
     }
 
     resetTimer() {
-        if (typeof turnTime == MAX_TIME) {
-            clearTimeout(turnOver);
+        if (typeof this.timeLimit == this.MAX_TIME) {
+            clearTimeout(this.turnOver);
         }
     }
 
     nextTurn() {
-        turn = current_turn++ % numPlayers - 1;
-        startTimer();
+        this.turn = this.current_turn++ % this.numPlayers - 1;
+        this.startTimer();
     }
 
 }
