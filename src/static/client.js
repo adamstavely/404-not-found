@@ -143,6 +143,7 @@ socket.on('game state', function (isGameStarted, players) {
     if (isGameStarted) {
         overlay.parentNode.removeChild(overlay);
         if (players) {
+            // TODO: Store character selections
             if (!players[myUsername].character) {
                 $('#modalCharacterSelect').modal({backdrop: 'static', keyboard: false});
             }

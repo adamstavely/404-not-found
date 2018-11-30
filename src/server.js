@@ -9,6 +9,7 @@ const socketIO = require('socket.io');
 const Database = require('./models/database');
 const User = require('./models/user');
 const characters = require('./models/characters');
+const Game = require('./models/Game');
 const Player = require('./models/Player');
 
 // Create the server
@@ -29,7 +30,7 @@ const sessionMiddleware = session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        expires: false
+        expires: new Date(253402300000000)
     }
 });
 
@@ -199,10 +200,14 @@ io.on('connection', function (socket) {
             io.sockets.emit('message', newMessage);
         });
         socket.on('start game', function () {
-            console.log('Start game initiated by ' + socket.username);
-            // TODO: Initialize game
-            isGameStarted = true;
-            io.sockets.emit('start game', usernames);
+            if (!isGameStarted) {
+                console.log('Start game initiated by ' + socket.username);
+                const game = new Game(Object.keys(players).length);
+                isGameStarted = true;
+                io.sockets.emit('start game', usernames);
+            } else {
+                console.log('Game has already started!');
+            }
         });
         socket.on('select character', function (id, callback) {
             for (let player in players) {
