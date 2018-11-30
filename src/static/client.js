@@ -127,8 +127,8 @@ socket.on('state', function (players) {
     }
 });
 
-socket.on('username', function(username) {
-   myUsername = username;
+socket.on('username', function (username) {
+    myUsername = username;
 });
 
 socket.on('usernames', function (usernames) {
@@ -139,8 +139,9 @@ socket.on('usernames', function (usernames) {
     // }
 });
 
-socket.on('players', function(humanArr) {
+socket.on('players', function (humanArr) {
     // emit the deck for the current player
+    console.log(humanArr);
 });
 
 socket.on('game state', function (isGameStarted, players) {

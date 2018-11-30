@@ -44,11 +44,11 @@ class Player {
         this.hasAccused = status;
     }
 
-    setCharacterName(name){
+    setCharacterName(name) {
         this.characterName = name;
     }
 
-    getCharacterName(){
+    getCharacterName() {
         return this.characterName;
     }
 
@@ -60,33 +60,33 @@ class Player {
         this.cards.push(newCard);
     }
 
-    getIsHuman(){
+    getIsHuman() {
         return this.isHuman;
     }
 
-    setIsHuman(ishuman){
+    setIsHuman(ishuman) {
         this.isHuman = ishuman;
     }
 
     checkSuggestion(character, room, weapon) {
-        var currentCards = [];
-        var tempCard;
+        let currentCards = [];
+        let tempCard;
 
         tempCard = this.cards.find(character);
         // If the character card exists within Player's deck
-        if('undefined' !== typeof tempCard){
+        if ('undefined' !== typeof tempCard) {
             currentCards.push(tempCard)
         }
 
         tempCard = this.cards.find(room);
         // If the room card exists within Player's deck
-        if('undefined' !== typeof tempCard){
+        if ('undefined' !== typeof tempCard) {
             currentCards.push(tempCard)
         }
 
         tempCard = this.cards.find(weapon);
         // If the weapon card exists within Player's deck
-        if('undefined' !== typeof tempCard){
+        if ('undefined' !== typeof tempCard) {
             currentCards.push(tempCard)
         }
 

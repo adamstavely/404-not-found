@@ -160,7 +160,7 @@ server.listen(5000, function () {
 const players = {};
 const usernames = [];
 const chatHistory = [];
-var humanArr = [];
+let humanArr = [];
 
 let isGameStarted = false;
 let numPlayers = 0;
@@ -209,17 +209,17 @@ io.on('connection', function (socket) {
         });
         socket.on('start game', function () {
             // Check that there are enough players
-            if(numPlayers < 1){
-              console.log('Cannot start game yet...not enough players!');
+            if (numPlayers < 1) {
+                console.log('Cannot start game yet...not enough players!');
             } else {
-              console.log('Start game initiated by ' + socket.username);
+                console.log('Start game initiated by ' + socket.username);
 
-              // Initialize game
-              game.setNumPlayers(numPlayers);
-              game.initDeck();
+                // Initialize game
+                game.setNumPlayers(numPlayers);
+                game.initDeck();
 
-              isGameStarted = true;
-              io.sockets.emit('start game', usernames);
+                isGameStarted = true;
+                io.sockets.emit('start game', usernames);
             }
         });
         socket.on('select character', function (id, callback) {
@@ -237,10 +237,10 @@ io.on('connection', function (socket) {
             charCount++;
 
             console.log('Player ' + socket.username + ' selected character ' + id);
-            console.log('Player ' + socket.username + ' position: ' + playerPosition)
+            console.log('Player ' + socket.username + ' position: ' + playerPosition);
 
             // If all players have selected characters
-            if(charCount == numPlayers){
+            if (charCount == numPlayers) {
                 humanArr = game.dealCards();
                 console.log('All players have selected characters - dealing cards!');
                 updatePlayers();
