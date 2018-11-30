@@ -161,6 +161,7 @@ const players = {};
 const usernames = [];
 const chatHistory = [];
 let isGameStarted = false;
+let numPlayers = 0;
 
 const db = new Database('./clueless.sqlite3');
 const user = new User(db);
@@ -183,6 +184,9 @@ io.on('connection', function (socket) {
 
             const eventMessage = socket.username + ' has joined the game';
             io.sockets.emit('event', eventMessage);
+
+            // Increment numPlayers
+            numPlayers++;
         } else {
             players[socket.username.toLowerCase()].disconnected = false;
         }
@@ -200,10 +204,19 @@ io.on('connection', function (socket) {
             io.sockets.emit('message', newMessage);
         });
         socket.on('start game', function () {
-            console.log('Start game initiated by ' + socket.username);
-            // TODO: Initialize game
-            isGameStarted = true;
-            io.sockets.emit('start game', usernames);
+            // Check that there are enough players
+            if(numPlayers < 3){
+              console.log('Cannot start game yet...not enough players!');
+            } else {
+              console.log('Start game initiated by ' + socket.username);
+
+              // Initialize game
+              const game = new Game(numPlayers);
+              game.initDeck();
+
+              isGameStarted = true;
+              io.sockets.emit('start game', usernames);
+            }
         });
         socket.on('select character', function (id, callback) {
             for (let player in players) {
@@ -244,6 +257,9 @@ io.on('connection', function (socket) {
                         usernames.splice(usernames.indexOf(socket.username.toLowerCase()), 1);
                         delete players[socket.username.toLowerCase()];
                         updateUsernames();
+
+                        // Decrement numPlayers
+                        numPlayers--;
 
                         const eventMessage = socket.username + ' has left the game';
                         io.sockets.emit('event', eventMessage);
