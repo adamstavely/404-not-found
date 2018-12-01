@@ -299,10 +299,7 @@ io.on('connection', function (socket) {
             setTimeout(function () {
                 if (socket.username.toLowerCase() in players) {
                     if (players[socket.username.toLowerCase()].disconnected) {
-                        console.log('Removing player: ' + socket.id + ' - ' + socket.username);
-                        usernames.splice(usernames.indexOf(socket.username.toLowerCase()), 1);
-                        delete players[socket.username.toLowerCase()];
-                        updateUsernames();
+                        removeClient(socket);
 
                         // Decrement numPlayers
                         numPlayers--;
@@ -312,10 +309,7 @@ io.on('connection', function (socket) {
                     }
                 } else if (socket.username.toLowerCase() in spectators) {
                     if (spectators[socket.username.toLowerCase()].disconnected) {
-                        console.log('Removing player: ' + socket.id + ' - ' + socket.username);
-                        usernames.splice(usernames.indexOf(socket.username.toLowerCase()), 1);
-                        delete spectators[socket.username.toLowerCase()];
-                        updateUsernames();
+                        removeClient(socket);
 
                         const eventMessage = socket.username + ' has left the lobby';
                         io.sockets.emit('event', eventMessage);
@@ -346,6 +340,17 @@ function updateChatWindow(socket) {
 function updateGameState(socket) {
     console.log('Emitting game state');
     socket.emit('game state', isGameStarted, players);
+}
+
+function removeClient(socket) {
+    console.log('Removing player: ' + socket.id + ' - ' + socket.username);
+    usernames.splice(usernames.indexOf(socket.username.toLowerCase()), 1);
+    if (socket.role === 'player') {
+        delete players[socket.username.toLowerCase()];
+    } else if (socket.role === 'spectator') {
+        delete spectators[socket.username.toLowerCase()];
+    }
+    updateUsernames();
 }
 
 setInterval(function () {
