@@ -1,8 +1,10 @@
+const characters = require('./characters');
+
 class Player {
 
     constructor(characterName) {
         // Private fields, default constructor (I think?)
-        this.id = null;
+        this.id = characters[characterName];
         this.position = 0;
         this.cards = [];
         this.hasAccused = false;

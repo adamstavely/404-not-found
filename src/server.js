@@ -277,6 +277,13 @@ io.on('connection', function (socket) {
                 callback(false);
             }
         });
+        socket.on('end turn', function() {
+           if (socket.role === 'player') {
+               let turn = game.getNextTurn();
+               console.log('Next turn: ' + turn);
+               io.sockets.emit('player turn', turn);
+           }
+        });
         socket.on('movement', function (data) {
             const player = players[socket.username.toLowerCase()] || {};
             if (data.left && player.x >= 5) {
@@ -343,7 +350,7 @@ function updateChatWindow(socket) {
 
 function updateGameState(socket) {
     console.log('Emitting game state');
-    socket.emit('game state', isGameStarted, players);
+    socket.emit('game state', isGameStarted, game.getTurn(), players);
 }
 
 function removeClient(socket) {
