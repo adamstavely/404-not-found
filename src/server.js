@@ -157,14 +157,14 @@ server.listen(5000, function () {
     console.log('Starting server on port 5000');
 });
 
-const players = {};
 const usernames = [];
+const players = {};
+const spectators = {};
 const chatHistory = [];
-let humanArr = [];
 
 let isGameStarted = false;
 let numPlayers = 0;
-let charCount = 0;
+let numCharsSelected = 0;
 
 const db = new Database('./clueless.sqlite3');
 const user = new User(db);
@@ -177,22 +177,39 @@ io.on('connection', function (socket) {
         socket.username = socket.request.session.user;
 
         if (!usernames.includes(socket.username.toLowerCase())) {
+            // Add username to list of global usernames
             usernames.push(socket.username.toLowerCase());
 
-            players[socket.username.toLowerCase()] = {
-                x: 300,
-                y: 300,
-                disconnected: false,
-                character: null
-            };
+            // Only add player to game if game hasn't started yet
+            if (!isGameStarted) {
+                socket.role = 'player';
+                players[socket.username.toLowerCase()] = {
+                    x: 300,
+                    y: 300,
+                    disconnected: false,
+                    character: null
+                };
 
-            const eventMessage = socket.username + ' has joined the game';
-            io.sockets.emit('event', eventMessage);
+                // Increment numPlayers
+                numPlayers++;
 
-            // Increment numPlayers
-            numPlayers++;
+                const eventMessage = socket.username + ' has joined the game';
+                io.sockets.emit('event', eventMessage);
+            } else {
+                socket.role = 'spectator';
+                spectators[socket.username.toLowerCase()] = {
+                    disconnected: false
+                };
+
+                const eventMessage = socket.username + ' has entered the lobby';
+                io.sockets.emit('event', eventMessage);
+            }
         } else {
-            players[socket.username.toLowerCase()].disconnected = false;
+            if (socket.username.toLowerCase() in players) {
+                players[socket.username.toLowerCase()].disconnected = false;
+            } else if (socket.username.toLowerCase() in spectators) {
+                spectators[socket.username.toLowerCase()].disconnected = false;
+            }
         }
 
         socket.emit('username', socket.username.toLowerCase());
@@ -208,6 +225,7 @@ io.on('connection', function (socket) {
             io.sockets.emit('message', newMessage);
         });
         socket.on('start game', function () {
+            // TODO: Change check to 3
             // Check that there are enough players
             if (numPlayers < 1) {
                 console.log('Cannot start game yet...not enough players!');
@@ -223,32 +241,41 @@ io.on('connection', function (socket) {
             }
         });
         socket.on('select character', function (id, callback) {
-            for (let player in players) {
-                if (players.hasOwnProperty(player)) {
-                    if (player.character === id) {
-                        console.log('Character ' + id + ' has already been selected');
-                        callback(false);
+            if (socket.role === 'player') {
+                for (let player in players) {
+                    if (players.hasOwnProperty(player)) {
+                        if (player.character === id) {
+                            console.log('Character ' + id + ' has already been selected');
+                            callback(false);
+                        }
                     }
                 }
+
+                // Initialize character position
+                let playerPosition = game.initPlayer(id);
+                numCharsSelected++;
+
+                console.log('Player ' + socket.username + ' selected character ' + id);
+                console.log('Player ' + socket.username + ' position: ' + playerPosition);
+
+                players[socket.username.toLowerCase()].character = id;
+                io.sockets.emit('character selected', id);
+
+                // If all players have selected characters
+                if (numCharsSelected === numPlayers) {
+                    console.log('All players have selected characters - dealing cards!');
+                    let playerCards = game.dealCards();
+                    updatePlayers(playerCards);
+                    let turn = game.getFirstTurn();
+                    console.log('First turn: ' + turn);
+                    io.sockets.emit('player turn', turn);
+                }
+
+                callback(true);
+            } else {
+                console.log('Received a select character from a non-player: ' + socket.username);
+                callback(false);
             }
-
-            // Initialize character position
-            playerPosition = game.initPlayerPosition(id);
-            charCount++;
-
-            console.log('Player ' + socket.username + ' selected character ' + id);
-            console.log('Player ' + socket.username + ' position: ' + playerPosition);
-
-            // If all players have selected characters
-            if (charCount == numPlayers) {
-                humanArr = game.dealCards();
-                console.log('All players have selected characters - dealing cards!');
-                updatePlayers();
-            }
-
-            players[socket.username.toLowerCase()].character = id;
-            io.sockets.emit('character selected', id);
-            callback(true);
         });
         socket.on('movement', function (data) {
             const player = players[socket.username.toLowerCase()] || {};
@@ -267,19 +294,28 @@ io.on('connection', function (socket) {
         });
         socket.on('disconnect', function () {
             // Remove disconnected player after timeout
-            players[socket.username.toLowerCase()].disconnected = true;
+            if (socket.username.toLowerCase() in players) {
+                players[socket.username.toLowerCase()].disconnected = true;
+            } else if (socket.username.toLowerCase() in spectators) {
+                spectators[socket.username.toLowerCase()].disconnected = true;
+            }
+
             setTimeout(function () {
                 if (socket.username.toLowerCase() in players) {
                     if (players[socket.username.toLowerCase()].disconnected) {
-                        console.log('Removing player: ' + socket.id + ' - ' + socket.username);
-                        usernames.splice(usernames.indexOf(socket.username.toLowerCase()), 1);
-                        delete players[socket.username.toLowerCase()];
-                        updateUsernames();
+                        removeClient(socket);
 
                         // Decrement numPlayers
                         numPlayers--;
 
                         const eventMessage = socket.username + ' has left the game';
+                        io.sockets.emit('event', eventMessage);
+                    }
+                } else if (socket.username.toLowerCase() in spectators) {
+                    if (spectators[socket.username.toLowerCase()].disconnected) {
+                        removeClient(socket);
+
+                        const eventMessage = socket.username + ' has left the lobby';
                         io.sockets.emit('event', eventMessage);
                     }
                 }
@@ -295,9 +331,9 @@ function updateUsernames() {
     io.sockets.emit('usernames', usernames);
 }
 
-function updatePlayers() {
+function updatePlayers(playerCards) {
     console.log('Emitting players');
-    io.sockets.emit('players', humanArr);
+    io.sockets.emit('players', playerCards);
 }
 
 function updateChatWindow(socket) {
@@ -308,6 +344,17 @@ function updateChatWindow(socket) {
 function updateGameState(socket) {
     console.log('Emitting game state');
     socket.emit('game state', isGameStarted, players);
+}
+
+function removeClient(socket) {
+    console.log('Removing player: ' + socket.id + ' - ' + socket.username);
+    usernames.splice(usernames.indexOf(socket.username.toLowerCase()), 1);
+    if (socket.role === 'player') {
+        delete players[socket.username.toLowerCase()];
+    } else if (socket.role === 'spectator') {
+        delete spectators[socket.username.toLowerCase()];
+    }
+    updateUsernames();
 }
 
 setInterval(function () {

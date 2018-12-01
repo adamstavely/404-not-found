@@ -1,64 +1,41 @@
 const characters = require('./characters');
 const Player = require('./Player');
-const card = require('./card');
-
-// Create players
-const missScarlet = new Player('MISS_SCARLET');
-const colMustard = new Player('COL_MUSTARD');
-const mrsWhite = new Player('MRS_WHITE');
-const mrGreen = new Player('MR_GREEN');
-const mrsPeacock = new Player('MRS_PEACOCK');
-const profPlum = new Player('PROF_PLUM');
-
-const deckSize = 21;
+const Card = require('./card');
 
 // Player position enum
-const PLAYER_POS = {
-    MISS_SCARLET_POS: 22,
-    COL_MUSTARD_POS: 23,
-    MRS_WHITE: 24,
-    MR_GREEN: 25,
-    MRS_PEACOCK: 26,
-    PROF_PLUM: 27,
-    INVALID: 0
-};
+const PLAYER_POS = [
+    22, // MISS_SCARLET
+    23, // COL_MUSTARD
+    24, // MRS_WHITE
+    25, // MR_GREEN
+    26, // MRS_PEACOCK
+    27  // PROF_PLUM
+];
 
 class Game {
     constructor() {
         this.deck = [];
+        this.deckSize = 21;
         this.solution = {
             "Suspect": null,
             "Room": null,
             "Weapon": null
         };
-        //this.players;
         this.numPlayers = 0;
-        this.currentPlayerTurn = 0;
+        this.currentPlayerTurn = characters.MISS_SCARLET;
         this.timeLimit = 180000;
-        this.playerOrder = [
-            missScarlet,
-            colMustard,
-            mrsWhite,
-            mrGreen,
-            mrsPeacock,
-            profPlum];
+        this.players = [
+            new Player('MISS_SCARLET'),
+            new Player('COL_MUSTARD'),
+            new Player('MRS_WHITE'),
+            new Player('MR_GREEN'),
+            new Player('MRS_PEACOCK'),
+            new Player('PROF_PLUM'),
+        ];
         this.MAX_TIME = 180000;
-        this.turnOver = 0;
-        this.turn = 0;
-        this.current_turn = 0;
     }
 
-    setNumPlayers(numPlayers) {
-        this.numPlayers = numPlayers;
-    }
-
-    initDeck() {
-        for (let i = 0; i < deckSize; i++) {
-            this.deck[i] = new card(i);
-        }
-    }
-
-    shuffleArray(array) {
+    static shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];
@@ -67,20 +44,33 @@ class Game {
         return array;
     }
 
+    setNumPlayers(numPlayers) {
+        this.numPlayers = numPlayers;
+    }
+
+    initDeck() {
+        for (let i = 0; i < this.deckSize; i++) {
+            this.deck[i] = new Card(i);
+        }
+    }
+
     dealCards() {
         // create array of players to return
         let humanArray = new Array(this.numPlayers);
 
-        let shuffledArray = this.shuffleArray(this.deck);
+        let shuffledArray = Game.shuffleArray(this.deck);
         for (let i = 0; i < this.deck.length; i++) {
-            if (this.solution == null && this.deck[i].type == "Suspect") {
+            if (this.solution["Suspect"] == null && this.deck[i].type === Card.TYPE.SUSPECT) {
                 this.solution["Suspect"] = this.deck[i];
-            } else if (this.solution == null && this.deck[i].type == "Room") {
+            } else if (this.solution["Room"] == null && this.deck[i].type === Card.TYPE.ROOM) {
                 this.solution["Room"] = this.deck[i];
-            } else if (this.solution == null && this.deck[i].type == "Weapon") {
+            } else if (this.solution["Weapon"] == null && this.deck[i].type === Card.TYPE.WEAPON) {
                 this.solution["Weapon"] = this.deck[i];
             }
         }
+
+        // console.log('Solution: ' + JSON.stringify(this.solution, null, 2));
+
         this.deck.splice(this.deck.indexOf(this.solution["Suspect"]), 1);
         this.deck.splice(this.deck.indexOf(this.solution["Room"]), 1);
         this.deck.splice(this.deck.indexOf(this.solution["Weapon"]), 1);
@@ -94,9 +84,9 @@ class Game {
         }
         // assign to each player here
         let count = 0;
-        for (let i = 0; i < this.playerOrder.length; i++) {
-            let p = this.playerOrder[i];
-            if (this.playerOrder[i].isHuman) {
+        for (let i = 0; i < this.players.length; i++) {
+            let p = this.players[i];
+            if (this.players[i].isHuman) {
                 p.cards = allHands[count];
                 humanArray[count] = p;
                 count++;
@@ -107,46 +97,15 @@ class Game {
     }
 
     // Initialize player positions based on players
-    initPlayerPosition(characterId) {
-        switch (Number(characterId)) {
-            case 0: // MISS_SCARLET
-                missScarlet.setPosition(PLAYER_POS.MISS_SCARLET_POS);
-                missScarlet.setId(characterId);
-                missScarlet.setIsHuman(true);
+    initPlayer(characterId) {
+        if (characterId in Object.values(characters)) {
+            this.players[characterId].setPosition(PLAYER_POS[characterId]);
+            this.players[characterId].setId(characterId);
+            this.players[characterId].setIsHuman(true);
 
-                return PLAYER_POS.MISS_SCARLET_POS;
-            case 1: // COL_MUSTARD
-                colMustard.setPosition(PLAYER_POS.COL_MUSTARD_POS);
-                colMustard.setId(characterId);
-                colMustard.setIsHuman(true);
-
-                return PLAYER_POS.COL_MUSTARD_POS;
-            case 2: // MRS_WHITE
-                mrsWhite.setPosition(PLAYER_POS.MRS_WHITE);
-                mrsWhite.setId(characterId);
-                mrsWhite.setIsHuman(true);
-
-                return PLAYER_POS.MRS_WHITE;
-            case 3: // MR_GREEN
-                mrGreen.setPosition(PLAYER_POS.MR_GREEN);
-                mrGreen.setId(characterId);
-                mrGreen.setIsHuman(true);
-
-                return PLAYER_POS.MR_GREEN;
-            case 4: // MRS_PEACOCK
-                mrsPeacock.setPosition(PLAYER_POS.MRS_PEACOCK);
-                mrsPeacock.setId(characterId);
-                mrsPeacock.setIsHuman(true);
-
-                return PLAYER_POS.MRS_PEACOCK;
-            case 5: // PROF_PLUM
-                profPlum.setPosition(PLAYER_POS.PROF_PLUM);
-                profPlum.setId(characterId);
-                profPlum.setIsHuman(true);
-
-                return PLAYER_POS.PROF_PLUM;
-            default:
-                return PLAYER_POS.INVALID;
+            return PLAYER_POS[characterId];
+        } else {
+            return 0;
         }
     }
 
@@ -210,6 +169,7 @@ class Game {
             27: [20]
         };
 
+        // TODO: check for players in hallways
         let sourceInt = player.position;
         return dict[sourceInt].includes(destInt);
     }
@@ -243,8 +203,8 @@ class Game {
         6: Knife
          */
         this.movePlayer(suspect, suggesterPlayer.position(), true);
-        let playInt = this.playerOrder.indexOf(suggesterPlayer.characterName) + 1;
-        let checkingPlayer = this.playerOrder[playInt % this.numPlayers];
+        let playInt = this.players.indexOf(suggesterPlayer.characterName) + 1;
+        let checkingPlayer = this.players[playInt % this.numPlayers];
         let shownCard = null;
         while (checkingPlayer != suggesterPlayer) {
             shownCard = checkingPlayer.checkSuggestion(suspect, suggesterPlayer.position(), weaponID);
@@ -281,10 +241,22 @@ class Game {
     }
 
     nextTurn() {
-        this.turn = this.current_turn++ % this.numPlayers - 1;
+        this.turn = this.currentPlayerTurn++ % this.numPlayers - 1;
         this.startTimer();
     }
 
+    getFirstTurn() {
+        for (let i = 0; i < this.players.length; i++) {
+            if (this.players[i].getIsHuman()) {
+                this.currentPlayerTurn = this.players[i].getId();
+                return this.currentPlayerTurn;
+            }
+        }
+    }
+
+    getTurn() {
+        return this.currentPlayerTurn;
+    }
 }
 
 module.exports = Game;
