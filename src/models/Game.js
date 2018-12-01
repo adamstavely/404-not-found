@@ -107,7 +107,7 @@ class Game {
     }
 
     // Initialize player positions based on players
-    initPlayerPosition(characterId) {
+    initPlayer(characterId) {
         switch (Number(characterId)) {
             case 0: // MISS_SCARLET
                 missScarlet.setPosition(PLAYER_POS.MISS_SCARLET_POS);

@@ -134,6 +134,7 @@ socket.on('username', function (username) {
 socket.on('usernames', function (usernames) {
     console.log(usernames);
     usernameList.innerHTML = '<p>' + usernames.join('<br/>') + '</p>';
+    // TODO: Uncomment check for number of users
     // if (usernames.length >= 3) {
     startButton.removeAttribute('disabled');
     // }
@@ -148,11 +149,13 @@ socket.on('game state', function (isGameStarted, players) {
     console.log('Received game state from server: ' + isGameStarted);
     if (isGameStarted) {
         overlay.parentNode.removeChild(overlay);
-        if (players) {
+        if (players && myUsername in players) {
             // TODO: Store character selections
             if (!players[myUsername].character) {
                 $('#modalCharacterSelect').modal({backdrop: 'static', keyboard: false});
             }
+        } else {
+            chatMessages.innerHTML += '<i>Game has already begun</i><br/>';
         }
     }
 });
