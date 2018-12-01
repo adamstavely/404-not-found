@@ -258,15 +258,16 @@ io.on('connection', function (socket) {
                 console.log('Player ' + socket.username + ' selected character ' + id);
                 console.log('Player ' + socket.username + ' position: ' + playerPosition);
 
+                players[socket.username.toLowerCase()].character = id;
+                io.sockets.emit('character selected', id);
+
                 // If all players have selected characters
                 if (numCharsSelected === numPlayers) {
                     console.log('All players have selected characters - dealing cards!');
                     let playerCards = game.dealCards();
                     updatePlayers(playerCards);
                 }
-
-                players[socket.username.toLowerCase()].character = id;
-                io.sockets.emit('character selected', id);
+                
                 callback(true);
             } else {
                 console.log('Received a select character from a non-player: ' + socket.username);

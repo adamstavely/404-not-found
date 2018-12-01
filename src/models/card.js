@@ -1,10 +1,7 @@
 // Card class
 // Set type and card name at construction
 
-// Card type
-// SUSPECT: 1
-// ROOM: 2
-// WEAPON: 3
+// Card types
 const CARD_TYPE = {
   SUSPECT: 0,
   ROOM: 1,
@@ -12,7 +9,7 @@ const CARD_TYPE = {
   INVALID: 3
 };
 
-// Card names: suspect, room or weapon
+// Card names
 const CARD_NAME = {
   MISS_SCARLETT_CARD: 0,
   COL_MUSTARD_CARD: 1,
@@ -65,3 +62,5 @@ class Card {
 }
 
 module.exports = Card;
+module.exports.TYPE = CARD_TYPE;
+module.exports.NAME = CARD_NAME;

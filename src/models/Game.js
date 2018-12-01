@@ -1,6 +1,6 @@
 const characters = require('./characters');
 const Player = require('./Player');
-const card = require('./card');
+const Card = require('./card');
 
 // Create players
 const missScarlet = new Player('MISS_SCARLET');
@@ -43,9 +43,6 @@ class Game {
             mrsPeacock,
             profPlum];
         this.MAX_TIME = 180000;
-        this.turnOver = 0;
-        this.turn = 0;
-        this.current_turn = 0;
     }
 
     setNumPlayers(numPlayers) {
@@ -54,11 +51,11 @@ class Game {
 
     initDeck() {
         for (let i = 0; i < deckSize; i++) {
-            this.deck[i] = new card(i);
+            this.deck[i] = new Card(i);
         }
     }
 
-    shuffleArray(array) {
+    static shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];
@@ -71,16 +68,19 @@ class Game {
         // create array of players to return
         let humanArray = new Array(this.numPlayers);
 
-        let shuffledArray = this.shuffleArray(this.deck);
+        let shuffledArray = Game.shuffleArray(this.deck);
         for (let i = 0; i < this.deck.length; i++) {
-            if (this.solution == null && this.deck[i].type == "Suspect") {
+            if (this.solution["Suspect"] == null && this.deck[i].type === Card.TYPE.SUSPECT) {
                 this.solution["Suspect"] = this.deck[i];
-            } else if (this.solution == null && this.deck[i].type == "Room") {
+            } else if (this.solution["Room"] == null && this.deck[i].type === Card.TYPE.ROOM) {
                 this.solution["Room"] = this.deck[i];
-            } else if (this.solution == null && this.deck[i].type == "Weapon") {
+            } else if (this.solution["Weapon"] == null && this.deck[i].type === Card.TYPE.WEAPON) {
                 this.solution["Weapon"] = this.deck[i];
             }
         }
+
+        // console.log('Solution: ' + JSON.stringify(this.solution, null, 2));
+
         this.deck.splice(this.deck.indexOf(this.solution["Suspect"]), 1);
         this.deck.splice(this.deck.indexOf(this.solution["Room"]), 1);
         this.deck.splice(this.deck.indexOf(this.solution["Weapon"]), 1);
