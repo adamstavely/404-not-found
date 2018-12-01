@@ -266,8 +266,11 @@ io.on('connection', function (socket) {
                     console.log('All players have selected characters - dealing cards!');
                     let playerCards = game.dealCards();
                     updatePlayers(playerCards);
+                    let turn = game.getFirstTurn();
+                    console.log('First turn: ' + turn);
+                    io.sockets.emit('player turn', turn);
                 }
-                
+
                 callback(true);
             } else {
                 console.log('Received a select character from a non-player: ' + socket.username);

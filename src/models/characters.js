@@ -7,4 +7,4 @@ const CHARACTERS = {
     PROF_PLUM: 5
 };
 
-module.exports.characters = CHARACTERS;
+module.exports = CHARACTERS;

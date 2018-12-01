@@ -173,6 +173,9 @@ socket.on('character selected', function (id) {
     console.log('Character ' + id + ' has been selected');
 });
 
+socket.on('player turn', function (id) {
+   console.log('Current player turn: ' + id);
+});
 
 setInterval(function () {
     socket.emit('movement', movement);
