@@ -10,7 +10,8 @@ const chatSend = document.getElementById('chatSend');
 const context = canvas.getContext('2d');
 //const Player = require('../models/Player');
 let myUsername = '';
-let character = null;
+let _character = null;
+let _currentTurn = 0;
 
 canvas.width = 600;
 canvas.height = 600;
@@ -82,12 +83,21 @@ function selectCharacter() {
     if (choice) {
         socket.emit('select character', choice, function (result) {
             if (result) {
-                character = choice;
+                // TODO: Persist character choice
+                _character = parseInt(choice);
                 $('#modalCharacterSelect').modal('hide');
             }
         });
     } else {
         alert('You must select a character');
+    }
+}
+
+function endTurn() {
+    if (_currentTurn === _character) {
+        socket.emit('end turn');
+    } else {
+        console.log('It is not your turn!');
     }
 }
 
@@ -145,8 +155,10 @@ socket.on('players', function (humanArr) {
     console.log(humanArr);
 });
 
-socket.on('game state', function (isGameStarted, players) {
+socket.on('game state', function (isGameStarted, currentTurn, players) {
     console.log('Received game state from server: ' + isGameStarted);
+    console.log('Current turn: ' + currentTurn);
+    _currentTurn = currentTurn;
     if (isGameStarted) {
         overlay.parentNode.removeChild(overlay);
         if (players && myUsername in players) {
@@ -175,6 +187,7 @@ socket.on('character selected', function (id) {
 
 socket.on('player turn', function (id) {
    console.log('Current player turn: ' + id);
+    _currentTurn = id;
 });
 
 setInterval(function () {

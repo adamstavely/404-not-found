@@ -22,7 +22,7 @@ class Game {
             "Weapon": null
         };
         this.numPlayers = 0;
-        this.currentPlayerTurn = characters.MISS_SCARLET;
+        this.currentTurn = characters.MISS_SCARLET;
         this.timeLimit = 180000;
         this.players = [
             new Player('MISS_SCARLET'),
@@ -100,7 +100,6 @@ class Game {
     initPlayer(characterId) {
         if (characterId in Object.values(characters)) {
             this.players[characterId].setPosition(PLAYER_POS[characterId]);
-            this.players[characterId].setId(characterId);
             this.players[characterId].setIsHuman(true);
 
             return PLAYER_POS[characterId];
@@ -217,9 +216,9 @@ class Game {
     }
 
     handleAccusation(accuserPlayer, suspect, roomInt, weaponID) {
-        if (this.solution["Character"] == suspect) {
-            if (this.solution["Room"] == roomInt) {
-                if (this.solution["Weapon"] == weaponID) {
+        if (this.solution["Character"] === suspect) {
+            if (this.solution["Room"] === roomInt) {
+                if (this.solution["Weapon"] === weaponID) {
                     //Game Over
                     GameOver();
                 }
@@ -240,22 +239,26 @@ class Game {
         }
     }
 
-    nextTurn() {
-        this.turn = this.currentPlayerTurn++ % this.numPlayers - 1;
-        this.startTimer();
+    getNextTurn() {
+        for (let i = 0; i < this.players.length; i++) {
+            if (this.players[(i + this.currentTurn + 1) % this.players.length].getIsHuman()) {
+                this.currentTurn = this.players[(i + this.currentTurn + 1) % this.players.length].getId();
+                return this.currentTurn;
+            }
+        }
     }
 
     getFirstTurn() {
         for (let i = 0; i < this.players.length; i++) {
             if (this.players[i].getIsHuman()) {
-                this.currentPlayerTurn = this.players[i].getId();
-                return this.currentPlayerTurn;
+                this.currentTurn = this.players[i].getId();
+                return this.currentTurn;
             }
         }
     }
 
     getTurn() {
-        return this.currentPlayerTurn;
+        return this.currentTurn;
     }
 }
 
