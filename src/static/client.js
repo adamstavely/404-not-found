@@ -155,15 +155,24 @@ socket.on('players', function (humanArr) {
     console.log(humanArr);
 });
 
-socket.on('game state', function (isGameStarted, currentTurn, players) {
-    console.log('Received game state from server: ' + isGameStarted);
-    console.log('Current turn: ' + currentTurn);
-    _currentTurn = currentTurn;
-    if (isGameStarted) {
+socket.on('game state', function (game) {
+    console.log('Received game state from server: ' + game.isStarted);
+    console.log('Current turn: ' + game.turn);
+    _currentTurn = game.turn;
+    if (game.isStarted) {
         overlay.parentNode.removeChild(overlay);
-        if (players && myUsername in players) {
+        if (game.players && myUsername in game.players) {
             // TODO: Store character selections
-            if (!players[myUsername].character) {
+            if (!game.players[myUsername].character) {
+                for (let player in game.players) {
+                    if (game.players.hasOwnProperty(player)) {
+                        if (game.players[player].character != null) {
+                            const input = $('input[name=characterSelect][value=' + game.players[player].character + ']');
+                            input.prop('disabled', true);
+                            input.prop('checked', false);
+                        }
+                    }
+                }
                 $('#modalCharacterSelect').modal({backdrop: 'static', keyboard: false});
             }
         } else {
@@ -186,7 +195,7 @@ socket.on('character selected', function (id) {
 });
 
 socket.on('player turn', function (id) {
-   console.log('Current player turn: ' + id);
+    console.log('Current player turn: ' + id);
     _currentTurn = id;
 });
 

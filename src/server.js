@@ -350,7 +350,11 @@ function updateChatWindow(socket) {
 
 function updateGameState(socket) {
     console.log('Emitting game state');
-    socket.emit('game state', isGameStarted, game.getTurn(), players);
+    socket.emit('game state', {
+        'isStarted': isGameStarted,
+        'turn': game.getTurn(),
+        'players': players
+    });
 }
 
 function removeClient(socket) {
