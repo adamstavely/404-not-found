@@ -169,8 +169,13 @@ button:focus {
 
 [type=radio]:checked + img {
     outline: 2px solid black;
+    opacity: 0.5;
 }
 
 [type=radio]:hover + img {
-    outline: 2px solid yellow;
+    opacity: 0.3;
+}
+
+[type=radio]:disabled + img {
+    opacity: 0.3;
 }
