@@ -21,47 +21,6 @@ let timeElapsed = 0;
 canvas.width = 600;
 canvas.height = 600;
 
-const movement = {
-    up: false,
-    down: false,
-    left: false,
-    right: false
-};
-
-document.addEventListener('keydown', function (event) {
-    switch (event.keyCode) {
-        case 65: // A
-            movement.left = true;
-            break;
-        case 87: // W
-            movement.up = true;
-            break;
-        case 68: // D
-            movement.right = true;
-            break;
-        case 83: // S
-            movement.down = true;
-            break;
-    }
-});
-
-document.addEventListener('keyup', function (event) {
-    switch (event.keyCode) {
-        case 65: // A
-            movement.left = false;
-            break;
-        case 87: // W
-            movement.up = false;
-            break;
-        case 68: // D
-            movement.right = false;
-            break;
-        case 83: // S
-            movement.down = false;
-            break;
-    }
-});
-
 chatText.addEventListener('keydown', function (event) {
     switch (event.keyCode) {
         case 13: // Enter
@@ -258,7 +217,3 @@ socket.on('player turn', function (id) {
 socket.on('timer', function (timeElapsed) {
     timer.innerHTML = timeElapsed;
 });
-
-setInterval(function () {
-    socket.emit('movement', movement);
-}, 1000 / 60);

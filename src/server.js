@@ -187,8 +187,6 @@ io.on('connection', function (socket) {
             if (!isGameStarted) {
                 socket.role = 'player';
                 players[socket.username.toLowerCase()] = {
-                    x: 300,
-                    y: 300,
                     disconnected: false,
                     character: null
                 };
@@ -293,21 +291,6 @@ io.on('connection', function (socket) {
                io.sockets.emit('player turn', turn);
                startServerClock();
            }
-        });
-        socket.on('movement', function (data) {
-            const player = players[socket.username.toLowerCase()] || {};
-            if (data.left && player.x >= 5) {
-                player.x -= 5;
-            }
-            if (data.up && player.y >= 5) {
-                player.y -= 5;
-            }
-            if (data.right && player.x <= 595) {
-                player.x += 5;
-            }
-            if (data.down && player.y <= 595) {
-                player.y += 5;
-            }
         });
         socket.on('disconnect', function () {
             // Remove disconnected player after timeout
