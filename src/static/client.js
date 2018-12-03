@@ -210,9 +210,14 @@ socket.on('character selected', function (id) {
 socket.on('player turn', function (id) {
     console.log('Current player turn: ' + id);
     _currentTurn = id;
+    let isMyTurn = false;
     if (_currentTurn === _character) {
         $('#modalTurnNotification').modal('show');
+        isMyTurn = true;
     }
+    $('.action').each(function () {
+        $(this).prop('disabled', !isMyTurn);
+    });
 });
 
 /*socket.on('timer', function (timeout) {

@@ -77,14 +77,14 @@ html(lang='en')
                     .text-center seconds left
                 #gameButtonsWrapper
                     .text-center
-                        button.btn.btn-primary.action(type='submit' onclick='methodGoesHere') MOVE
+                        button.btn.btn-primary.action(type='submit' onclick='methodGoesHere' disabled) MOVE
                     .text-center
-                        button.btn.btn-primary.action(type='submit' onclick='methodGoesHere') SUGGEST
+                        button.btn.btn-primary.action(type='submit' onclick='methodGoesHere' disabled) SUGGEST
                     .text-center
-                        button.btn.btn-primary.action(type='submit' onclick='methodGoesHere') REVEAL
+                        button.btn.btn-primary.action(type='submit' onclick='methodGoesHere' disabled) REVEAL
                     .text-center
-                        button.btn.btn-primary.action(type='submit' onclick='methodGoesHere') ACCUSE
+                        button.btn.btn-primary.action(type='submit' onclick='methodGoesHere' disabled) ACCUSE
                     .text-center
-                        button.btn.btn-primary.action(type='submit' onclick='endTurn()') DONE
+                        button.btn.btn-primary.action(type='submit' onclick='endTurn()' disabled) DONE
 
         script(src='../static/client.js')
