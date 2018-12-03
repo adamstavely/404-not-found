@@ -21,8 +21,9 @@ html(lang='en')
                                 a.dropdown-item(href='/logout') Logout
         #content
             #canvasWrapper
-                #overlay
-                    button.btn.btn-secondary#startButton(onclick='startGame()' disabled) Start Game
+                if !isGameStarted
+                    #overlay
+                        button.btn.btn-secondary#startButton(onclick='startGame()' disabled) Start Game
                 div.modal.fade#modalCharacterSelect(role='dialog')
                     .modal-dialog
                         .modal-content

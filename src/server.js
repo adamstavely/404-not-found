@@ -130,7 +130,8 @@ app.route('/index')
 app.get('/game', (req, res) => {
     if (req.session.user && req.cookies.user_sid) {
         res.render('game', {
-            username: req.session.user
+            username: req.session.user,
+            isGameStarted: isGameStarted
         });
     } else {
         res.render('index');

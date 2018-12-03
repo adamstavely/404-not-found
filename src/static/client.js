@@ -9,6 +9,7 @@ const chatText = document.getElementById('chatText');
 const chatSend = document.getElementById('chatSend');
 const context = canvas.getContext('2d');
 //const Player = require('../models/Player');
+let isGameStarted = false;
 let myUsername = '';
 let _character = null;
 let _currentTurn = 0;
@@ -146,7 +147,9 @@ socket.on('usernames', function (usernames) {
     usernameList.innerHTML = '<p>' + usernames.join('<br/>') + '</p>';
     // TODO: Uncomment check for number of users
     // if (usernames.length >= 3) {
-    startButton.removeAttribute('disabled');
+    if (startButton) {
+        startButton.removeAttribute('disabled');
+    }
     // }
 });
 
@@ -158,9 +161,12 @@ socket.on('players', function (humanArr) {
 socket.on('game state', function (game) {
     console.log('Received game state from server: ' + game.isStarted);
     console.log('Current turn: ' + game.turn);
+    isGameStarted = game.isStarted;
     _currentTurn = game.turn;
     if (game.isStarted) {
-        overlay.parentNode.removeChild(overlay);
+        if (overlay) {
+            overlay.parentNode.removeChild(overlay);
+        }
         if (game.players && myUsername in game.players) {
             // TODO: Store character selections
             if (!game.players[myUsername].character) {
@@ -182,9 +188,13 @@ socket.on('game state', function (game) {
 });
 
 socket.on('start game', function (usernames) {
-    console.log('Game has started with ' + usernames.length + ' players');
-    overlay.parentNode.removeChild(overlay);
-    $('#modalCharacterSelect').modal({backdrop: 'static', keyboard: false});
+    if (!isGameStarted) {
+        console.log('Game has started with ' + usernames.length + ' players');
+        if (overlay) {
+            overlay.parentNode.removeChild(overlay);
+        }
+        $('#modalCharacterSelect').modal({backdrop: 'static', keyboard: false});
+    }
 });
 
 socket.on('character selected', function (id) {
