@@ -1,15 +1,16 @@
 const characters = require('./characters');
 const Player = require('./Player');
 const Card = require('./card');
+const Locations = require('./locations');
 
 // Player position enum
 const PLAYER_POS = [
-    22, // MISS_SCARLET
-    23, // COL_MUSTARD
-    24, // MRS_WHITE
-    25, // MR_GREEN
-    26, // MRS_PEACOCK
-    27  // PROF_PLUM
+    Locations.SPAWN_SCARLET,
+    Locations.SPAWN_MUSTARD,
+    Locations.SPAWN_WHITE,
+    Locations.SPAWN_GREEN,
+    Locations.SPAWN_PEACOCK,
+    Locations.SPAWN_PLUM
 ];
 
 class Game {
@@ -111,66 +112,66 @@ class Game {
     isMoveValid(player, destInt) {
         /*
         1- 2,6,21       Study
-        2- 1,3
+        2- 1,3          - Hallway
         3- 2,4,7        Hall
-        4- 3,5
+        4- 3,5          - Hallway
         5- 4,8,17       Lounge
-        6- 1,9
-        7- 3,11
-        8- 5,13
+        6- 1,9          - Hallway
+        7- 3,11         - Hallway
+        8- 5,13         - Hallway
         9- 6,10,14      Library
-        10- 9,11
+        10- 9,11        - Hallway
         11- 7,10,12,15  Billiard Room
-        12- 11,13
+        12- 11,13       - Hallway
         13- 8,12,16     Dining Room
-        14- 9,17
-        15- 11,19
-        16- 13,21
+        14- 9,17        - Hallway
+        15- 11,19       - Hallway
+        16- 13,21       - Hallway
         17- 5,14,18     Conservatory
-        18- 17,19
-        19- 15,18,20    Ball Room
-        20- 19,21
+        18- 17,19       - Hallway
+        19- 15,18,20    Ballroom
+        20- 19,21       - Hallway
         21- 1,16,20     Kitchen
         22- 4           Spawn Scarlet
-        23- 6           Spawn Plum
-        24- 8           Spawn Mustard
-        25- 14          Spawn Peacock
-        26- 18          Spawn Green
-        27- 20          Spawn White
+        23- 8           Spawn Mustard
+        24- 20          Spawn White
+        25- 18          Spawn Green
+        26- 14          Spawn Peacock
+        27- 6           Spawn Plum
          */
-        let dict = {
-            1: [2, 6, 21],
-            2: [1, 3],
-            3: [2, 4, 7],
-            4: [3, 5],
-            5: [4, 8, 17],
-            6: [1, 9],
-            7: [3, 11],
-            8: [5, 13],
-            9: [6, 10, 14],
-            10: [9, 11],
-            11: [7, 10, 12, 15],
-            12: [11, 13],
-            13: [8, 12, 16],
-            14: [9, 17],
-            15: [11, 19],
-            16: [13, 21],
-            17: [5, 14, 18],
-            18: [17, 19],
-            19: [15, 18, 20],
-            20: [19, 21],
-            21: [1, 16, 20],
-            22: [4],
-            23: [6],
-            24: [8],
-            25: [14],
-            26: [18],
-            27: [20]
+        let locationMap = {
+            1: [Locations.HALLWAY_STUDY_HALL, Locations.HALLWAY_STUDY_LIBRARY, Locations.KITCHEN],
+            2: [Locations.STUDY, Locations.HALL],
+            3: [Locations.HALLWAY_STUDY_HALL, Locations.HALLWAY_HALL_LOUNGE, Locations.HALLWAY_HALL_BILLIARD],
+            4: [Locations.HALL, Locations.LOUNGE],
+            5: [Locations.HALLWAY_HALL_LOUNGE, Locations.HALLWAY_LOUNGE_DINING, Locations.CONSERVATORY],
+            6: [Locations.STUDY, Locations.LIBRARY],
+            7: [Locations.HALL, Locations.BILLIARD_ROOM],
+            8: [Locations.LOUNGE, Locations.DINING_ROOM],
+            9: [Locations.HALLWAY_STUDY_LIBRARY, Locations.HALLWAY_LIBRARY_BILLIARD, Locations.HALLWAY_LIBRARY_CONSERVATORY],
+            10: [Locations.LIBRARY, Locations.BILLIARD_ROOM],
+            11: [Locations.HALLWAY_HALL_BILLIARD, Locations.HALLWAY_LIBRARY_BILLIARD, Locations.HALLWAY_BILLIARD_DINING, Locations.HALLWAY_BILLIARD_BALLROOM],
+            12: [Locations.BILLIARD_ROOM, Locations.DINING_ROOM],
+            13: [Locations.HALLWAY_LOUNGE_DINING, Locations.HALLWAY_BILLIARD_DINING, Locations.HALLWAY_DINING_KITCHEN],
+            14: [Locations.LIBRARY, Locations.CONSERVATORY],
+            15: [Locations.BILLIARD_ROOM, Locations.BALLROOM],
+            16: [Locations.DINING_ROOM, Locations.KITCHEN],
+            17: [Locations.LOUNGE, Locations.HALLWAY_LIBRARY_CONSERVATORY, Locations.HALLWAY_CONSERVATORY_BALLROOM],
+            18: [Locations.CONSERVATORY, Locations.BALLROOM],
+            19: [Locations.HALLWAY_BILLIARD_BALLROOM, Locations.HALLWAY_CONSERVATORY_BALLROOM, Locations.HALLWAY_BALLROOM_KITCHEN],
+            20: [Locations.BALLROOM, Locations.KITCHEN],
+            21: [Locations.STUDY, Locations.HALLWAY_DINING_KITCHEN, Locations.HALLWAY_BALLROOM_KITCHEN],
+            22: [Locations.HALLWAY_HALL_LOUNGE],
+            23: [Locations.HALLWAY_LOUNGE_DINING],
+            24: [Locations.HALLWAY_BALLROOM_KITCHEN],
+            25: [Locations.HALLWAY_CONSERVATORY_BALLROOM],
+            26: [Locations.HALLWAY_LIBRARY_CONSERVATORY],
+            27: [Locations.HALLWAY_STUDY_LIBRARY]
         };
 
         // TODO: check for players in hallways
         let sourceInt = player.position;
-        return dict[sourceInt].includes(destInt);
+        return locationMap[sourceInt].includes(destInt);
     }
 
     movePlayer(player, destInt, isMoved) {
