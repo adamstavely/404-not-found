@@ -236,6 +236,8 @@ socket.on('player turn', function (id) {
     if (_currentTurn === _character) {
         $('#modalTurnNotification').modal('show');
         isMyTurn = true;
+    } else {
+        $('#modalTurnNotification').modal('hide');
     }
     $('.action').each(function () {
         $(this).prop('disabled', !isMyTurn);
