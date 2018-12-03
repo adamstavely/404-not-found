@@ -1,6 +1,6 @@
 const characters = require('./characters');
 const Player = require('./Player');
-const Card = require('./card');
+const Card = require('./Card');
 const Locations = require('./locations');
 
 // Player position enum
