@@ -254,6 +254,8 @@ io.on('connection', function (socket) {
                     }
                 }
 
+                callback(true);
+
                 // Initialize character position
                 let playerPosition = game.initPlayer(id);
                 numCharsSelected++;
@@ -278,8 +280,6 @@ io.on('connection', function (socket) {
                     console.log('Starting timer');
                     io.sockets.emit('update timer');
                 }
-
-                callback(true);
             } else {
                 console.log('Received a select character from a non-player: ' + socket.username);
                 callback(false);

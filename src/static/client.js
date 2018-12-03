@@ -83,11 +83,9 @@ function startGame() {
 
 function selectCharacter() {
     const choice = $('input[name=characterSelect]:checked').val();
-    console.log(choice);
     if (choice) {
-        socket.emit('select character', choice, function (result) {
+        socket.emit('select character', parseInt(choice), function (result) {
             if (result) {
-                // TODO: Persist character choice
                 _character = parseInt(choice);
                 $('#modalCharacterSelect').modal('hide');
             }
@@ -172,7 +170,6 @@ socket.on('game state', function (game) {
             overlay.parentNode.removeChild(overlay);
         }
         if (game.players && myUsername in game.players) {
-            // TODO: Store character selections
             if (!game.players[myUsername].character) {
                 for (let player in game.players) {
                     if (game.players.hasOwnProperty(player)) {
@@ -184,6 +181,8 @@ socket.on('game state', function (game) {
                     }
                 }
                 $('#modalCharacterSelect').modal({backdrop: 'static', keyboard: false});
+            } else {
+                _character = game.players[myUsername].character;
             }
         } else {
             chatMessages.innerHTML += '<i>Game has already begun</i><br/>';
@@ -211,6 +210,9 @@ socket.on('character selected', function (id) {
 socket.on('player turn', function (id) {
     console.log('Current player turn: ' + id);
     _currentTurn = id;
+    if (_currentTurn === _character) {
+        $('#modalTurnNotification').modal('show');
+    }
 });
 
 /*socket.on('timer', function (timeout) {

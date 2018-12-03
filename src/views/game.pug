@@ -52,6 +52,15 @@ html(lang='en')
                                         img(src='../static/characters/prof_plum.png')
                             .modal-footer
                                 button.btn.btn-primary(onclick='selectCharacter()') Continue
+                div.modal.fade#modalTurnNotification(role='dialog')
+                    .modal-dialog
+                        .modal-content
+                            .modal-header
+                                button.close(type='button' data-dismiss='modal') &times
+                            .modal-body
+                                p It is your turn!
+                            .modal-footer
+                                button.btn.btn-primary(type='button' data-dismiss='modal') OK
                 canvas#canvas
             #chatContainer
                 #chatMessagesWrapper
