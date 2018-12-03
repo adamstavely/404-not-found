@@ -24,7 +24,6 @@ class Game {
         };
         this.numPlayers = 0;
         this.currentTurn = Characters.MISS_SCARLET;
-        this.timeLimit = 180000;
         this.players = [
             new Player('MISS_SCARLET'),
             new Player('COL_MUSTARD'),
@@ -33,7 +32,7 @@ class Game {
             new Player('MRS_PEACOCK'),
             new Player('PROF_PLUM'),
         ];
-        this.MAX_TIME = 180000;
+        this.MAX_TIME = 15; // seconds TODO: change to 180
     }
 
     static shuffleArray(array) {
@@ -228,19 +227,22 @@ class Game {
         accuserPlayer.hasAccused = true;
     }
 
-    startTimer() {
-        this.timeLimit = setTimeout(() => {
-            this.nextTurn();
-        }, this.MAX_TIME)
+    updateTimer(timeElapsed, timeIsUp) {
+        timeIsUp = false;
+        if(timeElapsed >= this.MAX_TIME){
+            //console.log('Timer reset at ' + timeElapsed + ' seconds')
+            this.resetTimer(timeElapsed);
+            timeIsUp = true;
+        }
+        return timeIsUp;
     }
 
-    resetTimer() {
-        if (typeof this.timeLimit == this.MAX_TIME) {
-            clearTimeout(this.turnOver);
-        }
+    resetTimer(curr_time) {
+        console.log('Game timer reached limit (' + curr_time + ' seconds)');
     }
 
     getNextTurn() {
+        console.log('Getting next turn...');
         for (let i = 0; i < this.players.length; i++) {
             if (this.players[(i + this.currentTurn + 1) % this.players.length].getIsHuman()) {
                 this.currentTurn = this.players[(i + this.currentTurn + 1) % this.players.length].getId();

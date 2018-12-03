@@ -7,12 +7,15 @@ const chatWindow = document.getElementById('chatMessagesWrapper');
 const chatMessages = document.getElementById('chatMessages');
 const chatText = document.getElementById('chatText');
 const chatSend = document.getElementById('chatSend');
+const timer = document.getElementById('timer');
 const context = canvas.getContext('2d');
 //const Player = require('../models/Player');
 let isGameStarted = false;
 let myUsername = '';
 let _character = null;
 let _currentTurn = 0;
+let timerObj = null;
+let timeElapsed = 0;
 
 canvas.width = 600;
 canvas.height = 600;
@@ -97,6 +100,7 @@ function selectCharacter() {
 function endTurn() {
     if (_currentTurn === _character) {
         socket.emit('end turn');
+        timer.innerHTML = '0';
     } else {
         console.log('It is not your turn!');
     }
@@ -207,6 +211,21 @@ socket.on('character selected', function (id) {
 socket.on('player turn', function (id) {
     console.log('Current player turn: ' + id);
     _currentTurn = id;
+});
+
+/*socket.on('timer', function (timeout) {
+    console.log('Client timer started with ' + timeout / 1000 + ' seconds');
+    timerObj = setInterval(function(){
+        timer.innerHTML = timeout/1000 - ++timeElapsed;
+        if(timeElapsed >= timeout / 1000) {
+            clearInterval(timerObj);
+            console.log('Client timer ended');
+        }
+    },1000);
+}); */
+
+socket.on('timer', function(timeElapsed) {
+    timer.innerHTML = timeElapsed;
 });
 
 setInterval(function () {
