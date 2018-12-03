@@ -11,6 +11,8 @@ const User = require('./models/User');
 const characters = require('./models/characters');
 const Player = require('./models/Player');
 const Game = require('./models/Game');
+let timeElapsed = 0;
+let clock = null;
 
 // Create the server
 const app = express();
@@ -266,9 +268,14 @@ io.on('connection', function (socket) {
                     console.log('All players have selected characters - dealing cards!');
                     let playerCards = game.dealCards();
                     updatePlayers(playerCards);
+
                     let turn = game.getFirstTurn();
                     console.log('First turn: ' + turn);
                     io.sockets.emit('player turn', turn);
+
+                    startServerClock();
+                    console.log('Starting timer');
+                    io.sockets.emit('update timer');
                 }
 
                 callback(true);
@@ -279,9 +286,11 @@ io.on('connection', function (socket) {
         });
         socket.on('end turn', function() {
            if (socket.role === 'player') {
+               resetServerClock();
                let turn = game.getNextTurn();
                console.log('Next turn: ' + turn);
                io.sockets.emit('player turn', turn);
+               startServerClock();
            }
         });
         socket.on('movement', function (data) {
@@ -371,3 +380,31 @@ function removeClient(socket) {
 setInterval(function () {
     io.sockets.emit('state', players);
 }, 1000 / 60);
+
+function updateTimer(max_time) {
+    //send timer update to all clients
+    io.sockets.emit('timer', max_time - ++timeElapsed);
+    if(game.updateTimer(timeElapsed)) {
+        // time is up for the turn, reset everyone's timer
+        io.sockets.emit('timer', 0);
+        resetServerClock();
+        let turn = game.getNextTurn();
+        console.log('Next turn: ' + turn);
+        io.sockets.emit('player turn', turn);
+        startServerClock();
+    }
+}
+
+function startServerClock() {
+    console.log('Starting server clock');
+    clock = setInterval(function () {
+        // update the timers every one second
+        updateTimer(game.MAX_TIME);
+    }, 1000);
+}
+
+function resetServerClock() {
+    console.log('Reset server clock to 0');
+    clearInterval(clock);
+    timeElapsed = 0;
+}
