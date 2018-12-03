@@ -1,4 +1,4 @@
-const characters = require('./characters');
+const Characters = require('./characters');
 const Player = require('./Player');
 const Card = require('./Card');
 const Locations = require('./locations');
@@ -23,7 +23,7 @@ class Game {
             "Weapon": null
         };
         this.numPlayers = 0;
-        this.currentTurn = characters.MISS_SCARLET;
+        this.currentTurn = Characters.MISS_SCARLET;
         this.timeLimit = 180000;
         this.players = [
             new Player('MISS_SCARLET'),
@@ -99,7 +99,7 @@ class Game {
 
     // Initialize player positions based on players
     initPlayer(characterId) {
-        if (characterId in Object.values(characters)) {
+        if (characterId in Object.values(Characters)) {
             this.players[characterId].setPosition(PLAYER_POS[characterId]);
             this.players[characterId].setIsHuman(true);
 
