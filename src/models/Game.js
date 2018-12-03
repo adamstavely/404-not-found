@@ -4,7 +4,7 @@ const Card = require('./Card');
 const Locations = require('./locations');
 
 // Player position enum
-const PLAYER_POS = [
+const INITIAL_POSITIONS = [
     Locations.SPAWN_SCARLET,
     Locations.SPAWN_MUSTARD,
     Locations.SPAWN_WHITE,
@@ -99,10 +99,10 @@ class Game {
     // Initialize player positions based on players
     initPlayer(characterId) {
         if (characterId in Object.values(Characters)) {
-            this.players[characterId].setPosition(PLAYER_POS[characterId]);
+            this.players[characterId].setPosition(INITIAL_POSITIONS[characterId]);
             this.players[characterId].setIsHuman(true);
 
-            return PLAYER_POS[characterId];
+            return INITIAL_POSITIONS[characterId];
         } else {
             return 0;
         }
