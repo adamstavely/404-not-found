@@ -95,6 +95,22 @@ function selectCharacter() {
     }
 }
 
+function movePlayer() {
+    console.log('Move player');
+}
+
+function makeSuggestion() {
+    console.log('Make suggestion');
+}
+
+function revealCard() {
+    console.log('Reveal card');
+}
+
+function makeAccusation() {
+    console.log('Make accusation');
+}
+
 function endTurn() {
     if (_currentTurn === _character) {
         socket.emit('end turn');
