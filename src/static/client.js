@@ -9,9 +9,10 @@ const chatText = document.getElementById('chatText');
 const chatSend = document.getElementById('chatSend');
 const timer = document.getElementById('timer');
 const context = canvas.getContext('2d');
-//const Player = require('../models/Player');
+
 let isGameStarted = false;
-let myUsername = '';
+let _player = null;
+let _username = '';
 let _character = null;
 let _currentTurn = 0;
 let timerObj = null;
@@ -157,7 +158,7 @@ socket.on('state', function (players) {
 });
 
 socket.on('username', function (username) {
-    myUsername = username;
+    _username = username;
 });
 
 socket.on('usernames', function (usernames) {
@@ -174,6 +175,11 @@ socket.on('usernames', function (usernames) {
 socket.on('players', function (humanArr) {
     // emit the deck for the current player
     console.log(humanArr);
+    for (let i = 0; i < humanArr.length; i++) {
+        if (_character === humanArr[i].id) {
+            _player = humanArr[i];
+        }
+    }
 });
 
 socket.on('game state', function (game) {
@@ -185,8 +191,8 @@ socket.on('game state', function (game) {
         if (overlay) {
             overlay.parentNode.removeChild(overlay);
         }
-        if (game.players && myUsername in game.players) {
-            if (!game.players[myUsername].character) {
+        if (game.players && _username in game.players) {
+            if (!game.players[_username].character) {
                 for (let player in game.players) {
                     if (game.players.hasOwnProperty(player)) {
                         if (game.players[player].character != null) {
@@ -198,7 +204,7 @@ socket.on('game state', function (game) {
                 }
                 $('#modalCharacterSelect').modal({backdrop: 'static', keyboard: false});
             } else {
-                _character = game.players[myUsername].character;
+                _character = game.players[_username].character;
             }
         } else {
             chatMessages.innerHTML += '<i>Game has already begun</i><br/>';
@@ -247,7 +253,7 @@ socket.on('player turn', function (id) {
     },1000);
 }); */
 
-socket.on('timer', function(timeElapsed) {
+socket.on('timer', function (timeElapsed) {
     timer.innerHTML = timeElapsed;
 });
 
