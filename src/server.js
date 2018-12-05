@@ -207,8 +207,10 @@ io.on('connection', function (socket) {
             }
         } else {
             if (socket.username.toLowerCase() in players) {
+                socket.role = 'player';
                 players[socket.username.toLowerCase()].disconnected = false;
             } else if (socket.username.toLowerCase() in spectators) {
+                socket.role = 'spectator';
                 spectators[socket.username.toLowerCase()].disconnected = false;
             }
         }
