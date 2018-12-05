@@ -229,7 +229,7 @@ class Game {
 
     updateTimer(timeElapsed, timeIsUp) {
         timeIsUp = false;
-        if(timeElapsed >= this.MAX_TIME){
+        if (timeElapsed >= this.MAX_TIME) {
             //console.log('Timer reset at ' + timeElapsed + ' seconds')
             this.resetTimer(timeElapsed);
             timeIsUp = true;
@@ -244,7 +244,8 @@ class Game {
     getNextTurn() {
         console.log('Getting next turn...');
         for (let i = 0; i < this.players.length; i++) {
-            if (this.players[(i + this.currentTurn + 1) % this.players.length].getIsHuman()) {
+            if (this.players[(i + this.currentTurn + 1) % this.players.length].getIsHuman() &&
+                !this.players[(i + this.currentTurn + 1) % this.players.length].getHasAccused()) {
                 this.currentTurn = this.players[(i + this.currentTurn + 1) % this.players.length].getId();
                 return this.currentTurn;
             }
