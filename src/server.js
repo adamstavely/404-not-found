@@ -264,7 +264,10 @@ io.on('connection', function (socket) {
                 console.log('Player ' + socket.username + ' position: ' + playerPosition);
 
                 players[socket.username.toLowerCase()].character = id;
-                io.sockets.emit('character selected', id);
+                io.sockets.emit('character selected', {
+                    'user': socket.username,
+                    'id': id
+                });
 
                 // If all players have selected characters
                 if (numCharsSelected === numPlayers) {

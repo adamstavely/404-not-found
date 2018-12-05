@@ -4,15 +4,10 @@ body {
 }
 
 #content {
-    margin-top: 90px;
-    display: -ms-flexbox;
-    display: -webkit-box;
-    display: flex;
-    -ms-flex-align: center;
-    -ms-flex-pack: center;
-    -webkit-box-align: center;
-    align-items: center;
-    -webkit-box-pack: center;
+    margin-top: 56px;
+    display: grid;
+    grid-template-columns: 600px 415px 200px;
+    align-content: center;
     justify-content: center;
     background-color: #f5f5f5;
 }
@@ -56,9 +51,31 @@ body {
     margin-top: 15px;
 }
 
+#playersContainer {
+    width: 1215px;
+    grid-column: 1;
+    grid-row: 1;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.playerWrapper {
+    width: 200px;
+    display: inline-block;
+}
+
+.playerLabel {
+    margin-left: 15px;
+}
+
 #canvasWrapper {
     width: 600px;
     height: 600px;
+    grid-row: 2;
+    grid-column: 1;
 }
 
 canvas {
@@ -72,9 +89,12 @@ canvas {
 #chatContainer {
     width: 400px;
     height: 600px;
+    word-break: break-all;
     border: 5px solid black;
     border-right-width: 0;
     margin-left: 15px;
+    grid-row: 2;
+    grid-column: 2;
 }
 
 #chatMessagesWrapper {
@@ -116,6 +136,8 @@ canvas {
 #usernamesAndGameButtonsContainer {
     width: 200px;
     height: 600px;
+    grid-row: 2;
+    grid-column: 3;
 }
 
 #timerWrapper {
@@ -126,7 +148,6 @@ canvas {
     vertical-align: middle;
     font-size: 30px;
 }
-
 
 
 #gameButtonsWrapper {
@@ -142,7 +163,7 @@ canvas {
     height: 50px;
     display: inline-block;
     background-color: white;
-    color:  black;
+    color: black;
     border: 5px solid blue;
     margin-top: 2px;
     margin-bottom: 2px;

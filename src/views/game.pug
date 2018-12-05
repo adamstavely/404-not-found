@@ -20,6 +20,25 @@ html(lang='en')
                             .dropdown-menu.dropdown-menu-right
                                 a.dropdown-item(href='/logout') Logout
         #content
+            #playersContainer
+                .playerWrapper#scarletPlayer
+                    img(src='../static/characters/miss_scarlet.png' width='50px')
+                    label.playerLabel --------------
+                .playerWrapper#mustardPlayer
+                    img(src='../static/characters/col_mustard.png' width='50px')
+                    label.playerLabel --------------
+                .playerWrapper#whitePlayer
+                    img(src='../static/characters/mrs_white.png' width='50px')
+                    label.playerLabel --------------
+                .playerWrapper#greenPlayer
+                    img(src='../static/characters/mr_green.png' width='50px')
+                    label.playerLabel --------------
+                .playerWrapper#peacockPlayer
+                    img(src='../static/characters/mrs_peacock.png' width='50px')
+                    label.playerLabel --------------
+                .playerWrapper#plumPlayer
+                    img(src='../static/characters/prof_plum.png' width='50px')
+                    label.playerLabel --------------
             #canvasWrapper
                 if !isGameStarted
                     #overlay
@@ -84,15 +103,6 @@ html(lang='en')
                             .modal-body
                             .modal-footer
                                 button.btn.btn-primary(onclick='makeAccusation()') Continue
-                div.modal.fade#modalTurnNotification(role='dialog')
-                    .modal-dialog
-                        .modal-content
-                            .modal-header
-                                button.close(type='button' data-dismiss='modal') &times
-                            .modal-body
-                                p It is your turn!
-                            .modal-footer
-                                button.btn.btn-primary(type='button' data-dismiss='modal') OK
                 canvas#canvas
             #chatContainer
                 #chatMessagesWrapper

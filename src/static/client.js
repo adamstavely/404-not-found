@@ -1,5 +1,7 @@
 const socket = io();
 const overlay = document.getElementById('overlay');
+const playerWrappers = document.getElementsByClassName('playerWrapper');
+const playerLabels = document.getElementsByClassName('playerLabel');
 const canvas = document.getElementById('canvas');
 const startButton = document.getElementById('startButton');
 const usernameList = document.getElementById('usernames');
@@ -150,6 +152,18 @@ socket.on('game state', function (game) {
         if (overlay) {
             overlay.parentNode.removeChild(overlay);
         }
+        for (let i = 0; i < playerWrappers.length; i++) {
+            if (i !== _currentTurn) {
+                playerWrappers[i].style.border = 'none';
+            } else {
+                playerWrappers[i].style.border = '2px solid black';
+            }
+        }
+        for (let player in game.players) {
+            if (game.players.hasOwnProperty(player)) {
+                playerLabels[game.players[player].character].innerHTML = player;
+            }
+        }
         if (game.players && _username in game.players) {
             if (!game.players[_username].character) {
                 for (let player in game.players) {
@@ -165,6 +179,9 @@ socket.on('game state', function (game) {
             } else {
                 _character = game.players[_username].character;
             }
+            $('.action').each(function () {
+                $(this).prop('disabled', !(_currentTurn === _character));
+            });
         } else {
             chatMessages.innerHTML += '<i>Game has already begun</i><br/>';
         }
@@ -181,25 +198,26 @@ socket.on('start game', function (usernames) {
     }
 });
 
-socket.on('character selected', function (id) {
-    const input = $('input[name=characterSelect][value=' + id + ']');
+socket.on('character selected', function (character) {
+    const input = $('input[name=characterSelect][value=' + character.id + ']');
     input.prop('disabled', true);
     input.prop('checked', false);
-    console.log('Character ' + id + ' has been selected');
+    playerLabels[character.id].innerHTML = character.user;
+    console.log('Character ' + character.id + ' has been selected');
 });
 
 socket.on('player turn', function (id) {
     console.log('Current player turn: ' + id);
     _currentTurn = id;
-    let isMyTurn = false;
-    if (_currentTurn === _character) {
-        $('#modalTurnNotification').modal('show');
-        isMyTurn = true;
-    } else {
-        $('#modalTurnNotification').modal('hide');
+    for (let i = 0; i < playerWrappers.length; i++) {
+        if (i !== _currentTurn) {
+            playerWrappers[i].style.border = 'none';
+        } else {
+            playerWrappers[i].style.border = '2px solid black';
+        }
     }
     $('.action').each(function () {
-        $(this).prop('disabled', !isMyTurn);
+        $(this).prop('disabled', !(_currentTurn === _character));
     });
 });
 
