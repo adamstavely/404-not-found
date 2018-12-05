@@ -170,6 +170,13 @@ class Game {
 
         // TODO: check for players in hallways
         let sourceInt = player.position;
+        if ([2,4,6,7,8,10,12,14,15,16,18,20].includes(destInt)) {
+            for (let p in this.players) {
+                if (p.position == destInt) {
+                    return false;
+                }
+            }
+        }
         return locationMap[sourceInt].includes(destInt);
     }
 
