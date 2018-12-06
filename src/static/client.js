@@ -133,25 +133,23 @@ function makeSuggestion() {
 
     // Make dialog visible
     $('#modalCharacterCards').modal({backdrop: 'static', keyboard: false});
-
-    // Store selected card
-    const choice = $('input[name=charCardSelect]:checked').val();
-    if(choice){
-        // Set character variable
-        if(!isAccusation){
-            _suggestedChar = parseInt(choice);
-            console.log('Suggested character: ' + _suggestedChar);
-        } else {
-            _accusedChar = parseInt(choice);
-            console.log('Accused character: ' + _accusedChar);
-        }
-    }
 }
 
 // Choose room card
 function chooseRoomCard(){
-    // Hide characters
-    $('#modalCharacterCards').modal('hide');
+    // First retrieve character card selected
+    const testChoice = $('input[name=charCardSelect]:checked').val();
+    if (testChoice) {
+        if(!isAccusation){
+            _suggestedChar = parseInt(testChoice);
+            console.log('Suggested character: ' + _suggestedChar);
+        } else {
+            _accusedChar = parseInt(testChoice);
+            console.log('Accused character: ' + _accusedChar);
+        }
+
+        $('#modalCharacterCards').modal('hide');
+    }
 
     console.log('Choose a room');
 
@@ -166,25 +164,23 @@ function chooseRoomCard(){
 
     // Make dialog visible
     $('#modalRoomCards').modal({backdrop: 'static', keyboard: false});
-
-    // Store selected card
-    const choice = $('input[name=roomCardSelect]:checked').val();
-    if(choice){
-        // Set character variable
-        if(!isAccusation){
-            _suggestedRoom = parseInt(choice);
-            console.log('Suggested room: ' + _suggestedRoom);
-        } else {
-            _accusedRoom = parseInt(choice);
-            console.log('Accused room: ' + _accusedRoom);
-        }
-    }
 }
 
 // Choose weapon card
 function chooseWeaponCard(){
-    // Hide roomss
-    $('#modalRoomCards').modal('hide');
+    // Pull down room selected
+    const testChoice = $('input[name=roomCardSelect]:checked').val();
+    if (testChoice) {
+        if(!isAccusation){
+            _suggestedRoom = parseInt(testChoice);
+            console.log('Suggested room: ' + _suggestedRoom);
+        } else {
+            _accusedRoom = parseInt(testChoice);
+            console.log('Accused room: ' + _accusedRoom);
+        }
+
+        $('#modalRoomCards').modal('hide');
+    }
 
     console.log('Choose a weapon');
 
@@ -199,25 +195,24 @@ function chooseWeaponCard(){
 
     // Make dialog visible
     $('#modalWeaponCards').modal({backdrop: 'static', keyboard: false});
-
-    // Store selected card
-    const choice = $('input[name=weaponCardSelect]:checked').val();
-    if(choice){
-        // Set character variable
-        if(!isAccusation){
-            _suggestedWeapon = parseInt(choice);
-            console.log('Suggested character: ' + _suggestedWeapon);
-        } else {
-            _accusedWeapon = parseInt(choice);
-            console.log('Accused character: ' + _accusedWeapon);
-        }
-    }
 }
 
 function endSuggestion(){
-    // Hide weapons
-    $('#modalWeaponCards').modal('hide');
+    // Pull down selected weapon
+    const testChoice = $('input[name=weaponCardSelect]:checked').val();
+    if (testChoice) {
+        if(!isAccusation){
+            _suggestedWeapon = parseInt(testChoice);
+            console.log('Suggested weapon: ' + _suggestedWeapon);
+        } else {
+            _accusedWeapon = parseInt(testChoice);
+            console.log('Accused weapon: ' + _accusedWeapon);
+        }
 
+        $('#modalWeaponCards').modal('hide');
+    }
+
+    // Kick off back end processing
     if(!isAccusation){
         console.log('Suggestion made for char: ' + _suggestedChar);
         console.log('Suggestion made for room: ' + _suggestedRoom);
@@ -233,6 +228,9 @@ function endSuggestion(){
         // @TODO: Kick off processing of accusation
         // use socket.emit to pass it off to server
     }
+
+    // Reset isAccusation
+    isAccusation = false;
 
 }
 
@@ -257,7 +255,7 @@ function makeAccusation() {
     makeSuggestion();
 
     // After it returns, reset accusation
-    isAccusation = false;
+    //isAccusation = false;
 }
 
 function endTurn() {
