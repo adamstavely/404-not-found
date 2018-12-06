@@ -15,8 +15,32 @@ let _player = null;
 let _username = '';
 let _character = null;
 let _currentTurn = 0;
+let _playerCards = {};
 let timerObj = null;
 let timeElapsed = 0;
+
+// Booleans for cards in the deck
+let hasMissScarlett = false;
+let hasColMustard = false;
+let hasMrsWhite = false;
+let hasMrGreen = false;
+let hasMrsPeacock = false;
+let hasProfPlum = false;
+let hasKitchen = false;
+let hasBallroom = false;
+let hasConservatory = false;
+let hasDiningRoom = false;
+let hasBilliard = false;
+let hasLibrary = false;
+let hasLounge = false;
+let hasHall = false;
+let hasStudy = false;
+let hasCandlestick = false;
+let hasDagger = false;
+let hasLead = false;
+let hasRevolver = false;
+let hasRope = false;
+let hasSpanner = false;
 
 canvas.width = 600;
 canvas.height = 600;
@@ -55,6 +79,12 @@ function selectCharacter() {
     }
 }
 
+// testing showing cards functionality
+function showCards(){
+    $('#modalPlayerCards').modal('hide');
+    console.log('Cards showed to player');
+}
+
 function movePlayer() {
     console.log('Move player');
 }
@@ -64,7 +94,16 @@ function makeSuggestion() {
 }
 
 function revealCard() {
-    console.log('Reveal card');
+    console.log('Select card to reveal!');
+    $('#modalPlayerCards').modal({backdrop: 'static', keyboard: false});
+
+    // Store selected card
+    const choice = $('input[name=cardSelect]:checked').val();
+    if(choice){
+        console.log('Chose card: ' + choice);
+        $('#modalPlayerCards').modal('hide');
+        // Call reveal card
+    }
 }
 
 function makeAccusation() {
@@ -131,14 +170,115 @@ socket.on('usernames', function (usernames) {
     // }
 });
 
+// This handles the cards being dealt to each player
 socket.on('players', function (humanArr) {
     // emit the deck for the current player
     console.log(humanArr);
     for (let i = 0; i < humanArr.length; i++) {
         if (_character === humanArr[i].id) {
             _player = humanArr[i];
+            //socket.emit('printToConsole', "Active player: " + _player.id);
+            _playerCards = humanArr[i].cards;
+            socket.emit('printToConsole', "Card length: " + _playerCards.length);
         }
     }
+
+    // Check what cards player has
+    for(let j=0; j<_playerCards.length; j++){
+        console.log(_playerCards[j].name);
+        // disable all cards by default
+        const testCard = $('input[name=cardSelect][value=' + _playerCards[j].name + ']');
+
+        switch(_playerCards[j].name) {
+            case 0:
+                hasMissScarlett = true;
+                testCard.prop('disabled', false);
+                break;
+            case 1:
+                hasColMustard = true;
+                testCard.prop('disabled', false);
+                break;
+            case 2:
+                hasMrsWhite = true;
+                testCard.prop('disabled', false);
+                break;
+            case 3:
+                hasMrGreen = true;
+                testCard.prop('disabled', false);
+                break;
+            case 4:
+                hasMrsPeacock = true;
+                testCard.prop('disabled', false);
+                break;
+            case 5:
+                hasProfPlum = true;
+                testCard.prop('disabled', false);
+                break;
+            case 6:
+                hasKitchen = true;
+                testCard.prop('disabled', false);
+                break;
+            case 7:
+                hasBallroom = true;
+                testCard.prop('disabled', false);
+                break;
+            case 8:
+                hasConservatory = true;
+                testCard.prop('disabled', false);
+                break;
+            case 9:
+                hasDiningRoom = true;
+                testCard.prop('disabled', false);
+                break;
+            case 10:
+                hasBilliard = true;
+                testCard.prop('disabled', false);
+                break;
+            case 11:
+                hasLibrary = true;
+                testCard.prop('disabled', false);
+                break;
+            case 12:
+                hasLounge = true;
+                testCard.prop('disabled', false);
+                break;
+            case 13:
+                hasHall = true;
+                testCard.prop('disabled', false);
+                break;
+            case 14:
+                hasStudy = true;
+                testCard.prop('disabled', false);
+                break;
+            case 15:
+                hasCandlestick = true;
+                testCard.prop('disabled', false);
+                break;
+            case 16:
+                hasDagger = true;
+                testCard.prop('disabled', false);
+                break;
+            case 17:
+                hasLead = true;
+                testCard.prop('disabled', false);
+                break;
+            case 18:
+                hasRevolver = true;
+                testCard.prop('disabled', false);
+                break;
+            case 19:
+                hasRope = true;
+                testCard.prop('disabled', false);
+                break;
+            case 20:
+                hasSpanner = true;
+                testCard.prop('disabled', false);
+                break;
+        }
+    }
+
+    // Show cards
+    $('#modalPlayerCards').modal({backdrop: 'static', keyboard: false});
 });
 
 socket.on('game state', function (game) {

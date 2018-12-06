@@ -52,6 +52,80 @@ html(lang='en')
                                         img(src='../static/characters/prof_plum.png')
                             .modal-footer
                                 button.btn.btn-primary(onclick='selectCharacter()') Continue
+                div.modal.fade#modalPlayerCards(role='dialog')
+                    .modal-dialog
+                        .modal-content
+                            .modal-header
+                                h3 Player's Cards (Not Disabled)
+                            .modal-body
+                                .text-center
+                                    label
+                                        input(type='radio' name='cardSelect' value='0' disabled=true)
+                                        img(src='../static/characters/miss_scarlet.png')
+                                    label
+                                        input(type='radio' name='cardSelect' value='1' disabled=true)
+                                        img(src='../static/characters/col_mustard.png')
+                                    label
+                                        input(type='radio' name='cardSelect' value='2' disabled=true)
+                                        img(src='../static/characters/mrs_white.png')
+                                    label
+                                        input(type='radio' name='cardSelect' value='3' disabled=true)
+                                        img(src='../static/characters/mr_green.png')
+                                    label
+                                        input(type='radio' name='cardSelect' value='4' disabled=true)
+                                        img(src='../static/characters/mrs_peacock.png')
+                                    label
+                                        input(type='radio' name='cardSelect' value='5' disabled=true)
+                                        img(src='../static/characters/prof_plum.png')
+                                .text-center
+                                    label
+                                        input(type='radio' name='cardSelect' value='6' disabled=true)
+                                        img(src='../static/rooms/kitchen.png')
+                                    label
+                                        input(type='radio' name='cardSelect' value='7' disabled=true)
+                                        img(src='../static/rooms/ballroom.png')
+                                    label
+                                        input(type='radio' name='cardSelect' value='8' disabled=true)
+                                        img(src='../static/rooms/conservatory.png')
+                                    label
+                                        input(type='radio' name='cardSelect' value='9' disabled=true)
+                                        img(src='../static/rooms/dining_room.png')
+                                    label
+                                        input(type='radio' name='cardSelect' value='10' disabled=true)
+                                        img(src='../static/rooms/billard_room.png')
+                                    label
+                                        input(type='radio' name='cardSelect' value='11' disabled=true)
+                                        img(src='../static/rooms/library.png')
+                                    label
+                                        input(type='radio' name='cardSelect' value='12' disabled=true)
+                                        img(src='../static/rooms/lounge.png')
+                                    label
+                                        input(type='radio' name='cardSelect' value='13' disabled=true)
+                                        img(src='../static/rooms/hall.png')
+                                    label
+                                        input(type='radio' name='cardSelect' value='14' disabled=true)
+                                        img(src='../static/rooms/study.png')
+                                .text-center
+                                    label
+                                        input(type='radio' name='cardSelect' value='15' disabled=true)
+                                        img(src='../static/weapons/candlestick.png')
+                                    label
+                                        input(type='radio' name='cardSelect' value='16' disabled=true)
+                                        img(src='../static/weapons/knife.png')
+                                    label
+                                        input(type='radio' name='cardSelect' value='17' disabled=true)
+                                        img(src='../static/weapons/pipe.png')
+                                    label
+                                        input(type='radio' name='cardSelect' value='18' disabled=true)
+                                        img(src='../static/weapons/revolver.png')
+                                    label
+                                        input(type='radio' name='cardSelect' value='19' disabled=true)
+                                        img(src='../static/weapons/rope.png')
+                                    label
+                                        input(type='radio' name='cardSelect' value='20' disabled=true)
+                                        img(src='../static/weapons/wrench.png')
+                            .modal-footer
+                                button.btn.btn-primary(onclick='showCards()') Continue
                 div.modal.fade#modalMoveSelect(role='dialog')
                     .modal-dialog
                         .modal-content
@@ -69,13 +143,13 @@ html(lang='en')
                             .modal-footer
                                 button.btn.btn-primary(onclick='makeSuggestion()') Continue
                 div.modal.fade#modalRevealCard(role='dialog')
-                    .modal-dialogF
+                    .modal-dialog
                         .modal-content
                             .modal-header
                                 h3 Reveal Card
                             .modal-body
                             .modal-footer
-                                button.btn.btn-primary(onclick='revealCard()') Continue
+                                button.btn.btn-primary(onclick='revealCardSelect()') Continue
                 div.modal.fade#modalMakeAccusation(role='dialog')
                     .modal-dialog
                         .modal-content

@@ -219,6 +219,11 @@ io.on('connection', function (socket) {
         updateChatWindow(socket);
         updateGameState(socket);
 
+        // Using this for debugging, print to server console
+        socket.on('printToConsole', function(message) {
+            console.log('Message from client: ' + message);
+        });
+
         socket.on('message', function (message) {
             const newMessage = socket.username + ': ' + message;
             console.log('Received message from ' + socket.username + ': ' + message);
@@ -283,6 +288,12 @@ io.on('connection', function (socket) {
                 callback(false);
             }
         });
+
+        // response to reveal card button clicked
+        socket.on('reveal card', function() {
+            console.log('Received reveal card for: ' + socket.username);
+        });
+
         socket.on('end turn', function() {
            if (socket.role === 'player') {
                resetServerClock();
@@ -384,7 +395,7 @@ function startServerClock() {
     clock = setInterval(function () {
         // update the timers every one second
         updateTimer(game.MAX_TIME);
-    }, 1000);
+    }, 10000); // set to 10000 for development purposes, reset when ready
 }
 
 function resetServerClock() {
