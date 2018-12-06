@@ -207,8 +207,10 @@ io.on('connection', function (socket) {
             }
         } else {
             if (socket.username.toLowerCase() in players) {
+                socket.role = 'player';
                 players[socket.username.toLowerCase()].disconnected = false;
             } else if (socket.username.toLowerCase() in spectators) {
+                socket.role = 'spectator';
                 spectators[socket.username.toLowerCase()].disconnected = false;
             }
         }
@@ -262,7 +264,10 @@ io.on('connection', function (socket) {
                 console.log('Player ' + socket.username + ' position: ' + playerPosition);
 
                 players[socket.username.toLowerCase()].character = id;
-                io.sockets.emit('character selected', id);
+                io.sockets.emit('character selected', {
+                    'user': socket.username,
+                    'id': id
+                });
 
                 // If all players have selected characters
                 if (numCharsSelected === numPlayers) {
@@ -310,6 +315,8 @@ io.on('connection', function (socket) {
 
                         const eventMessage = socket.username + ' has left the game';
                         io.sockets.emit('event', eventMessage);
+
+                        // TODO: Game over
                     }
                 } else if (socket.username.toLowerCase() in spectators) {
                     if (spectators[socket.username.toLowerCase()].disconnected) {
