@@ -20,6 +20,17 @@ let _currentTurn = 0;
 let _playerCards = {};
 let timerObj = null;
 let timeElapsed = 0;
+let isAccusation = false;
+
+// Variables for suggestions and accusations
+let _suggestedChar = null;
+let _suggestedRoom = null;
+let _suggestedWeapon = null;
+let _accusedChar = null;
+let _accusedRoom = null;
+let _accusedWeapon = null;
+// @TODO: add some array to track what has been accused/suggested
+// EITHER HERE OR THE SERVER AND RETURNED HERE
 
 // Booleans for cards in the deck
 let hasMissScarlett = false;
@@ -107,7 +118,122 @@ function movePlayer() {
 }
 
 function makeSuggestion() {
-    console.log('Make suggestion');
+    if(!isAccusation){
+        console.log('Make suggestion');
+    }
+
+    // Enable all character cards and choose char
+    for(let charIdx=0; charIdx<6; charIdx++){
+        const charCard = $('input[name=charCardSelect][value=' + charIdx + ']');
+
+        // @TODO if it hasn't been suggested/accused yet
+        charCard.prop('disabled', false);
+        charCard.prop('checked', false);
+    }
+
+    // Make dialog visible
+    $('#modalCharacterCards').modal({backdrop: 'static', keyboard: false});
+
+    // Store selected card
+    const choice = $('input[name=charCardSelect]:checked').val();
+    if(choice){
+        // Set character variable
+        if(!isAccusation){
+            _suggestedChar = parseInt(choice);
+            console.log('Suggested character: ' + _suggestedChar);
+        } else {
+            _accusedChar = parseInt(choice);
+            console.log('Accused character: ' + _accusedChar);
+        }
+    }
+}
+
+// Choose room card
+function chooseRoomCard(){
+    // Hide characters
+    $('#modalCharacterCards').modal('hide');
+
+    console.log('Choose a room');
+
+    // Enable all room cards and choose room
+    for(let roomIdx=6; roomIdx<15; roomIdx++){
+        const roomCard = $('input[name=roomCardSelect][value=' + roomIdx + ']');
+
+        // @TODO if it hasn't been suggested/accused yet
+        roomCard.prop('disabled', false);
+        roomCard.prop('checked', false);
+    }
+
+    // Make dialog visible
+    $('#modalRoomCards').modal({backdrop: 'static', keyboard: false});
+
+    // Store selected card
+    const choice = $('input[name=roomCardSelect]:checked').val();
+    if(choice){
+        // Set character variable
+        if(!isAccusation){
+            _suggestedRoom = parseInt(choice);
+            console.log('Suggested room: ' + _suggestedRoom);
+        } else {
+            _accusedRoom = parseInt(choice);
+            console.log('Accused room: ' + _accusedRoom);
+        }
+    }
+}
+
+// Choose weapon card
+function chooseWeaponCard(){
+    // Hide roomss
+    $('#modalRoomCards').modal('hide');
+
+    console.log('Choose a weapon');
+
+    // Enable all room cards and choose room
+    for(let weapIdx=15; weapIdx<21; weapIdx++){
+        const weaponCard = $('input[name=weaponCardSelect][value=' + weapIdx + ']');
+
+        // @TODO if it hasn't been suggested/accused yet
+        weaponCard.prop('disabled', false);
+        weaponCard.prop('checked', false);
+    }
+
+    // Make dialog visible
+    $('#modalWeaponCards').modal({backdrop: 'static', keyboard: false});
+
+    // Store selected card
+    const choice = $('input[name=weaponCardSelect]:checked').val();
+    if(choice){
+        // Set character variable
+        if(!isAccusation){
+            _suggestedWeapon = parseInt(choice);
+            console.log('Suggested character: ' + _suggestedWeapon);
+        } else {
+            _accusedWeapon = parseInt(choice);
+            console.log('Accused character: ' + _accusedWeapon);
+        }
+    }
+}
+
+function endSuggestion(){
+    // Hide weapons
+    $('#modalWeaponCards').modal('hide');
+
+    if(!isAccusation){
+        console.log('Suggestion made for char: ' + _suggestedChar);
+        console.log('Suggestion made for room: ' + _suggestedRoom);
+        console.log('Suggestion made for weapon: ' + _suggestedWeapon);
+
+        // @TODO: Kick off processing of suggestion
+        // use socket.emit to pass it off to server
+    } else {
+        console.log('Accusation made for char: ' + _accusedChar);
+        console.log('Accusation made for room: ' + _accusedRoom);
+        console.log('Accusation made for weapon: ' + _accusedWeapon);
+
+        // @TODO: Kick off processing of accusation
+        // use socket.emit to pass it off to server
+    }
+
 }
 
 function revealCard() {
@@ -125,6 +251,13 @@ function revealCard() {
 
 function makeAccusation() {
     console.log('Make accusation');
+
+    // Use same logic as makeSuggestion();
+    isAccusation = true;
+    makeSuggestion();
+
+    // After it returns, reset accusation
+    isAccusation = false;
 }
 
 function endTurn() {

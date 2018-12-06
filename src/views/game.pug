@@ -145,6 +145,97 @@ html(lang='en')
                                         img(src='../static/weapons/wrench.png')
                             .modal-footer
                                 button.btn.btn-primary(onclick='showCards()') Continue
+                div.modal.fade#modalCharacterCards(role='dialog')
+                    .modal-dialog
+                        .modal-content
+                            .modal-header
+                                h3 Who Gone Done It?
+                            .modal-body
+                                .text-center
+                                    label
+                                        input(type='radio' name='charCardSelect' value='0' disabled=true)
+                                        img(src='../static/characters/miss_scarlet.png')
+                                    label
+                                        input(type='radio' name='charCardSelect' value='1' disabled=true)
+                                        img(src='../static/characters/col_mustard.png')
+                                    label
+                                        input(type='radio' name='charCardSelect' value='2' disabled=true)
+                                        img(src='../static/characters/mrs_white.png')
+                                    label
+                                        input(type='radio' name='charCardSelect' value='3' disabled=true)
+                                        img(src='../static/characters/mr_green.png')
+                                    label
+                                        input(type='radio' name='charCardSelect' value='4' disabled=true)
+                                        img(src='../static/characters/mrs_peacock.png')
+                                    label
+                                        input(type='radio' name='charCardSelect' value='5' disabled=true)
+                                        img(src='../static/characters/prof_plum.png')
+                            .modal-footer
+                                button.btn.btn-primary(onclick='chooseRoomCard()') Continue
+                div.modal.fade#modalRoomCards(role='dialog')
+                    .modal-dialog
+                        .modal-content
+                            .modal-header
+                                h3 Which Room Was It Done In?
+                            .modal-body
+                                .text-center
+                                    label
+                                        input(type='radio' name='roomCardSelect' value='6' disabled=true)
+                                        img(src='../static/rooms/kitchen.png')
+                                    label
+                                        input(type='radio' name='roomCardSelect' value='7' disabled=true)
+                                        img(src='../static/rooms/ballroom.png')
+                                    label
+                                        input(type='radio' name='roomCardSelect' value='8' disabled=true)
+                                        img(src='../static/rooms/conservatory.png')
+                                    label
+                                        input(type='radio' name='roomCardSelect' value='9' disabled=true)
+                                        img(src='../static/rooms/dining_room.png')
+                                    label
+                                        input(type='radio' name='roomCardSelect' value='10' disabled=true)
+                                        img(src='../static/rooms/billard_room.png')
+                                .text-center
+                                    label
+                                        input(type='radio' name='roomCardSelect' value='11' disabled=true)
+                                        img(src='../static/rooms/library.png')
+                                    label
+                                        input(type='radio' name='roomCardSelect' value='12' disabled=true)
+                                        img(src='../static/rooms/lounge.png')
+                                    label
+                                        input(type='radio' name='roomCardSelect' value='13' disabled=true)
+                                        img(src='../static/rooms/hall.png')
+                                    label
+                                        input(type='radio' name='roomCardSelect' value='14' disabled=true)
+                                        img(src='../static/rooms/study.png')
+                            .modal-footer
+                                button.btn.btn-primary(onclick='chooseWeaponCard()') Continue
+                div.modal.fade#modalWeaponCards(role='dialog')
+                    .modal-dialog
+                        .modal-content
+                            .modal-header
+                                h3 What'd He/She Done It Wit?
+                            .modal-body
+                                .text-center
+                                    label
+                                        input(type='radio' name='weaponCardSelect' value='15' disabled=true)
+                                        img(src='../static/weapons/candlestick.png')
+                                    label
+                                        input(type='radio' name='weaponCardSelect' value='16' disabled=true)
+                                        img(src='../static/weapons/knife.png')
+                                    label
+                                        input(type='radio' name='weaponCardSelect' value='17' disabled=true)
+                                        img(src='../static/weapons/pipe.png')
+                                    label
+                                        input(type='radio' name='weaponCardSelect' value='18' disabled=true)
+                                        img(src='../static/weapons/revolver.png')
+                                    label
+                                        input(type='radio' name='weaponCardSelect' value='19' disabled=true)
+                                        img(src='../static/weapons/rope.png')
+                                    label
+                                        input(type='radio' name='weaponCardSelect' value='20' disabled=true)
+                                        img(src='../static/weapons/wrench.png')
+                            .modal-footer
+                                button.btn.btn-primary(onclick='endSuggestion()') Continue
                 div.modal.fade#modalMoveSelect(role='dialog')
                     .modal-dialog
                         .modal-content
