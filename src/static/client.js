@@ -217,7 +217,7 @@ function endSuggestion(){
         console.log('Suggestion made for weapon: ' + _suggestedWeapon);
         // @TODO: Kick off processing of suggestion
         // use socket.emit to pass it off to server
-        socket.emit('suggestion', _suggestedChar, _suggestedRoom, _suggestedWeapon);
+        socket.emit('suggestion', _character, _suggestedChar, _suggestedRoom, _suggestedWeapon);
 
     } else {
         console.log('Accusation made for char: ' + _accusedChar);

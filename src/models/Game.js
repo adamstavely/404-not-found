@@ -169,7 +169,7 @@ class Game {
         };
 
         // TODO: check for players in hallways
-        let sourceInt = player.position;
+        let sourceInt = this.players[player].getPosition();
         return locationMap[sourceInt].includes(destInt);
     }
 
@@ -178,11 +178,11 @@ class Game {
         // True: being moved as part of a suggestion
         // False: player trying to move, so move must be valid
         if (isMoved) {
-            player.position = destInt;
+            this.players[player].setPosition(destInt);
             return true;
         } else {
             if (this.isMoveValid(player, destInt)) {
-                player.position = destInt;
+                this.players[player].setPosition(destInt);
                 return true;
             } else {
                 // make another move
@@ -191,7 +191,7 @@ class Game {
         }
     }
 
-    handleSuggestion(suggesterPlayer, suspect, weaponID) {
+    handleSuggestion(suggester, character, room, weapon) {
         /*
         Weapon IDs:
         1: Candlestick
@@ -201,16 +201,16 @@ class Game {
         5: Wrench
         6: Knife
          */
-        this.movePlayer(suspect, suggesterPlayer.position(), true);
-        let playInt = this.players.indexOf(suggesterPlayer.characterName) + 1;
-        let checkingPlayer = this.players[playInt % this.numPlayers];
-        let shownCard = null;
-        while (checkingPlayer != suggesterPlayer) {
-            shownCard = checkingPlayer.checkSuggestion(suspect, suggesterPlayer.position(), weaponID);
-            if (shownCard != null) {
-                return shownCard;
+        this.movePlayer(character, room, true);
+
+        for (let i = 0; i < this.players.length; i++) {
+            if (this.players[(i + this.currentTurn + 1) % this.players.length].getIsHuman()) {
+                if (this.players[(i + this.currentTurn + 1) % this.players.length].checkSuggestion(character, room, weapon)) {
+                    return true;
+                }
             }
         }
+
         // No one had any of the suggested deck
         return null;
     }

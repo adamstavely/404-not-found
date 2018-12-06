@@ -336,9 +336,9 @@ io.on('connection', function (socket) {
         });
 
         // suggestion has been made
-        socket.on('suggestion', function(char, room, weapon) {
-            console.log('Suggestion made by ' + socket.username + ': ' + char +' '+ room +' ' + weapon);
-            let cardToShow = Game.handleSuggestion(char, room, weapon);
+        socket.on('suggestion', function(suggester, character, room, weapon) {
+            console.log('Suggestion made by ' + socket.username + ': ' + character +' '+ room +' ' + weapon);
+            let cardToShow = game.handleSuggestion(suggester, character, room, weapon);
 
             if(cardToShow != null){
                // send username so client will only show cardToShow to that user
