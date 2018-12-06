@@ -108,7 +108,7 @@ class Game {
         }
     }
 
-    isMoveValid(player, destInt) {
+    findValidMoves(player) {
         /*
         1- 2,6,21       Study
         2- 1,3          - Hallway
@@ -139,62 +139,61 @@ class Game {
         27- 6           Spawn Plum
          */
         let locationMap = {
-            1: [Locations.HALLWAY_STUDY_HALL, Locations.HALLWAY_STUDY_LIBRARY, Locations.KITCHEN],
-            2: [Locations.STUDY, Locations.HALL],
-            3: [Locations.HALLWAY_STUDY_HALL, Locations.HALLWAY_HALL_LOUNGE, Locations.HALLWAY_HALL_BILLIARD],
-            4: [Locations.HALL, Locations.LOUNGE],
-            5: [Locations.HALLWAY_HALL_LOUNGE, Locations.HALLWAY_LOUNGE_DINING, Locations.CONSERVATORY],
-            6: [Locations.STUDY, Locations.LIBRARY],
-            7: [Locations.HALL, Locations.BILLIARD_ROOM],
-            8: [Locations.LOUNGE, Locations.DINING_ROOM],
-            9: [Locations.HALLWAY_STUDY_LIBRARY, Locations.HALLWAY_LIBRARY_BILLIARD, Locations.HALLWAY_LIBRARY_CONSERVATORY],
-            10: [Locations.LIBRARY, Locations.BILLIARD_ROOM],
-            11: [Locations.HALLWAY_HALL_BILLIARD, Locations.HALLWAY_LIBRARY_BILLIARD, Locations.HALLWAY_BILLIARD_DINING, Locations.HALLWAY_BILLIARD_BALLROOM],
-            12: [Locations.BILLIARD_ROOM, Locations.DINING_ROOM],
-            13: [Locations.HALLWAY_LOUNGE_DINING, Locations.HALLWAY_BILLIARD_DINING, Locations.HALLWAY_DINING_KITCHEN],
-            14: [Locations.LIBRARY, Locations.CONSERVATORY],
-            15: [Locations.BILLIARD_ROOM, Locations.BALLROOM],
-            16: [Locations.DINING_ROOM, Locations.KITCHEN],
-            17: [Locations.LOUNGE, Locations.HALLWAY_LIBRARY_CONSERVATORY, Locations.HALLWAY_CONSERVATORY_BALLROOM],
-            18: [Locations.CONSERVATORY, Locations.BALLROOM],
-            19: [Locations.HALLWAY_BILLIARD_BALLROOM, Locations.HALLWAY_CONSERVATORY_BALLROOM, Locations.HALLWAY_BALLROOM_KITCHEN],
-            20: [Locations.BALLROOM, Locations.KITCHEN],
-            21: [Locations.STUDY, Locations.HALLWAY_DINING_KITCHEN, Locations.HALLWAY_BALLROOM_KITCHEN],
-            22: [Locations.HALLWAY_HALL_LOUNGE],
-            23: [Locations.HALLWAY_LOUNGE_DINING],
-            24: [Locations.HALLWAY_BALLROOM_KITCHEN],
-            25: [Locations.HALLWAY_CONSERVATORY_BALLROOM],
-            26: [Locations.HALLWAY_LIBRARY_CONSERVATORY],
-            27: [Locations.HALLWAY_STUDY_LIBRARY]
+            1: {"E": Locations.HALLWAY_STUDY_HALL, "S": Locations.HALLWAY_STUDY_LIBRARY, "T": Locations.KITCHEN},
+            2: {"W": Locations.STUDY, "E": Locations.HALL},
+            3: {"W": Locations.HALLWAY_STUDY_HALL, "E": Locations.HALLWAY_HALL_LOUNGE, "S": Locations.HALLWAY_HALL_BILLIARD},
+            4: {"W": Locations.HALL, "E": Locations.LOUNGE},
+            5: {"W": Locations.HALLWAY_HALL_LOUNGE, "S": Locations.HALLWAY_LOUNGE_DINING, "T": Locations.CONSERVATORY},
+            6: {"N": Locations.STUDY, "S": Locations.LIBRARY},
+            7: {"N": Locations.HALL, "S": Locations.BILLIARD_ROOM},
+            8: {"N": Locations.LOUNGE, "S": Locations.DINING_ROOM},
+            9: {"N": Locations.HALLWAY_STUDY_LIBRARY, "E": Locations.HALLWAY_LIBRARY_BILLIARD, "S": Locations.HALLWAY_LIBRARY_CONSERVATORY},
+            10: {"W": Locations.LIBRARY, "E": Locations.BILLIARD_ROOM},
+            11: {"N": Locations.HALLWAY_HALL_BILLIARD, "W": Locations.HALLWAY_LIBRARY_BILLIARD, "E": Locations.HALLWAY_BILLIARD_DINING, "S": Locations.HALLWAY_BILLIARD_BALLROOM},
+            12: {"W": Locations.BILLIARD_ROOM, "E": Locations.DINING_ROOM},
+            13: {"N": Locations.HALLWAY_LOUNGE_DINING, "W": Locations.HALLWAY_BILLIARD_DINING, "S": Locations.HALLWAY_DINING_KITCHEN},
+            14: {"N": Locations.LIBRARY, "S": Locations.CONSERVATORY},
+            15: {"N": Locations.BILLIARD_ROOM, "S": Locations.BALLROOM},
+            16: {"N": Locations.DINING_ROOM, "S": Locations.KITCHEN},
+            17: {"T": Locations.LOUNGE, "N": Locations.HALLWAY_LIBRARY_CONSERVATORY, "E": Locations.HALLWAY_CONSERVATORY_BALLROOM},
+            18: {"W": Locations.CONSERVATORY, "E": Locations.BALLROOM},
+            19: {"N": Locations.HALLWAY_BILLIARD_BALLROOM, "W": Locations.HALLWAY_CONSERVATORY_BALLROOM, "E": Locations.HALLWAY_BALLROOM_KITCHEN},
+            20: {"W": Locations.BALLROOM, "E": Locations.KITCHEN},
+            21: {"T": Locations.STUDY, "N": Locations.HALLWAY_DINING_KITCHEN, "W": Locations.HALLWAY_BALLROOM_KITCHEN},
+            22: {"S": Locations.HALLWAY_HALL_LOUNGE},
+            23: {"E": Locations.HALLWAY_LOUNGE_DINING},
+            24: {"W": Locations.HALLWAY_BALLROOM_KITCHEN},
+            25: {"E": Locations.HALLWAY_CONSERVATORY_BALLROOM},
+            26: {"N": Locations.HALLWAY_LIBRARY_CONSERVATORY},
+            27: {"N": Locations.HALLWAY_STUDY_LIBRARY}
         };
 
-        // TODO: check for players in hallways
         let sourceInt = this.players[player].getPosition();
+        // TODO give player gui choice of directions via playerDecides function
+        let destDir = Player.playerDecides(Object.keys(locationMap[sourceInt]));
+        let destInt = locationMap[sourceInt][destDir];
         if ([2,4,6,7,8,10,12,14,15,16,18,20].includes(destInt)) {
             for (let p in this.players) {
                 if (p.position == destInt) {
-                    return false;
+                    return null;
                 }
             }
         }
-        return locationMap[sourceInt].includes(destInt);
+        return destInt;
     }
 
     movePlayer(player, destInt, isMoved) {
         // isMoved is a boolean that tells if:
         // True: being moved as part of a suggestion
         // False: player trying to move, so move must be valid
+        // destInt can be null if isMoved is False
         if (isMoved) {
             this.players[player].setPosition(destInt);
             return true;
         } else {
-            if (this.isMoveValid(player, destInt)) {
-                this.players[player].setPosition(destInt);
-                return true;
-            } else {
-                // make another move
-                return false;
-            }
+            destInt = this.findValidMoves(player);
+            this.players[player].setPosition(destInt);
+
         }
     }
 

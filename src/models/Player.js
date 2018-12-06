@@ -95,6 +95,28 @@ class Player {
         return currentCards;
     }
 
+    playerDecides(directions) {
+        if (directions.includes("N")){
+            // TODO GUI for north
+        }
+        if (directions.includes("S")){
+            // TODO GUI for south
+        }
+        if (directions.includes("E")){
+            // TODO GUI for east
+        }
+        if (directions.includes("W")){
+            // TODO GUI for west
+        }
+        if (directions.includes("T")){
+            // TODO GUI for tunnel
+        }
+        // TODO grab the users choice and assign
+        let userSelection = null;
+        return userSelection;
+
+
+    }
     // Placeholder for showCard
     showCard() {
         // Prompt user to declare a card to show.
