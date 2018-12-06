@@ -18,8 +18,6 @@ let _username = '';
 let _character = null;
 let _currentTurn = 0;
 let _playerCards = {};
-let timerObj = null;
-let timeElapsed = 0;
 let isAccusation = false;
 
 // Variables for suggestions and accusations
@@ -217,9 +215,10 @@ function endSuggestion(){
         console.log('Suggestion made for char: ' + _suggestedChar);
         console.log('Suggestion made for room: ' + _suggestedRoom);
         console.log('Suggestion made for weapon: ' + _suggestedWeapon);
-
         // @TODO: Kick off processing of suggestion
         // use socket.emit to pass it off to server
+        socket.emit('suggestion', _suggestedChar, _suggestedRoom, _suggestedWeapon);
+
     } else {
         console.log('Accusation made for char: ' + _accusedChar);
         console.log('Accusation made for room: ' + _accusedRoom);
@@ -546,16 +545,12 @@ socket.on('player turn', function (id) {
     });
 });
 
-/*socket.on('timer', function (timeout) {
-    console.log('Client timer started with ' + timeout / 1000 + ' seconds');
-    timerObj = setInterval(function(){
-        timer.innerHTML = timeout/1000 - ++timeElapsed;
-        if(timeElapsed >= timeout / 1000) {
-            clearInterval(timerObj);
-            console.log('Client timer ended');
-        }
-    },1000);
-}); */
+socket.on('show suggestion', function(username, card){
+    if(username == _username) {
+        chatMessages.innerHTML += '<i>' + card + ' suggested' + '</i><br/>';
+        scrollToBottom();
+    }
+});
 
 socket.on('timer', function (timeElapsed) {
     timer.innerHTML = timeElapsed;

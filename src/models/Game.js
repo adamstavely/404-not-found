@@ -32,7 +32,7 @@ class Game {
             new Player('MRS_PEACOCK'),
             new Player('PROF_PLUM'),
         ];
-        this.MAX_TIME = 15; // seconds TODO: change to 180
+        this.MAX_TIME = 150; // seconds TODO: change to 180
     }
 
     static shuffleArray(array) {

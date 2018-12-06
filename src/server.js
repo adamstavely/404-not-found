@@ -246,6 +246,13 @@ io.on('connection', function (socket) {
             io.sockets.emit('message', newMessage);
         });
 
+        function postToChat(message) {
+            chatHistory.push(message);
+
+            // Send message to all sockets
+            io.sockets.emit('message', message);
+        }
+
         socket.on('start game', function () {
             // TODO: Change check to 3
             // Check that there are enough players
@@ -261,6 +268,8 @@ io.on('connection', function (socket) {
 
                 // Send start game message to all sockets
                 io.sockets.emit('start game', usernames);
+                // Add message to chat history
+                postToChat('Let the game begin!');
             }
         });
 
@@ -304,6 +313,12 @@ io.on('connection', function (socket) {
                     let turn = game.getFirstTurn();
                     console.log('First turn: ' + turn);
                     io.sockets.emit('player turn', turn);
+                    for(let player in players) {
+                        if (players[player].character == turn) {
+                            postToChat('It\'s ' + player + '\'s turn!');
+                            break;
+                        }
+                    }
 
                     startServerClock();
                     console.log('Starting timer');
@@ -318,6 +333,33 @@ io.on('connection', function (socket) {
         // response to reveal card button clicked
         socket.on('reveal card', function() {
             console.log('Received reveal card for: ' + socket.username);
+        });
+
+        // suggestion has been made
+        socket.on('suggestion', function(char, room, weapon) {
+            console.log('Suggestion made by ' + socket.username + ': ' + char +' '+ room +' ' + weapon);
+            let cardToShow = Game.handleSuggestion(char, room, weapon);
+
+            if(cardToShow != null){
+               // send username so client will only show cardToShow to that user
+                socket.emit('show suggestion', socket.username, cardToShow);
+            }
+            // dont think we need this switch statement... will probably delete on next commit
+            /*switch(char) {
+                case characters.COL_MUSTARD:
+                // do something
+                case characters.MISS_SCARLET:
+
+                case characters.MR_GREEN:
+
+                case characters.MRS_PEACOCK:
+
+                case characters.MRS_WHITE:
+
+                case characters.PROF_PLUM:
+
+            } */
+
         });
 
         socket.on('end turn', function() {
@@ -426,7 +468,7 @@ function startServerClock() {
     clock = setInterval(function () {
         // update the timers every one second
         updateTimer(game.MAX_TIME);
-    }, 10000); // set to 10000 for development purposes, reset when ready
+    }, 1000); // set to 10000 for development purposes, reset when ready
 }
 
 function resetServerClock() {
