@@ -183,9 +183,11 @@ io.on('connection', function (socket) {
             // Add username to list of global usernames
             usernames.push(socket.username.toLowerCase());
 
-            // Only add player to game if game hasn't started yet
             if (!isGameStarted) {
+                // Set role of socket to player if game hasn't started yet
                 socket.role = 'player';
+
+                // Initialize player properties
                 players[socket.username.toLowerCase()] = {
                     disconnected: false,
                     character: null
@@ -194,18 +196,24 @@ io.on('connection', function (socket) {
                 // Increment numPlayers
                 numPlayers++;
 
+                // Send event message to all sockets
                 const eventMessage = socket.username + ' has joined the game';
                 io.sockets.emit('event', eventMessage);
             } else {
+                // Set role of socket to spectator
                 socket.role = 'spectator';
+
+                // Initialize spectator properties
                 spectators[socket.username.toLowerCase()] = {
                     disconnected: false
                 };
 
+                // Send event message to all sockets
                 const eventMessage = socket.username + ' has entered the lobby';
                 io.sockets.emit('event', eventMessage);
             }
         } else {
+            // Handle page refreshes by re-setting socket role and resetting disconnected boolean
             if (socket.username.toLowerCase() in players) {
                 socket.role = 'player';
                 players[socket.username.toLowerCase()].disconnected = false;
@@ -215,18 +223,36 @@ io.on('connection', function (socket) {
             }
         }
 
+        // Send username to client
         socket.emit('username', socket.username.toLowerCase());
 
         updateUsernames();
         updateChatWindow(socket);
         updateGameState(socket);
 
+        // Using this for debugging, print to server console
+        socket.on('printToConsole', function(message) {
+            console.log('Message from client: ' + message);
+        });
+
         socket.on('message', function (message) {
-            const newMessage = socket.username + ': ' + message;
             console.log('Received message from ' + socket.username + ': ' + message);
+
+            // Add message to chat history
+            const newMessage = socket.username + ': ' + message;
             chatHistory.push(newMessage);
+
+            // Send message to all sockets
             io.sockets.emit('message', newMessage);
         });
+
+        function postToChat(message) {
+            chatHistory.push(message);
+
+            // Send message to all sockets
+            io.sockets.emit('message', message);
+        }
+
         socket.on('start game', function () {
             // TODO: Change check to 3
             // Check that there are enough players
@@ -238,13 +264,19 @@ io.on('connection', function (socket) {
                 // Initialize game
                 game.setNumPlayers(numPlayers);
                 game.initDeck();
-
                 isGameStarted = true;
+
+                // Send start game message to all sockets
                 io.sockets.emit('start game', usernames);
+                // Add message to chat history
+                postToChat('Let the game begin!');
             }
         });
+
         socket.on('select character', function (id, callback) {
+            // Check if message came from active player in game
             if (socket.role === 'player') {
+                // Check if character has been selected already
                 for (let player in players) {
                     if (players.hasOwnProperty(player)) {
                         if (player.character === id) {
@@ -254,6 +286,7 @@ io.on('connection', function (socket) {
                     }
                 }
 
+                // Send valid signal back to socket
                 callback(true);
 
                 // Initialize character position
@@ -264,6 +297,8 @@ io.on('connection', function (socket) {
                 console.log('Player ' + socket.username + ' position: ' + playerPosition);
 
                 players[socket.username.toLowerCase()].character = id;
+
+                // Send character selection to all sockets
                 io.sockets.emit('character selected', {
                     'user': socket.username,
                     'id': id
@@ -278,6 +313,12 @@ io.on('connection', function (socket) {
                     let turn = game.getFirstTurn();
                     console.log('First turn: ' + turn);
                     io.sockets.emit('player turn', turn);
+                    for(let player in players) {
+                        if (players[player].character == turn) {
+                            postToChat('It\'s ' + player + '\'s turn!');
+                            break;
+                        }
+                    }
 
                     startServerClock();
                     console.log('Starting timer');
@@ -288,6 +329,39 @@ io.on('connection', function (socket) {
                 callback(false);
             }
         });
+
+        // response to reveal card button clicked
+        socket.on('reveal card', function() {
+            console.log('Received reveal card for: ' + socket.username);
+        });
+
+        // suggestion has been made
+        socket.on('suggestion', function(suggester, character, room, weapon) {
+            console.log('Suggestion made by ' + socket.username + ': ' + character +' '+ room +' ' + weapon);
+            let cardToShow = game.handleSuggestion(suggester, character, room, weapon);
+
+            if(cardToShow != null){
+               // send username so client will only show cardToShow to that user
+                socket.emit('show suggestion', socket.username, cardToShow);
+            }
+            // dont think we need this switch statement... will probably delete on next commit
+            /*switch(char) {
+                case characters.COL_MUSTARD:
+                // do something
+                case characters.MISS_SCARLET:
+
+                case characters.MR_GREEN:
+
+                case characters.MRS_PEACOCK:
+
+                case characters.MRS_WHITE:
+
+                case characters.PROF_PLUM:
+
+            } */
+
+        });
+
         socket.on('end turn', function() {
            if (socket.role === 'player') {
                resetServerClock();
@@ -297,6 +371,7 @@ io.on('connection', function (socket) {
                startServerClock();
            }
         });
+
         socket.on('disconnect', function () {
             // Remove disconnected player after timeout
             if (socket.username.toLowerCase() in players) {
@@ -313,6 +388,7 @@ io.on('connection', function (socket) {
                         // Decrement numPlayers
                         numPlayers--;
 
+                        // Send event message to all sockets
                         const eventMessage = socket.username + ' has left the game';
                         io.sockets.emit('event', eventMessage);
 
@@ -322,11 +398,12 @@ io.on('connection', function (socket) {
                     if (spectators[socket.username.toLowerCase()].disconnected) {
                         removeClient(socket);
 
+                        // Send event message to all sockets
                         const eventMessage = socket.username + ' has left the lobby';
                         io.sockets.emit('event', eventMessage);
                     }
                 }
-            }, 1000);
+            }, 1000);   // Timeout is 1 second
         });
     } catch (error) {
         console.log(error.message);
@@ -375,7 +452,7 @@ setInterval(function () {
 function updateTimer(max_time) {
     //send timer update to all clients
     io.sockets.emit('timer', max_time - ++timeElapsed);
-    if(game.updateTimer(timeElapsed)) {
+    if (game.updateTimer(timeElapsed)) {
         // time is up for the turn, reset everyone's timer
         io.sockets.emit('timer', 0);
         resetServerClock();
@@ -391,7 +468,7 @@ function startServerClock() {
     clock = setInterval(function () {
         // update the timers every one second
         updateTimer(game.MAX_TIME);
-    }, 1000);
+    }, 1000); // set to 10000 for development purposes, reset when ready
 }
 
 function resetServerClock() {
