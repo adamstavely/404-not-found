@@ -315,6 +315,8 @@ io.on('connection', function (socket) {
 
                         const eventMessage = socket.username + ' has left the game';
                         io.sockets.emit('event', eventMessage);
+
+                        // TODO: Game over
                     }
                 } else if (socket.username.toLowerCase() in spectators) {
                     if (spectators[socket.username.toLowerCase()].disconnected) {

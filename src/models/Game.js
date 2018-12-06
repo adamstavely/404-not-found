@@ -219,8 +219,7 @@ class Game {
         if (this.solution["Character"] === suspect) {
             if (this.solution["Room"] === roomInt) {
                 if (this.solution["Weapon"] === weaponID) {
-                    //Game Over
-                    GameOver();
+                    // TODO: Game Over
                 }
             }
         }
