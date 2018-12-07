@@ -709,9 +709,33 @@ socket.on('player turn', function (id) {
     });
 });
 
+socket.on('request suggestion', function(playerWithCard, character, room, weapon){
+    if(playerWithCard.id == _username) {
+        // MAKE A BOX POP UP WITH THE SUGGESTIONS HERE
+        // (disable selection of any card that isnt character,room or weapon
+
+
+
+
+
+        //figure out the card to be suggested
+        //suggestedCard =
+
+        // then send the suggested card back to the server
+        socket.emit('suggestionToServer', suggestedCard);
+    }
+});
+
 socket.on('show suggestion', function(username, card){
     if(username == _username) {
         chatMessages.innerHTML += '<i>' + card + ' suggested' + '</i><br/>';
+        scrollToBottom();
+    }
+});
+
+socket.on('end suggestion', function(suggester){
+    if (suggester === _username) {
+        chatMessages.innerHTML += '<i>' + 'Nobody had your suggestions' + '</i><br/>';
         scrollToBottom();
     }
 });

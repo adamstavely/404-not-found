@@ -1,4 +1,5 @@
 const Characters = require('./characters');
+const Card = require('./Card');
 
 class Player {
 
@@ -72,27 +73,24 @@ class Player {
 
     checkSuggestion(character, room, weapon) {
         let currentCards = [];
-        let tempCard;
 
-        tempCard = this.cards.find(character);
         // If the character card exists within Player's deck
-        if ('undefined' !== typeof tempCard) {
-            currentCards.push(tempCard)
+        if (hasCard(this.cards,character)) {
+            currentCards.push(new Card(character));
         }
 
-        tempCard = this.cards.find(room);
         // If the room card exists within Player's deck
-        if ('undefined' !== typeof tempCard) {
-            currentCards.push(tempCard)
+        if (hasCard(this.cards,room)) {
+            currentCards.push(new Card(room));
         }
 
-        tempCard = this.cards.find(weapon);
         // If the weapon card exists within Player's deck
-        if ('undefined' !== typeof tempCard) {
-            currentCards.push(tempCard)
+        if (hasCard(this.cards,weapon)) {
+            currentCards.push(new Card(weapon));
         }
 
-        return currentCards;
+        return currentCards.length > 0;
+
     }
 
     // Placeholder for showCard
@@ -102,6 +100,15 @@ class Player {
         // returned from checkSuggestion to prompt the user (client side)
     }
 
+}
+
+function hasCard(cardArr, card){
+    for(i = 0; i< cardArr.length; i++){
+        if(cardArr[i].name === card){
+            return true;
+        }
+    }
+    return false;
 }
 
 module.exports = Player;

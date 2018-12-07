@@ -208,13 +208,25 @@ class Game {
          */
         this.movePlayer(character, room, true);
 
+        // chris
         for (let i = 0; i < this.players.length; i++) {
+            // make sure the suggester isnt chosen
+            if(suggester != this.players[i].id) {
+                // find the first player that has the suggestion (should really start at the suggester)
+                if (this.players[i].checkSuggestion(character, room, weapon)) {
+                    return this.players[i];
+                }
+            }
+        }
+
+        // colin
+        /*for (let i = 0; i < this.players.length; i++) {
             if (this.players[(i + this.currentTurn + 1) % this.players.length].getIsHuman()) {
                 if (this.players[(i + this.currentTurn + 1) % this.players.length].checkSuggestion(character, room, weapon)) {
                     return true;
                 }
             }
-        }
+        }*/
 
         // No one had any of the suggested deck
         return null;
