@@ -233,12 +233,23 @@ class Game {
     }
 
     handleAccusation(accuserPlayer, suspect, roomInt, weaponID) {
-        if (this.solution["Character"] === suspect) {
-            if (this.solution["Room"] === roomInt) {
-                if (this.solution["Weapon"] === weaponID) {
+        console.log(this.solution["Suspect"]);
+        console.log(this.solution["Room"]);
+        console.log(this.solution["Weapon"]);
+
+        if (this.solution["Suspect"].name === suspect) {
+            if (this.solution["Room"].name === roomInt) {
+                if (this.solution["Weapon"].name === weaponID) {
                     // TODO: Game Over
+                    return true;
+                } else {
+                    return false;
                 }
+            } else {
+                return false;
             }
+        }  else {
+            return false;
         }
         accuserPlayer.hasAccused = true;
     }

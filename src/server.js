@@ -14,6 +14,8 @@ const Game = require('./models/Game');
 let timeElapsed = 0;
 let clock = null;
 let _currentSuggester = -1;
+let _currentAccuser = -1;
+let _isGameOver = false;
 
 // Create the server
 const app = express();
@@ -236,6 +238,14 @@ io.on('connection', function (socket) {
             console.log('Message from client: ' + message);
         });
 
+        // Move player positions
+        socket.on('updatePlayerPosition', function(newPlayerPos, playerId) {
+            // Call movePlayer function from game
+            console.log('Updating player: ' + playerId + ' position to: ' + newPlayerPos);
+            // isMoved = false because simply moving player position
+            game.movePlayer(playerId, newPlayerPos, false);
+        });
+
         socket.on('message', function (message) {
             console.log('Received message from ' + socket.username + ': ' + message);
 
@@ -360,6 +370,17 @@ io.on('connection', function (socket) {
         socket.on('suggestionToServer', function(suggestedCard){
             //receive the card and then send it to the correct client (_currentSuggester)
             socket.emit('show suggestion', _currentSuggester, suggestedCard);
+        });
+
+        // Handle accusation
+        socket.on('accusation', function(accuserId, charId, roomId, weaponId) {
+            console.log('Accusation made by: ' + socket.username);
+            _isGameOver = game.handleAccusation(accuserId, charId, roomId, weaponId);
+
+            // Check
+            if(_isGameOver){
+                console.log('GAME OVER!!!! ' + socket.username + ' wins ALL the marbles!!');
+            }
         });
 
         socket.on('end turn', function() {
