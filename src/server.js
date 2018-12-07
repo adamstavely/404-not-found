@@ -291,6 +291,12 @@ io.on('connection', function (socket) {
 
                 // Initialize character position
                 let playerPosition = game.initPlayer(id);
+                let _locationMap = game.getLocationMap();
+
+                // Pass position to client
+                console.log('Emitting player position to client');
+                io.sockets.emit('initPosition', playerPosition, _locationMap);
+
                 numCharsSelected++;
 
                 console.log('Player ' + socket.username + ' selected character ' + id);

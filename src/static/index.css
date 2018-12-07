@@ -185,6 +185,12 @@ button:focus {
     height: 0;
 }
 
+[type=checkbox] {
+    margin: 5px;
+    width: 20px;
+    cursor: pointer;
+}
+
 [type=radio] + img {
     cursor: pointer;
     margin: 1px;
