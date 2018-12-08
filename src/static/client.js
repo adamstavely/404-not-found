@@ -321,7 +321,8 @@ function chooseRoomCard(){
 
     // Enable all room cards and choose room
     if(!isAccusation){
-      chooseWeaponCard();
+        _suggestedRoom = _playerPosition;
+        chooseWeaponCard();
 
     }  else {
         for(let roomIdx=6; roomIdx<15; roomIdx++){
@@ -389,7 +390,7 @@ function endSuggestion(){
         console.log('Suggestion made for weapon: ' + _suggestedWeapon);
         // @TODO: Kick off processing of suggestion
         // use socket.emit to pass it off to server
-        socket.emit('suggestion', _character, _suggestedChar, _suggestedRoom, _suggestedWeapon);
+        socket.emit('suggestion', _username, _suggestedChar, _suggestedRoom, _suggestedWeapon);
 
     } else {
         console.log('Accusation made for char: ' + _accusedChar);
