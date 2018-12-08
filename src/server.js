@@ -308,7 +308,7 @@ io.on('connection', function (socket) {
 
                 // Pass position to client
                 console.log('Emitting player position to client');
-                io.sockets.emit('initPosition', playerPosition, _locationMap);
+                socket.emit('initPosition', playerPosition, _locationMap);
 
                 numCharsSelected++;
 
