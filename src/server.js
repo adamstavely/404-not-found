@@ -371,7 +371,7 @@ io.on('connection', function (socket) {
 
         socket.on('suggestionToServer', function(suggestedCard){
             //receive the card and then send it to the correct client (_currentSuggester)
-            socket.emit('show suggestion', _currentSuggester, suggestedCard);
+            io.sockets.emit('show suggestion', _currentSuggester, suggestedCard);
         });
 
         // Handle accusation

@@ -99,6 +99,9 @@ function showCards(){
 
             console.log('Emitting suggested card to server');
             socket.emit('suggestionToServer', suggestedCard);
+
+            // reset flag
+            isSuggestion = false;
         }
     } else {
         $('#modalPlayerCards').modal('hide');
@@ -797,9 +800,26 @@ socket.on('request suggestion', function(playerWithCard, character, room, weapon
 });
 
 socket.on('show suggestion', function(username, card){
-    if(username == _username) {
-        chatMessages.innerHTML += '<i>' + card + ' suggested' + '</i><br/>';
-        scrollToBottom();
+    console.log('Suggester: ' + username);
+    console.log('This suggester: ' + _player.id);
+
+    if(username == _player.id) {
+        console.log('revealing card: ' + card);
+        // Reveal card to user
+        for(let i=0; i<21; i++){
+            const testCard = $('input[name=cardSelect][value=' + i + ']');
+            testCard.prop('disabled', true);
+
+            // show
+            if(i == card){
+                testCard.prop('disabled', false);
+            }
+
+        }
+
+        $('#modalPlayerCards').modal({backdrop: 'static', keyboard: false});
+        //chatMessages.innerHTML += '<i>' + card + ' suggested' + '</i><br/>';
+        //scrollToBottom();
     }
 });
 
