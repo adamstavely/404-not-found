@@ -11,6 +11,7 @@ const User = require('./models/User');
 const characters = require('./models/characters');
 const Player = require('./models/Player');
 const Game = require('./models/Game');
+const locations = require('./models/locations');
 let timeElapsed = 0;
 let clock = null;
 let _currentSuggester = -1;
@@ -239,11 +240,12 @@ io.on('connection', function (socket) {
         });
 
         // Move player positions
-        socket.on('updatePlayerPosition', function(newPlayerPos, playerId) {
+        socket.on('updatePlayerPosition', function(playerId, newPlayerPos) {
             // Call movePlayer function from game
             console.log('Updating player: ' + playerId + ' position to: ' + newPlayerPos);
             // isMoved = false because simply moving player position
             game.movePlayer(playerId, newPlayerPos, false);
+            postToChat(socket.username + ' moved to the ' + location2string(newPlayerPos))
         });
 
         socket.on('message', function (message) {
@@ -261,7 +263,7 @@ io.on('connection', function (socket) {
             chatHistory.push(message);
 
             // Send message to all sockets
-            io.sockets.emit('message', message);
+            io.sockets.emit('event', message);
         }
 
         socket.on('start game', function () {
@@ -430,6 +432,53 @@ io.on('connection', function (socket) {
         console.log(error.message);
     }
 });
+
+function location2string(location){
+    switch(location){
+        case locations.STUDY:
+            return 'Study hall';
+        case locations.HALLWAY_STUDY_HALL:
+            return 'hallway between study and hall';
+        case locations.HALL:
+            return 'hall';
+        case locations.HALLWAY_HALL_LOUNGE:
+            return 'hallway between hall and lounge';
+        case locations.LOUNGE:
+            return 'lounge';
+        case locations.HALLWAY_STUDY_LIBRARY:
+            return 'hallway between study and library';
+        case locations.HALLWAY_HALL_BILLIARD:
+            return 'hallway between hall and billiard';
+        case locations.HALLWAY_LOUNGE_DINING:
+            return 'hallway between lounge and dining room';
+        case locations.LIBRARY:
+            return 'library';
+        case locations.HALLWAY_LIBRARY_BILLIARD:
+            return 'hallway between library and billiard';
+        case locations.BILLIARD_ROOM:
+            return 'billiard room';
+        case locations.HALLWAY_BILLIARD_DINING:
+            return 'hallway between billiard and dining room';
+        case locations.DINING_ROOM:
+            return 'dining room';
+        case locations.HALLWAY_LIBRARY_CONSERVATORY:
+            return 'hallway between library and conservatory';
+        case locations.HALLWAY_BILLIARD_BALLROOM:
+            return 'hallway between billiard and ballroom';
+        case locations.HALLWAY_DINING_KITCHEN:
+            return 'hallway between dining room and kitchen';
+        case locations.CONSERVATORY:
+            return 'conservatory';
+        case locations.HALLWAY_CONSERVATORY_BALLROOM:
+            return 'hallway between conservatory and ballroom';
+        case locations.BALLROOM:
+            return 'ballroom';
+        case locations.HALLWAY_BALLROOM_KITCHEN:
+            return 'hallway between ballroom and kitchen';
+        case locations.KITCHEN:
+            return 'kitchen';
+    }
+}
 
 function updateUsernames() {
     console.log('Emitting usernames: ' + usernames);
