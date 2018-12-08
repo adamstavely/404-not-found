@@ -243,10 +243,20 @@ io.on('connection', function (socket) {
         socket.on('updatePlayerPosition', function(playerId, newPlayerPos) {
             // Call movePlayer function from game
             console.log('Updating player: ' + playerId + ' position to: ' + newPlayerPos);
+            setOldPosition(playerId);
             // isMoved = false because simply moving player position
             game.movePlayer(playerId, newPlayerPos, false);
-            postToChat(socket.username + ' moved to the ' + location2string(newPlayerPos))
+            postToChat(socket.username + ' moved to the ' + location2string(newPlayerPos));
+            let movepos = location2map(newPlayerPos);
+            game.players[playerId].setPositionMap(movepos.x, movepos.y);
+            io.sockets.emit('state', game.getPlayers());
         });
+
+        function setOldPosition(playerId){
+            let x = game.players[playerId].getPositionMap().x;
+            let y = game.players[playerId].getPositionMap().y;
+            game.players[playerId].setOldPosition(x, y);
+        }
 
         socket.on('message', function (message) {
             console.log('Received message from ' + socket.username + ': ' + message);
@@ -304,11 +314,11 @@ io.on('connection', function (socket) {
 
                 // Initialize character position
                 let playerPosition = game.initPlayer(id);
-                let _locationMap = game.getLocationMap();
+                let _locationMap = Game.getLocationMap();
 
                 // Pass position to client
                 console.log('Emitting player position to client');
-                io.sockets.emit('initPosition', playerPosition, _locationMap);
+                socket.emit('initPosition', playerPosition, _locationMap);
 
                 numCharsSelected++;
 
@@ -371,7 +381,7 @@ io.on('connection', function (socket) {
 
         socket.on('suggestionToServer', function(suggestedCard){
             //receive the card and then send it to the correct client (_currentSuggester)
-            socket.emit('show suggestion', _currentSuggester, suggestedCard);
+            io.sockets.emit('show suggestion', _currentSuggester, suggestedCard);
         });
 
         // Handle accusation
@@ -480,6 +490,124 @@ function location2string(location){
     }
 }
 
+function location2map(location){
+    var position = {
+        'x':0,
+        'y':0
+    };
+
+    switch(location){
+        case locations.STUDY:
+            position.x = 35;
+            position.y = 80;
+            return position;
+        case locations.HALLWAY_STUDY_HALL:
+            position.x = 190;
+            position.y = 75;
+            return position;
+        case locations.HALL:
+            position.x = 265;
+            position.y = 80;
+            return position;
+        case locations.HALLWAY_HALL_LOUNGE:
+            position.x = 410;
+            position.y = 75;
+            return position;
+        case locations.LOUNGE:
+            position.x = 490;
+            position.y = 50;
+            return position;
+        case locations.HALLWAY_STUDY_LIBRARY:
+            position.x = 80;
+            position.y = 190;
+            return position;
+        case locations.HALLWAY_HALL_BILLIARD:
+            position.x = 300;
+            position.y = 190;
+            return position;
+        case locations.HALLWAY_LOUNGE_DINING:
+            position.x = 520;
+            position.y = 190;
+            return position;
+        case locations.LIBRARY:
+            position.x = 75;
+            position.y = 330;
+            return position;
+        case locations.HALLWAY_LIBRARY_BILLIARD:
+            position.x = 190;
+            position.y = 300;
+            return position;
+        case locations.BILLIARD_ROOM:
+            position.x = 280;
+            position.y = 330;
+            return position;
+        case locations.HALLWAY_BILLIARD_DINING:
+            position.x = 405;
+            position.y = 300;
+            return position;
+        case locations.DINING_ROOM:
+            position.x = 550;
+            position.y = 330;
+            return position;
+        case locations.HALLWAY_LIBRARY_CONSERVATORY:
+            position.x = 80;
+            position.y = 410;
+            return position;
+        case locations.HALLWAY_BILLIARD_BALLROOM:
+            position.x = 330;
+            position.y = 415;
+            return position;
+        case locations.HALLWAY_DINING_KITCHEN:
+            position.x = 525;
+            position.y = 410;
+            return position;
+        case locations.CONSERVATORY:
+            position.x = 80;
+            position.y = 490;
+            return position;
+        case locations.HALLWAY_CONSERVATORY_BALLROOM:
+            position.x = 190;
+            position.y = 515;
+            return position;
+        case locations.BALLROOM:
+            position.x = 300;
+            position.y = 550;
+            return position;
+        case locations.HALLWAY_BALLROOM_KITCHEN:
+            position.x = 410;
+            position.y = 520;
+            return position;
+        case locations.KITCHEN:
+            position.x = 495;
+            position.y = 550;
+            return position;
+        case locations.SPAWN_SCARLET:
+            position.x = 410;
+            position.y = 25;
+            return position;
+        case locations.SPAWN_MUSTARD:
+            position.x = 575;
+            position.y = 190;
+            return position;
+        case locations.SPAWN_WHITE:
+            position.x = 410;
+            position.y = 575;
+            return position;
+        case locations.SPAWN_GREEN:
+            position.x = 190;
+            position.y = 575;
+            return position;
+        case locations.SPAWN_PEACOCK:
+            position.x = 30;
+            position.y = 410;
+            return position;
+        case locations.SPAWN_PLUM:
+            position.x = 30;
+            position.y = 190;
+            return position;
+    }
+}
+
 function updateUsernames() {
     console.log('Emitting usernames: ' + usernames);
     io.sockets.emit('usernames', usernames);
@@ -515,9 +643,9 @@ function removeClient(socket) {
     updateUsernames();
 }
 
-setInterval(function () {
+/*setInterval(function () {
     io.sockets.emit('state', players);
-}, 1000 / 60);
+}, 1000 / 60); */
 
 function updateTimer(max_time) {
     //send timer update to all clients
