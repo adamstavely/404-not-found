@@ -351,9 +351,10 @@ function endSuggestion() {
         socket.emit('accusation', _player.id, _accusedChar, _accusedRoom, _accusedWeapon, function(correct) {
             if (correct) {
                 console.log("Marbles acquired!");
+                alert('You are correct! Congratulations!');
             } else {
                 console.log("I suck!");
-
+                alert('Your accusation is incorrect! You suck!');
             }
         });
     }
