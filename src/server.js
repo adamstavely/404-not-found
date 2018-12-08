@@ -235,12 +235,12 @@ io.on('connection', function (socket) {
         updateGameState(socket);
 
         // Using this for debugging, print to server console
-        socket.on('printToConsole', function(message) {
+        socket.on('printToConsole', function (message) {
             console.log('Message from client: ' + message);
         });
 
         // Move player positions
-        socket.on('updatePlayerPosition', function(playerId, newPlayerPos) {
+        socket.on('updatePlayerPosition', function (playerId, newPlayerPos) {
             // Call movePlayer function from game
             console.log('Updating player: ' + playerId + ' position to: ' + newPlayerPos);
             setOldPosition(playerId);
@@ -252,7 +252,7 @@ io.on('connection', function (socket) {
             io.sockets.emit('state', game.getPlayers(), playerId);
         });
 
-        function setOldPosition(playerId){
+        function setOldPosition(playerId) {
             let x = game.players[playerId].getPositionMap().x;
             let y = game.players[playerId].getPositionMap().y;
             game.players[playerId].setOldPosition(x, y);
@@ -342,7 +342,7 @@ io.on('connection', function (socket) {
                     let turn = game.getFirstTurn();
                     console.log('First turn: ' + turn);
                     io.sockets.emit('player turn', turn);
-                    for(let player in players) {
+                    for (let player in players) {
                         if (players[player].character == turn) {
                             postToChat('It\'s ' + player + '\'s turn!');
                             break;
@@ -360,18 +360,18 @@ io.on('connection', function (socket) {
         });
 
         // response to reveal card button clicked
-        socket.on('reveal card', function() {
+        socket.on('reveal card', function () {
             console.log('Received reveal card for: ' + socket.username);
         });
 
         // suggestion has been made
-        socket.on('suggestion', function(suggester, character, room, weapon) {
-            console.log('Suggestion made by: ' + socket.username + ': ' + character +' '+ room +' ' + weapon);
+        socket.on('suggestion', function (suggester, character, room, weapon) {
+            console.log('Suggestion made by: ' + socket.username + ': ' + character + ' ' + room + ' ' + weapon);
             _currentSuggester = suggester;
             let playerWithCard = game.handleSuggestion(suggester, character, room, weapon);
 
-            if(playerWithCard != null){
-               // send player and cards to clients
+            if (playerWithCard != null) {
+                // send player and cards to clients
                 io.sockets.emit('request suggestion', playerWithCard, character, room, weapon);
             } else {
                 io.sockets.emit('end suggestion', socket.username);
@@ -379,30 +379,30 @@ io.on('connection', function (socket) {
 
         });
 
-        socket.on('suggestionToServer', function(suggestedCard){
+        socket.on('suggestionToServer', function (suggestedCard) {
             //receive the card and then send it to the correct client (_currentSuggester)
             io.sockets.emit('show suggestion', _currentSuggester, suggestedCard);
         });
 
         // Handle accusation
-        socket.on('accusation', function(accuserId, charId, roomId, weaponId) {
-            console.log('Accusation made by: ' + socket.username + ': ' + charId +' '+ roomId +' ' + weaponId);
+        socket.on('accusation', function (accuserId, charId, roomId, weaponId) {
+            console.log('Accusation made by: ' + socket.username + ': ' + charId + ' ' + roomId + ' ' + weaponId);
             _isGameOver = game.handleAccusation(accuserId, charId, roomId, weaponId);
 
             // Check
-            if(_isGameOver){
+            if (_isGameOver) {
                 console.log('GAME OVER!!!! ' + socket.username + ' wins ALL the marbles!!');
             }
         });
 
-        socket.on('end turn', function() {
-           if (socket.role === 'player') {
-               resetServerClock();
-               let turn = game.getNextTurn();
-               console.log('Next turn: ' + turn);
-               io.sockets.emit('player turn', turn);
-               startServerClock();
-           }
+        socket.on('end turn', function () {
+            if (socket.role === 'player') {
+                resetServerClock();
+                let turn = game.getNextTurn();
+                console.log('Next turn: ' + turn);
+                io.sockets.emit('player turn', turn);
+                startServerClock();
+            }
         });
 
         socket.on('disconnect', function () {
@@ -443,8 +443,8 @@ io.on('connection', function (socket) {
     }
 });
 
-function location2string(location){
-    switch(location){
+function location2string(location) {
+    switch (location) {
         case locations.STUDY:
             return 'Study hall';
         case locations.HALLWAY_STUDY_HALL:
@@ -490,13 +490,13 @@ function location2string(location){
     }
 }
 
-function location2map(location){
+function location2map(location) {
     var position = {
-        'x':0,
-        'y':0
+        'x': 0,
+        'y': 0
     };
 
-    switch(location){
+    switch (location) {
         case locations.STUDY:
             position.x = 35;
             position.y = 80;

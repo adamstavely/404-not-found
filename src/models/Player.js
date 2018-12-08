@@ -16,8 +16,8 @@ class Player {
             'y': 0
         };
         this.oldPosition = {
-                'x':0,
-                'y':0
+            'x': 0,
+            'y': 0
         };
     }
 
@@ -47,25 +47,25 @@ class Player {
         this.position = newPosition;
     }
 
-    getPositionMap(){
+    getPositionMap() {
         return this.positionMap;
     }
 
     setPositionMap(newPositionX, newPositionY) {
         this.positionMap = {
-            'x':newPositionX,
-            'y':newPositionY
+            'x': newPositionX,
+            'y': newPositionY
         };
     }
 
-    getOldPosition(){
+    getOldPosition() {
         return this.oldPosition;
     }
 
     setOldPosition(oldPositionX, oldPositionY) {
         this.oldPosition = {
-            'x':oldPositionX,
-            'y':oldPositionY
+            'x': oldPositionX,
+            'y': oldPositionY
         };
     }
 
@@ -105,17 +105,17 @@ class Player {
         let currentCards = [];
 
         // If the character card exists within Player's deck
-        if (hasCard(this.cards,character)) {
+        if (hasCard(this.cards, character)) {
             currentCards.push(new Card(character));
         }
 
         // If the room card exists within Player's deck
-        if (hasCard(this.cards,room)) {
+        if (hasCard(this.cards, room)) {
             currentCards.push(new Card(room));
         }
 
         // If the weapon card exists within Player's deck
-        if (hasCard(this.cards,weapon)) {
+        if (hasCard(this.cards, weapon)) {
             currentCards.push(new Card(weapon));
         }
 
@@ -124,19 +124,19 @@ class Player {
     }
 
     playerDecides(directions) {
-        if (directions.includes("N")){
+        if (directions.includes("N")) {
             // TODO GUI for north
         }
-        if (directions.includes("S")){
+        if (directions.includes("S")) {
             // TODO GUI for south
         }
-        if (directions.includes("E")){
+        if (directions.includes("E")) {
             // TODO GUI for east
         }
-        if (directions.includes("W")){
+        if (directions.includes("W")) {
             // TODO GUI for west
         }
-        if (directions.includes("T")){
+        if (directions.includes("T")) {
             // TODO GUI for tunnel
         }
         // TODO grab the users choice and assign
@@ -145,6 +145,7 @@ class Player {
 
 
     }
+
     // Placeholder for showCard
     showCard() {
         // Prompt user to declare a card to show.
@@ -154,9 +155,9 @@ class Player {
 
 }
 
-function hasCard(cardArr, card){
-    for(i = 0; i< cardArr.length; i++){
-        if(cardArr[i].name === card){
+function hasCard(cardArr, card) {
+    for (i = 0; i < cardArr.length; i++) {
+        if (cardArr[i].name === card) {
             return true;
         }
     }

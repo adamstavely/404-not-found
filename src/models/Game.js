@@ -103,11 +103,16 @@ class Game {
         return array;
     }
 
+    // Accessor for location map
+    static getLocationMap() {
+        return LOCATION_MAP;
+    }
+
     setNumPlayers(numPlayers) {
         this.numPlayers = numPlayers;
     }
 
-    getPlayers(){
+    getPlayers() {
         return this.players;
     }
 
@@ -164,7 +169,7 @@ class Game {
         if (characterId in Object.values(Characters)) {
             this.players[characterId].setPosition(INITIAL_POSITIONS[characterId]);
             this.players[characterId].setIsHuman(true);
-            
+
             let mapPos = location2maps(INITIAL_POSITIONS[characterId]);
             this.players[characterId].setPositionMap(mapPos.x, mapPos.y);
             this.players[characterId].setOldPosition(mapPos.x, mapPos.y);
@@ -179,11 +184,6 @@ class Game {
         // TODO: check for players in hallways
         let sourceInt = this.players[player].getPosition();
         return LOCATION_MAP[sourceInt].includes(destInt);
-    }
-
-    // Accessor for location map
-    static getLocationMap(){
-        return LOCATION_MAP;
     }
 
     movePlayer(player, destInt, isMoved) {
@@ -216,7 +216,7 @@ class Game {
         // chris
         for (let i = 0; i < this.players.length; i++) {
             // make sure the suggester isnt chosen
-            if(suggester != this.players[i].id) {
+            if (suggester != this.players[i].id) {
                 // find the first player that has the suggestion (should really start at the suggester)
                 if (this.players[i].checkSuggestion(character, room, weapon)) {
                     return this.players[i];
@@ -253,7 +253,7 @@ class Game {
             } else {
                 return false;
             }
-        }  else {
+        } else {
             return false;
         }
         accuserPlayer.hasAccused = true;
@@ -298,13 +298,13 @@ class Game {
     }
 }
 
-function location2maps(location){
+function location2maps(location) {
     let position = {
-        'x':0,
-        'y':0
+        'x': 0,
+        'y': 0
     };
 
-    switch(location){
+    switch (location) {
         case Locations.STUDY:
             position.x = 35;
             position.y = 80;

@@ -436,7 +436,7 @@ socket.on('state', function (players, playerThatMoved) {
 function initMap(players) {
     if (players) {
         context.clearRect(0, 0, 600, 600);
-        for (let i=0; i< players.length; i++) {
+        for (let i = 0; i < players.length; i++) {
             if (players[i].isHuman) {
                 let player = players[i];
                 tempX = spawnLocation2map(player.position).x;
@@ -450,13 +450,13 @@ function initMap(players) {
     }
 }
 
-function spawnLocation2map(spawnLocation){
+function spawnLocation2map(spawnLocation) {
     let position = {
-        'x':0,
-        'y':0
+        'x': 0,
+        'y': 0
     };
     // - 22 used to accommodate for offset of spawn locations (im lazy)
-    switch(spawnLocation - 22){
+    switch (spawnLocation - 22) {
         case 0:
             position.x = 410;
             position.y = 25;
@@ -484,53 +484,53 @@ function spawnLocation2map(spawnLocation){
     }
 }
 
-function startAnimation(players, playerThatMoved){
+function startAnimation(players, playerThatMoved) {
     animationTimer = setInterval(function () {
         // update position every 100 ms to create animation
         updatePosition(players, playerThatMoved);
     }, 5);
 }
 
-function determineMovement(player){
-    if(tempX === player.positionMap.x && tempY === player.positionMap.y){
+function determineMovement(player) {
+    if (tempX === player.positionMap.x && tempY === player.positionMap.y) {
         return true;
     }
 
-    if(tempX > player.positionMap.x){
+    if (tempX > player.positionMap.x) {
         tempX--;
-    } else if (tempX < player.positionMap.x){
+    } else if (tempX < player.positionMap.x) {
         tempX++;
     }
 
-    if(tempY > player.positionMap.y){
+    if (tempY > player.positionMap.y) {
         tempY--;
-    } else if (tempY < player.positionMap.y){
+    } else if (tempY < player.positionMap.y) {
         tempY++;
     }
 
     return false;
 }
 
-function updatePosition(players, playerThatMoved){
+function updatePosition(players, playerThatMoved) {
     context.clearRect(0, 0, 600, 600);
     let endTimer = false;
     //iterate over all players
-    for (let i=0; i < players.length; i++) {
+    for (let i = 0; i < players.length; i++) {
         if (players[i].isHuman) {
             let player = players[i];
             context.beginPath();
             context.fillStyle = playerColor(player.id);
-            if(player.id === playerThatMoved){
+            if (player.id === playerThatMoved) {
                 endTimer = determineMovement(player);
                 context.arc(tempX, tempY, 10, 0, 2 * Math.PI);
-            } else{
+            } else {
                 context.arc(player.positionMap.x, player.positionMap.y, 10, 0, 2 * Math.PI);
             }
             context.fill();
         }
     }
 
-    if(endTimer)
+    if (endTimer)
         clearInterval(animationTimer);
     /*if(tempX === player.positionMap.x && tempY === player.positionMap.y){
         context.beginPath();
