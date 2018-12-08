@@ -59,6 +59,7 @@ class Card {
   getName(){
     return this.name;
   }
+
 }
 
 module.exports = Card;

@@ -13,6 +13,9 @@ const Player = require('./models/Player');
 const Game = require('./models/Game');
 let timeElapsed = 0;
 let clock = null;
+let _currentSuggester = -1;
+let _currentAccuser = -1;
+let _isGameOver = false;
 
 // Create the server
 const app = express();
@@ -235,6 +238,14 @@ io.on('connection', function (socket) {
             console.log('Message from client: ' + message);
         });
 
+        // Move player positions
+        socket.on('updatePlayerPosition', function(newPlayerPos, playerId) {
+            // Call movePlayer function from game
+            console.log('Updating player: ' + playerId + ' position to: ' + newPlayerPos);
+            // isMoved = false because simply moving player position
+            game.movePlayer(playerId, newPlayerPos, false);
+        });
+
         socket.on('message', function (message) {
             console.log('Received message from ' + socket.username + ': ' + message);
 
@@ -291,6 +302,12 @@ io.on('connection', function (socket) {
 
                 // Initialize character position
                 let playerPosition = game.initPlayer(id);
+                let _locationMap = game.getLocationMap();
+
+                // Pass position to client
+                console.log('Emitting player position to client');
+                io.sockets.emit('initPosition', playerPosition, _locationMap);
+
                 numCharsSelected++;
 
                 console.log('Player ' + socket.username + ' selected character ' + id);
@@ -337,29 +354,33 @@ io.on('connection', function (socket) {
 
         // suggestion has been made
         socket.on('suggestion', function(suggester, character, room, weapon) {
-            console.log('Suggestion made by ' + socket.username + ': ' + character +' '+ room +' ' + weapon);
-            let cardToShow = game.handleSuggestion(suggester, character, room, weapon);
+            console.log('Suggestion made by: ' + socket.username + ': ' + character +' '+ room +' ' + weapon);
+            _currentSuggester = suggester;
+            let playerWithCard = game.handleSuggestion(suggester, character, room, weapon);
 
-            if(cardToShow != null){
-               // send username so client will only show cardToShow to that user
-                socket.emit('show suggestion', socket.username, cardToShow);
+            if(playerWithCard != null){
+               // send player and cards to clients
+                socket.emit('request suggestion', playerWithCard, character, room, weapon);
+            } else {
+                socket.emit('end suggestion', socket.username);
             }
-            // dont think we need this switch statement... will probably delete on next commit
-            /*switch(char) {
-                case characters.COL_MUSTARD:
-                // do something
-                case characters.MISS_SCARLET:
 
-                case characters.MR_GREEN:
+        });
 
-                case characters.MRS_PEACOCK:
+        socket.on('suggestionToServer', function(suggestedCard){
+            //receive the card and then send it to the correct client (_currentSuggester)
+            socket.emit('show suggestion', _currentSuggester, suggestedCard);
+        });
 
-                case characters.MRS_WHITE:
+        // Handle accusation
+        socket.on('accusation', function(accuserId, charId, roomId, weaponId) {
+            console.log('Accusation made by: ' + socket.username + ': ' + charId +' '+ roomId +' ' + weaponId);
+            _isGameOver = game.handleAccusation(accuserId, charId, roomId, weaponId);
 
-                case characters.PROF_PLUM:
-
-            } */
-
+            // Check
+            if(_isGameOver){
+                console.log('GAME OVER!!!! ' + socket.username + ' wins ALL the marbles!!');
+            }
         });
 
         socket.on('end turn', function() {

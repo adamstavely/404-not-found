@@ -19,6 +19,8 @@ let _character = null;
 let _currentTurn = 0;
 let _playerCards = {};
 let isAccusation = false;
+let _locationMap = {};
+let _playerPosition = 0;
 
 // Variables for suggestions and accusations
 let _suggestedChar = null;
@@ -29,29 +31,6 @@ let _accusedRoom = null;
 let _accusedWeapon = null;
 // @TODO: add some array to track what has been accused/suggested
 // EITHER HERE OR THE SERVER AND RETURNED HERE
-
-// Booleans for cards in the deck
-let hasMissScarlett = false;
-let hasColMustard = false;
-let hasMrsWhite = false;
-let hasMrGreen = false;
-let hasMrsPeacock = false;
-let hasProfPlum = false;
-let hasKitchen = false;
-let hasBallroom = false;
-let hasConservatory = false;
-let hasDiningRoom = false;
-let hasBilliard = false;
-let hasLibrary = false;
-let hasLounge = false;
-let hasHall = false;
-let hasStudy = false;
-let hasCandlestick = false;
-let hasDagger = false;
-let hasLead = false;
-let hasRevolver = false;
-let hasRope = false;
-let hasSpanner = false;
 
 canvas.width = 600;
 canvas.height = 600;
@@ -111,8 +90,197 @@ function showCards(){
     console.log('Cards showed to player');
 }
 
+// Called upon move btn click
 function movePlayer() {
     console.log('Move player');
+
+    // Pop up dialog box
+    // If making 27 different ones, use switch statement
+    // Sorry for the massive switch statement
+    switch(_playerPosition){
+        case 1: // Study
+            $('#modalMoveFromStudy').modal({backdrop: 'static', keyboard: false});
+            break;
+        case 2:
+            $('#modalMoveFromStudyHallHW').modal({backdrop: 'static', keyboard: false});
+            break;
+        case 3:
+            $('#modalMoveFromHall').modal({backdrop: 'static', keyboard: false});
+            break;
+        case 4:
+            $('#modalMoveFromHallLoungeHW').modal({backdrop: 'static', keyboard: false});
+            break;
+        case 5:
+            $('#modalMoveFromLounge').modal({backdrop: 'static', keyboard: false});
+            break;
+        case 6:
+            $('#modalMoveFromStudyLibraryHW').modal({backdrop: 'static', keyboard: false});
+            break;
+        case 7:
+            $('#modalMoveFromHallBilliardHW').modal({backdrop: 'static', keyboard: false});
+            break;
+        case 8:
+            $('#modalMoveFromLoungeDiningHW').modal({backdrop: 'static', keyboard: false});
+            break;
+        case 9:
+            $('#modalMoveFromLibrary').modal({backdrop: 'static', keyboard: false});
+            break;
+        case 10:
+            $('#modalMoveFromLibraryBilliardHW').modal({backdrop: 'static', keyboard: false});
+            break;
+        case 11:
+            $('#modalMoveFromBilliard').modal({backdrop: 'static', keyboard: false});
+            break;
+        case 12:
+            $('#modalMoveFromBilliardDiningHW').modal({backdrop: 'static', keyboard: false});
+            break;
+        case 13:
+            $('#modalMoveFromDining').modal({backdrop: 'static', keyboard: false});
+            break;
+        case 14:
+            $('#modalMoveFromLibraryConservatoryHW').modal({backdrop: 'static', keyboard: false});
+            break;
+        case 15:
+            $('#modalMoveFromBilliardBallroomHW').modal({backdrop: 'static', keyboard: false});
+            break;
+        case 16:
+            $('#modalMoveFromDiningKitchenHW').modal({backdrop: 'static', keyboard: false});
+            break;
+        case 17:
+            $('#modalMoveFromConservatory').modal({backdrop: 'static', keyboard: false});
+            break;
+        case 18:
+            $('#modalMoveFromConservatoryBallroomHW').modal({backdrop: 'static', keyboard: false});
+            break;
+        case 19:
+            $('#modalMoveFromBallroom').modal({backdrop: 'static', keyboard: false});
+            break;
+        case 20:
+            $('#modalMoveFromBallroomKitchenHW').modal({backdrop: 'static', keyboard: false});
+            break;
+        case 21:
+            $('#modalMoveFromKitchen').modal({backdrop: 'static', keyboard: false});
+            break;
+        case 22:
+            $('#modalMoveFromScarletSpawn').modal({backdrop: 'static', keyboard: false});
+            break;
+        case 23:
+            $('#modalMoveFromMustardSpawn').modal({backdrop: 'static', keyboard: false});
+            break;
+        case 24:
+            $('#modalMoveFromWhiteSpawn').modal({backdrop: 'static', keyboard: false});
+            break;
+        case 25:
+            $('#modalMoveFromGreenSpawn').modal({backdrop: 'static', keyboard: false});
+            break;
+        case 26:
+            $('#modalMoveFromPeacockSpawn').modal({backdrop: 'static', keyboard: false});
+            break;
+        case 27:
+            $('#modalMoveFromPlumSpawn').modal({backdrop: 'static', keyboard: false});
+            break;
+    }
+}
+
+// Function for ending movePlayer
+function endMove(){
+    // Retrieve selection
+    const moveChoice = $('input[name=moveRoomCheckbox]:checked').val();
+    if(moveChoice){
+        console.log('Player moving to: ' + parseInt(moveChoice));
+
+        $('#modalSelectMove').modal('hide');
+
+        // Sorry for the long switch statement again
+        switch(_playerPosition){
+            case 1: // Study
+                $('#modalMoveFromStudy').modal('hide');
+                break;
+            case 2:
+                $('#modalMoveFromStudyHallHW').modal('hide');
+                break;
+            case 3:
+                $('#modalMoveFromHall').modal('hide');
+                break;
+            case 4:
+                $('#modalMoveFromHallLoungeHW').modal('hide');
+                break;
+            case 5:
+                $('#modalMoveFromLounge').modal('hide');
+                break;
+            case 6:
+                $('#modalMoveFromStudyLibraryHW').modal('hide');
+                break;
+            case 7:
+                $('#modalMoveFromHallBilliardHW').modal('hide');
+                break;
+            case 8:
+                $('#modalMoveFromLoungeDiningHW').modal('hide');
+                break;
+            case 9:
+                $('#modalMoveFromLibrary').modal('hide');
+                break;
+            case 10:
+                $('#modalMoveFromLibraryBilliardHW').modal('hide');
+                break;
+            case 11:
+                $('#modalMoveFromBilliard').modal('hide');
+                break;
+            case 12:
+                $('#modalMoveFromBilliardDiningHW').modal('hide');
+                break;
+            case 13:
+                $('#modalMoveFromDining').modal('hide');
+                break;
+            case 14:
+                $('#modalMoveFromLibraryConservatoryHW').modal('hide');
+                break;
+            case 15:
+                $('#modalMoveFromBilliardBallroomHW').modal('hide');
+                break;
+            case 16:
+                $('#modalMoveFromDiningKitchenHW').modal('hide');
+                break;
+            case 17:
+                $('#modalMoveFromConservatory').modal('hide');
+                break;
+            case 18:
+                $('#modalMoveFromConservatoryBallroomHW').modal('hide');
+                break;
+            case 19:
+                $('#modalMoveFromBallroom').modal('hide');
+                break;
+            case 20:
+                $('#modalMoveFromBallroomKitchenHW').modal('hide');
+                break;
+            case 21:
+                $('#modalMoveFromKitchen').modal('hide');
+                break;
+            case 22:
+                $('#modalMoveFromScarletSpawn').modal('hide');
+                break;
+            case 23:
+                $('#modalMoveFromMustardSpawn').modal('hide');
+                break;
+            case 24:
+                $('#modalMoveFromWhiteSpawn').modal('hide');
+                break;
+            case 25:
+                $('#modalMoveFromGreenSpawn').modal('hide');
+                break;
+            case 26:
+                $('#modalMoveFromPeacockSpawn').modal('hide');
+                break;
+            case 27:
+                $('#modalMoveFromPlumSpawn').modal('hide');
+                break;
+        }
+
+        // Set new playerPosition
+        _playerPosition = parseInt(moveChoice)
+        console.log('New player position: ' + _playerPosition);
+        // @TODO probably need to emit this to the server
+    }
 }
 
 function makeSuggestion() {
@@ -152,16 +320,22 @@ function chooseRoomCard(){
     console.log('Choose a room');
 
     // Enable all room cards and choose room
-    for(let roomIdx=6; roomIdx<15; roomIdx++){
-        const roomCard = $('input[name=roomCardSelect][value=' + roomIdx + ']');
+    if(!isAccusation){
+        _suggestedRoom = _playerPosition;
+        chooseWeaponCard();
+
+    }  else {
+        for(let roomIdx=6; roomIdx<15; roomIdx++){
+            const roomCard = $('input[name=roomCardSelect][value=' + roomIdx + ']');
 
         // @TODO if it hasn't been suggested/accused yet
-        roomCard.prop('disabled', false);
-        roomCard.prop('checked', false);
-    }
+            roomCard.prop('disabled', false);
+            roomCard.prop('checked', false);
+          }
 
     // Make dialog visible
     $('#modalRoomCards').modal({backdrop: 'static', keyboard: false});
+  }
 }
 
 // Choose weapon card
@@ -170,7 +344,6 @@ function chooseWeaponCard(){
     const testChoice = $('input[name=roomCardSelect]:checked').val();
     if (testChoice) {
         if(!isAccusation){
-            _suggestedRoom = parseInt(testChoice);
             console.log('Suggested room: ' + _suggestedRoom);
         } else {
             _accusedRoom = parseInt(testChoice);
@@ -217,20 +390,27 @@ function endSuggestion(){
         console.log('Suggestion made for weapon: ' + _suggestedWeapon);
         // @TODO: Kick off processing of suggestion
         // use socket.emit to pass it off to server
-        socket.emit('suggestion', _character, _suggestedChar, _suggestedRoom, _suggestedWeapon);
+        socket.emit('suggestion', _username, _suggestedChar, _suggestedRoom, _suggestedWeapon);
 
     } else {
         console.log('Accusation made for char: ' + _accusedChar);
         console.log('Accusation made for room: ' + _accusedRoom);
         console.log('Accusation made for weapon: ' + _accusedWeapon);
-
         // @TODO: Kick off processing of accusation
         // use socket.emit to pass it off to server
+        socket.emit('accusation', _character, _accusedChar, _accusedRoom, _accusedWeapon);
+
     }
 
     // Reset isAccusation
     isAccusation = false;
 
+}
+
+// for peeking at hand
+function peekCards(){
+    $('#modalPlayerCards').modal({backdrop: 'static', keyboard: false});
+    console.log('Showing player hand');
 }
 
 function revealCard() {
@@ -327,6 +507,23 @@ socket.on('usernames', function (usernames) {
     // }
 });
 
+// Receives players starting position
+socket.on('initPosition', function(position, locationMap) {
+    _playerPosition = position;
+    console.log('Initial position: ' + position);
+    _locationMap = locationMap;
+
+    // Print to console to make sure locationMap retrieved
+    for(let mapIdx=1; mapIdx<28; mapIdx++){
+        console.log('If in location: ' + mapIdx);
+        console.log('User can move to: ');
+        for(let chain=0; chain < _locationMap[mapIdx].length; chain++){
+            let testLocation = _locationMap[mapIdx][chain];
+            console.log('Location: ' + testLocation);
+        }
+    }
+});
+
 // This handles the cards being dealt to each player
 socket.on('players', function (humanArr) {
     // Receive the deck for the current player
@@ -349,87 +546,66 @@ socket.on('players', function (humanArr) {
 
         switch(_playerCards[j].name) {
             case 0:
-                hasMissScarlett = true;
                 testCard.prop('disabled', false);
                 break;
             case 1:
-                hasColMustard = true;
                 testCard.prop('disabled', false);
                 break;
             case 2:
-                hasMrsWhite = true;
                 testCard.prop('disabled', false);
                 break;
             case 3:
-                hasMrGreen = true;
                 testCard.prop('disabled', false);
                 break;
             case 4:
-                hasMrsPeacock = true;
                 testCard.prop('disabled', false);
                 break;
             case 5:
-                hasProfPlum = true;
                 testCard.prop('disabled', false);
                 break;
             case 6:
-                hasKitchen = true;
                 testCard.prop('disabled', false);
                 break;
             case 7:
-                hasBallroom = true;
                 testCard.prop('disabled', false);
                 break;
             case 8:
-                hasConservatory = true;
                 testCard.prop('disabled', false);
                 break;
             case 9:
-                hasDiningRoom = true;
                 testCard.prop('disabled', false);
                 break;
             case 10:
-                hasBilliard = true;
                 testCard.prop('disabled', false);
                 break;
             case 11:
-                hasLibrary = true;
                 testCard.prop('disabled', false);
                 break;
             case 12:
-                hasLounge = true;
                 testCard.prop('disabled', false);
                 break;
             case 13:
-                hasHall = true;
                 testCard.prop('disabled', false);
                 break;
             case 14:
-                hasStudy = true;
                 testCard.prop('disabled', false);
                 break;
             case 15:
-                hasCandlestick = true;
                 testCard.prop('disabled', false);
                 break;
             case 16:
-                hasDagger = true;
                 testCard.prop('disabled', false);
                 break;
             case 17:
-                hasLead = true;
                 testCard.prop('disabled', false);
                 break;
             case 18:
-                hasRevolver = true;
                 testCard.prop('disabled', false);
                 break;
             case 19:
-                hasRope = true;
                 testCard.prop('disabled', false);
                 break;
             case 20:
-                hasSpanner = true;
                 testCard.prop('disabled', false);
                 break;
         }
@@ -545,9 +721,33 @@ socket.on('player turn', function (id) {
     });
 });
 
+socket.on('request suggestion', function(playerWithCard, character, room, weapon){
+    if(playerWithCard.id == _username) {
+        // MAKE A BOX POP UP WITH THE SUGGESTIONS HERE
+        // (disable selection of any card that isnt character,room or weapon
+
+
+
+
+
+        //figure out the card to be suggested
+        //suggestedCard =
+
+        // then send the suggested card back to the server
+        socket.emit('suggestionToServer', suggestedCard);
+    }
+});
+
 socket.on('show suggestion', function(username, card){
     if(username == _username) {
         chatMessages.innerHTML += '<i>' + card + ' suggested' + '</i><br/>';
+        scrollToBottom();
+    }
+});
+
+socket.on('end suggestion', function(suggester){
+    if (suggester === _username) {
+        chatMessages.innerHTML += '<i>' + 'Nobody had your suggestions' + '</i><br/>';
         scrollToBottom();
     }
 });
