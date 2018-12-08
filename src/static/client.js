@@ -19,6 +19,7 @@ let _character = null;
 let _currentTurn = 0;
 let _playerCards = {};
 let isAccusation = false;
+let isSuggestion = false;
 let _locationMap = {};
 let _playerPosition = 0;
 
@@ -86,8 +87,24 @@ function selectCharacter() {
 
 // testing showing cards functionality
 function showCards(){
-    $('#modalPlayerCards').modal('hide');
-    console.log('Cards showed to player');
+    // get choice from buttons
+    const choice = $('input[name=cardSelect]:checked').val();
+
+    // check if a character has been selected
+    if(isSuggestion){
+        if(choice){
+            // figure out the card to be suggested
+            suggestedCard = parseInt(choice);
+            $('#modalPlayerCards').modal('hide');
+
+            console.log('Emitting suggested card to server');
+            socket.emit('suggestionToServer', suggestedCard);
+        }
+    } else {
+        $('#modalPlayerCards').modal('hide');
+        console.log('Cards showed to player');
+    }
+
 }
 
 // Called upon move btn click
@@ -725,11 +742,30 @@ socket.on('request suggestion', function(playerWithCard, character, room, weapon
     if(playerWithCard.id == _username) {
         // MAKE A BOX POP UP WITH THE SUGGESTIONS HERE
         // (disable selection of any card that isnt character,room or weapon
+        // Check what cards player has
+        for(let j=0; j<_playerCards.length; j++){
+            console.log(_playerCards[j].name);
+            // disable all cards by default
+            const testCard = $('input[name=cardSelect][value=' + _playerCards[j].name + ']');
 
+            if(_playerCards[j].name == character){
+                testCard.prop('disabled', false);
+            }
 
+            if(_playerCards[j].name == room){
+                testCard.prop('disabled', false);
+            }
 
+            if(_playerCards[j].name == weapon){
+                testCard.prop('disabled', false);
+            }
 
+        }
 
+        // Show cards
+        $('#modalPlayerCards').modal({backdrop: 'static', keyboard: false});
+
+        isSuggestion = true;
         //figure out the card to be suggested
         //suggestedCard =
 
