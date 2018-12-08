@@ -774,7 +774,11 @@ socket.on('player turn', function (id) {
         });
     } else {
         $('.action').each(function () {
-            $(this).prop('disabled', true);
+            if ($(this).prop('name') === 'showBtn') {
+                $(this).prop('disabled', false);
+            } else {
+                $(this).prop('disabled', true);
+            }
         });
     }
 });
