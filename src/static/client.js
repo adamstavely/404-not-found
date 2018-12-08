@@ -280,7 +280,6 @@ function endMove(){
         _playerPosition = parseInt(moveChoice)
         console.log('New player position: ' + _playerPosition);
         // @TODO probably need to emit this to the server
-        socket.emit('updatePlayerPosition', _playerPosition, _player.id);
     }
 }
 
@@ -321,16 +320,21 @@ function chooseRoomCard(){
     console.log('Choose a room');
 
     // Enable all room cards and choose room
-    for(let roomIdx=6; roomIdx<15; roomIdx++){
-        const roomCard = $('input[name=roomCardSelect][value=' + roomIdx + ']');
+    if(!isAccusation){
+      chooseWeaponCard();
+
+    }  else {
+        for(let roomIdx=6; roomIdx<15; roomIdx++){
+            const roomCard = $('input[name=roomCardSelect][value=' + roomIdx + ']');
 
         // @TODO if it hasn't been suggested/accused yet
-        roomCard.prop('disabled', false);
-        roomCard.prop('checked', false);
-    }
+            roomCard.prop('disabled', false);
+            roomCard.prop('checked', false);
+          }
 
     // Make dialog visible
     $('#modalRoomCards').modal({backdrop: 'static', keyboard: false});
+  }
 }
 
 // Choose weapon card
@@ -339,7 +343,6 @@ function chooseWeaponCard(){
     const testChoice = $('input[name=roomCardSelect]:checked').val();
     if (testChoice) {
         if(!isAccusation){
-            _suggestedRoom = parseInt(testChoice);
             console.log('Suggested room: ' + _suggestedRoom);
         } else {
             _accusedRoom = parseInt(testChoice);
@@ -392,10 +395,10 @@ function endSuggestion(){
         console.log('Accusation made for char: ' + _accusedChar);
         console.log('Accusation made for room: ' + _accusedRoom);
         console.log('Accusation made for weapon: ' + _accusedWeapon);
-
         // @TODO: Kick off processing of accusation
         // use socket.emit to pass it off to server
-        socket.emit('accusation', _player.id, _accusedChar, _accusedRoom, _accusedWeapon);
+        socket.emit('accusation', _character, _accusedChar, _accusedRoom, _accusedWeapon);
+
     }
 
     // Reset isAccusation

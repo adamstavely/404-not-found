@@ -354,7 +354,7 @@ io.on('connection', function (socket) {
 
         // suggestion has been made
         socket.on('suggestion', function(suggester, character, room, weapon) {
-            console.log('Suggestion made by ' + socket.username + ': ' + character +' '+ room +' ' + weapon);
+            console.log('Suggestion made by: ' + socket.username + ': ' + character +' '+ room +' ' + weapon);
             _currentSuggester = suggester;
             let playerWithCard = game.handleSuggestion(suggester, character, room, weapon);
 
@@ -374,7 +374,7 @@ io.on('connection', function (socket) {
 
         // Handle accusation
         socket.on('accusation', function(accuserId, charId, roomId, weaponId) {
-            console.log('Accusation made by: ' + socket.username);
+            console.log('Accusation made by: ' + socket.username + ': ' + charId +' '+ roomId +' ' + weaponId);
             _isGameOver = game.handleAccusation(accuserId, charId, roomId, weaponId);
 
             // Check
