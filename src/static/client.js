@@ -297,6 +297,7 @@ function endMove(){
         _playerPosition = parseInt(moveChoice)
         console.log('New player position: ' + _playerPosition);
         // @TODO probably need to emit this to the server
+        socket.emit('updatePlayerPosition', _player.id, _playerPosition);
     }
 }
 
@@ -415,7 +416,7 @@ function endSuggestion(){
         console.log('Accusation made for weapon: ' + _accusedWeapon);
         // @TODO: Kick off processing of accusation
         // use socket.emit to pass it off to server
-        socket.emit('accusation', _character, _accusedChar, _accusedRoom, _accusedWeapon);
+        socket.emit('accusation', _player.id, _accusedChar, _accusedRoom, _accusedWeapon);
 
     }
 
