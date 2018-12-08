@@ -314,7 +314,7 @@ io.on('connection', function (socket) {
 
                 // Initialize character position
                 let playerPosition = game.initPlayer(id);
-                let _locationMap = game.getLocationMap();
+                let _locationMap = Game.getLocationMap();
 
                 // Pass position to client
                 console.log('Emitting player position to client');

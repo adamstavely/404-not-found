@@ -38,6 +38,70 @@ let _accusedWeapon = null;
 canvas.width = 600;
 canvas.height = 600;
 
+const LOCATIONS = {
+    STUDY: 1,
+    HALLWAY_STUDY_HALL: 2,
+    HALL: 3,
+    HALLWAY_HALL_LOUNGE: 4,
+    LOUNGE: 5,
+    HALLWAY_STUDY_LIBRARY: 6,
+    HALLWAY_HALL_BILLIARD: 7,
+    HALLWAY_LOUNGE_DINING: 8,
+    LIBRARY: 9,
+    HALLWAY_LIBRARY_BILLIARD: 10,
+    BILLIARD_ROOM: 11,
+    HALLWAY_BILLIARD_DINING: 12,
+    DINING_ROOM: 13,
+    HALLWAY_LIBRARY_CONSERVATORY: 14,
+    HALLWAY_BILLIARD_BALLROOM: 15,
+    HALLWAY_DINING_KITCHEN: 16,
+    CONSERVATORY: 17,
+    HALLWAY_CONSERVATORY_BALLROOM: 18,
+    BALLROOM: 19,
+    HALLWAY_BALLROOM_KITCHEN: 20,
+    KITCHEN: 21,
+    SPAWN_SCARLET: 22,
+    SPAWN_MUSTARD: 23,
+    SPAWN_WHITE: 24,
+    SPAWN_GREEN: 25,
+    SPAWN_PEACOCK: 26,
+    SPAWN_PLUM: 27
+};
+
+const LOCATION_MAP = {
+    1: [LOCATIONS.HALLWAY_STUDY_HALL, LOCATIONS.HALLWAY_STUDY_LIBRARY, LOCATIONS.KITCHEN],
+    2: [LOCATIONS.STUDY, LOCATIONS.HALL],
+    3: [LOCATIONS.HALLWAY_STUDY_HALL, LOCATIONS.HALLWAY_HALL_LOUNGE, LOCATIONS.HALLWAY_HALL_BILLIARD],
+    4: [LOCATIONS.HALL, LOCATIONS.LOUNGE],
+    5: [LOCATIONS.HALLWAY_HALL_LOUNGE, LOCATIONS.HALLWAY_LOUNGE_DINING, LOCATIONS.CONSERVATORY],
+    6: [LOCATIONS.STUDY, LOCATIONS.LIBRARY],
+    7: [LOCATIONS.HALL, LOCATIONS.BILLIARD_ROOM],
+    8: [LOCATIONS.LOUNGE, LOCATIONS.DINING_ROOM],
+    9: [LOCATIONS.HALLWAY_STUDY_LIBRARY, LOCATIONS.HALLWAY_LIBRARY_BILLIARD, LOCATIONS.HALLWAY_LIBRARY_CONSERVATORY],
+    10: [LOCATIONS.LIBRARY, LOCATIONS.BILLIARD_ROOM],
+    11: [LOCATIONS.HALLWAY_HALL_BILLIARD, LOCATIONS.HALLWAY_LIBRARY_BILLIARD, LOCATIONS.HALLWAY_BILLIARD_DINING, LOCATIONS.HALLWAY_BILLIARD_BALLROOM],
+    12: [LOCATIONS.BILLIARD_ROOM, LOCATIONS.DINING_ROOM],
+    13: [LOCATIONS.HALLWAY_LOUNGE_DINING, LOCATIONS.HALLWAY_BILLIARD_DINING, LOCATIONS.HALLWAY_DINING_KITCHEN],
+    14: [LOCATIONS.LIBRARY, LOCATIONS.CONSERVATORY],
+    15: [LOCATIONS.BILLIARD_ROOM, LOCATIONS.BALLROOM],
+    16: [LOCATIONS.DINING_ROOM, LOCATIONS.KITCHEN],
+    17: [LOCATIONS.LOUNGE, LOCATIONS.HALLWAY_LIBRARY_CONSERVATORY, LOCATIONS.HALLWAY_CONSERVATORY_BALLROOM],
+    18: [LOCATIONS.CONSERVATORY, LOCATIONS.BALLROOM],
+    19: [LOCATIONS.HALLWAY_BILLIARD_BALLROOM, LOCATIONS.HALLWAY_CONSERVATORY_BALLROOM, LOCATIONS.HALLWAY_BALLROOM_KITCHEN],
+    20: [LOCATIONS.BALLROOM, LOCATIONS.KITCHEN],
+    21: [LOCATIONS.STUDY, LOCATIONS.HALLWAY_DINING_KITCHEN, LOCATIONS.HALLWAY_BALLROOM_KITCHEN],
+    22: [LOCATIONS.HALLWAY_HALL_LOUNGE],
+    23: [LOCATIONS.HALLWAY_LOUNGE_DINING],
+    24: [LOCATIONS.HALLWAY_BALLROOM_KITCHEN],
+    25: [LOCATIONS.HALLWAY_CONSERVATORY_BALLROOM],
+    26: [LOCATIONS.HALLWAY_LIBRARY_CONSERVATORY],
+    27: [LOCATIONS.HALLWAY_STUDY_LIBRARY]
+};
+
+function getKeyByValue(object, value) {
+    return Object.keys(object).find(key => object[key] === value);
+}
+
 // Add event listener for sending chat messages
 chatText.addEventListener('keydown', function (event) {
     switch (event.keyCode) {
@@ -117,91 +181,17 @@ function movePlayer() {
     console.log('Move player');
 
     // Pop up dialog box
-    // If making 27 different ones, use switch statement
-    // Sorry for the massive switch statement
-    switch(_playerPosition){
-        case 1: // Study
-            $('#modalMoveFromStudy').modal('show');
-            break;
-        case 2:
-            $('#modalMoveFromStudyHallHW').modal('show');
-            break;
-        case 3:
-            $('#modalMoveFromHall').modal('show');
-            break;
-        case 4:
-            $('#modalMoveFromHallLoungeHW').modal('show');
-            break;
-        case 5:
-            $('#modalMoveFromLounge').modal('show');
-            break;
-        case 6:
-            $('#modalMoveFromStudyLibraryHW').modal('show');
-            break;
-        case 7:
-            $('#modalMoveFromHallBilliardHW').modal('show');
-            break;
-        case 8:
-            $('#modalMoveFromLoungeDiningHW').modal('show');
-            break;
-        case 9:
-            $('#modalMoveFromLibrary').modal('show');
-            break;
-        case 10:
-            $('#modalMoveFromLibraryBilliardHW').modal('show');
-            break;
-        case 11:
-            $('#modalMoveFromBilliard').modal('show');
-            break;
-        case 12:
-            $('#modalMoveFromBilliardDiningHW').modal('show');
-            break;
-        case 13:
-            $('#modalMoveFromDining').modal('show');
-            break;
-        case 14:
-            $('#modalMoveFromLibraryConservatoryHW').modal('show');
-            break;
-        case 15:
-            $('#modalMoveFromBilliardBallroomHW').modal('show');
-            break;
-        case 16:
-            $('#modalMoveFromDiningKitchenHW').modal('show');
-            break;
-        case 17:
-            $('#modalMoveFromConservatory').modal('show');
-            break;
-        case 18:
-            $('#modalMoveFromConservatoryBallroomHW').modal('show');
-            break;
-        case 19:
-            $('#modalMoveFromBallroom').modal('show');
-            break;
-        case 20:
-            $('#modalMoveFromBallroomKitchenHW').modal('show');
-            break;
-        case 21:
-            $('#modalMoveFromKitchen').modal('show');
-            break;
-        case 22:
-            $('#modalMoveFromScarletSpawn').modal('show');
-            break;
-        case 23:
-            $('#modalMoveFromMustardSpawn').modal('show');
-            break;
-        case 24:
-            $('#modalMoveFromWhiteSpawn').modal('show');
-            break;
-        case 25:
-            $('#modalMoveFromGreenSpawn').modal('show');
-            break;
-        case 26:
-            $('#modalMoveFromPeacockSpawn').modal('show');
-            break;
-        case 27:
-            $('#modalMoveFromPlumSpawn').modal('show');
-            break;
+    let modalMoveBody = document.getElementById('modalMoveBody');
+    modalMoveBody.innerHTML = "";
+
+    for (let i = 0; i < LOCATION_MAP[_playerPosition].length; i++) {
+        console.log(LOCATION_MAP[_playerPosition][i]);
+        modalMoveBody.innerHTML += "<label><input type='checkbox' name='moveRoomCheckbox' value='"
+            + LOCATION_MAP[_playerPosition][i] + "'>" + getKeyByValue(LOCATIONS, LOCATION_MAP[_playerPosition][i])
+            + "</label><br>";
     }
+
+    $('#modalMove').modal('show');
 }
 
 // Function for ending movePlayer
@@ -211,95 +201,10 @@ function endMove(){
     if(moveChoice){
         console.log('Player moving to: ' + parseInt(moveChoice));
 
-        $('#modalSelectMove').modal('hide');
-
-        // Sorry for the long switch statement again
-        switch(_playerPosition){
-            case 1: // Study
-                $('#modalMoveFromStudy').modal('hide');
-                break;
-            case 2:
-                $('#modalMoveFromStudyHallHW').modal('hide');
-                break;
-            case 3:
-                $('#modalMoveFromHall').modal('hide');
-                break;
-            case 4:
-                $('#modalMoveFromHallLoungeHW').modal('hide');
-                break;
-            case 5:
-                $('#modalMoveFromLounge').modal('hide');
-                break;
-            case 6:
-                $('#modalMoveFromStudyLibraryHW').modal('hide');
-                break;
-            case 7:
-                $('#modalMoveFromHallBilliardHW').modal('hide');
-                break;
-            case 8:
-                $('#modalMoveFromLoungeDiningHW').modal('hide');
-                break;
-            case 9:
-                $('#modalMoveFromLibrary').modal('hide');
-                break;
-            case 10:
-                $('#modalMoveFromLibraryBilliardHW').modal('hide');
-                break;
-            case 11:
-                $('#modalMoveFromBilliard').modal('hide');
-                break;
-            case 12:
-                $('#modalMoveFromBilliardDiningHW').modal('hide');
-                break;
-            case 13:
-                $('#modalMoveFromDining').modal('hide');
-                break;
-            case 14:
-                $('#modalMoveFromLibraryConservatoryHW').modal('hide');
-                break;
-            case 15:
-                $('#modalMoveFromBilliardBallroomHW').modal('hide');
-                break;
-            case 16:
-                $('#modalMoveFromDiningKitchenHW').modal('hide');
-                break;
-            case 17:
-                $('#modalMoveFromConservatory').modal('hide');
-                break;
-            case 18:
-                $('#modalMoveFromConservatoryBallroomHW').modal('hide');
-                break;
-            case 19:
-                $('#modalMoveFromBallroom').modal('hide');
-                break;
-            case 20:
-                $('#modalMoveFromBallroomKitchenHW').modal('hide');
-                break;
-            case 21:
-                $('#modalMoveFromKitchen').modal('hide');
-                break;
-            case 22:
-                $('#modalMoveFromScarletSpawn').modal('hide');
-                break;
-            case 23:
-                $('#modalMoveFromMustardSpawn').modal('hide');
-                break;
-            case 24:
-                $('#modalMoveFromWhiteSpawn').modal('hide');
-                break;
-            case 25:
-                $('#modalMoveFromGreenSpawn').modal('hide');
-                break;
-            case 26:
-                $('#modalMoveFromPeacockSpawn').modal('hide');
-                break;
-            case 27:
-                $('#modalMoveFromPlumSpawn').modal('hide');
-                break;
-        }
+        $('#modalMove').modal('hide');
 
         // Set new playerPosition
-        _playerPosition = parseInt(moveChoice)
+        _playerPosition = parseInt(moveChoice);
         console.log('New player position: ' + _playerPosition);
         // @TODO probably need to emit this to the server
         socket.emit('updatePlayerPosition', _player.id, _playerPosition);
@@ -320,6 +225,8 @@ function endMove(){
                const disableBtn = $('button[name=suggestBtn]');
                disableBtn.prop('disabled', true);
         }
+    } else {
+
     }
 }
 
@@ -530,14 +437,16 @@ socket.on('state', function (players) {
 });
 
 function initMap(players){
-    context.clearRect(0, 0, 600, 600);
-    for (let i=0; i< players.length; i++) {
-        context.fillStyle = playerColor(players[i].id);
-        if (players[i].isHuman) {
-            let player = players[i];
-            tempX = spawnLocation2map(i).x;
-            tempY = spawnLocation2map(i).y;
-            startAnimation(player);
+    if (players) {
+        context.clearRect(0, 0, 600, 600);
+        for (let i=0; i< players.length; i++) {
+            context.fillStyle = playerColor(players[i].id);
+            if (players[i].isHuman) {
+                let player = players[i];
+                tempX = spawnLocation2map(i).x;
+                tempY = spawnLocation2map(i).y;
+                startAnimation(player);
+            }
         }
     }
 }
@@ -674,75 +583,10 @@ socket.on('players', function (humanArr) {
 
     // Check what cards player has
     for(let j=0; j<_playerCards.length; j++){
-        console.log(_playerCards[j].name);
         // disable all cards by default
         const testCard = $('input[name=cardSelect][value=' + _playerCards[j].name + ']');
 
-        switch(_playerCards[j].name) {
-            case 0:
-                testCard.prop('disabled', false);
-                break;
-            case 1:
-                testCard.prop('disabled', false);
-                break;
-            case 2:
-                testCard.prop('disabled', false);
-                break;
-            case 3:
-                testCard.prop('disabled', false);
-                break;
-            case 4:
-                testCard.prop('disabled', false);
-                break;
-            case 5:
-                testCard.prop('disabled', false);
-                break;
-            case 6:
-                testCard.prop('disabled', false);
-                break;
-            case 7:
-                testCard.prop('disabled', false);
-                break;
-            case 8:
-                testCard.prop('disabled', false);
-                break;
-            case 9:
-                testCard.prop('disabled', false);
-                break;
-            case 10:
-                testCard.prop('disabled', false);
-                break;
-            case 11:
-                testCard.prop('disabled', false);
-                break;
-            case 12:
-                testCard.prop('disabled', false);
-                break;
-            case 13:
-                testCard.prop('disabled', false);
-                break;
-            case 14:
-                testCard.prop('disabled', false);
-                break;
-            case 15:
-                testCard.prop('disabled', false);
-                break;
-            case 16:
-                testCard.prop('disabled', false);
-                break;
-            case 17:
-                testCard.prop('disabled', false);
-                break;
-            case 18:
-                testCard.prop('disabled', false);
-                break;
-            case 19:
-                testCard.prop('disabled', false);
-                break;
-            case 20:
-                testCard.prop('disabled', false);
-                break;
-        }
+        testCard.prop('disabled', false);
     }
 
     // Show cards
@@ -778,8 +622,10 @@ socket.on('game state', function (game) {
         let j = 0;
         for (let player in game.players) {
             if (game.players.hasOwnProperty(player)) {
-                playerLabels[game.players[player].character].innerHTML = player;
-                playerLabels[game.players[player].character].fontColor = playerColor(j);
+                if (game.players[player].character in playerLabels) {
+                    playerLabels[game.players[player].character].innerHTML = player;
+                    playerLabels[game.players[player].character].fontColor = playerColor(j);
+                }
             }
             j++;
         }

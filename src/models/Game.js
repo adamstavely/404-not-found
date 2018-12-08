@@ -42,7 +42,7 @@ const INITIAL_POSITIONS = [
 26- 14          Spawn Peacock
 27- 6           Spawn Plum
  */
-let locationMap = {
+const LOCATION_MAP = {
     1: [Locations.HALLWAY_STUDY_HALL, Locations.HALLWAY_STUDY_LIBRARY, Locations.KITCHEN],
     2: [Locations.STUDY, Locations.HALL],
     3: [Locations.HALLWAY_STUDY_HALL, Locations.HALLWAY_HALL_LOUNGE, Locations.HALLWAY_HALL_BILLIARD],
@@ -178,12 +178,12 @@ class Game {
     isMoveValid(player, destInt) {
         // TODO: check for players in hallways
         let sourceInt = this.players[player].getPosition();
-        return locationMap[sourceInt].includes(destInt);
+        return LOCATION_MAP[sourceInt].includes(destInt);
     }
 
     // Accessor for location map
-    getLocationMap(){
-        return locationMap;
+    static getLocationMap(){
+        return LOCATION_MAP;
     }
 
     movePlayer(player, destInt, isMoved) {
