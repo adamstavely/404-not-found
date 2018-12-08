@@ -152,13 +152,13 @@ function selectCharacter() {
 }
 
 // testing showing cards functionality
-function showCards(){
+function showCards() {
     // get choice from buttons
     const choice = $('input[name=cardSelect]:checked').val();
 
     // check if a character has been selected
-    if(isSuggestion){
-        if(choice){
+    if (isSuggestion) {
+        if (choice) {
             // figure out the card to be suggested
             suggestedCard = parseInt(choice);
             $('#modalPlayerCards').modal('hide');
@@ -185,7 +185,6 @@ function movePlayer() {
     modalMoveBody.innerHTML = "";
 
     for (let i = 0; i < LOCATION_MAP[_playerPosition].length; i++) {
-        console.log(LOCATION_MAP[_playerPosition][i]);
         modalMoveBody.innerHTML += "<label><input type='checkbox' name='moveRoomCheckbox' value='"
             + LOCATION_MAP[_playerPosition][i] + "'>" + getKeyByValue(LOCATIONS, LOCATION_MAP[_playerPosition][i])
             + "</label><br>";
@@ -195,10 +194,10 @@ function movePlayer() {
 }
 
 // Function for ending movePlayer
-function endMove(){
+function endMove() {
     // Retrieve selection
     const moveChoice = $('input[name=moveRoomCheckbox]:checked').val();
-    if(moveChoice){
+    if (moveChoice) {
         console.log('Player moving to: ' + parseInt(moveChoice));
 
         $('#modalMove').modal('hide');
@@ -210,33 +209,38 @@ function endMove(){
         socket.emit('updatePlayerPosition', _player.id, _playerPosition);
 
         // Check if in hallway, disable suggestBtn
-        if(_playerPosition == 2  ||
-           _playerPosition == 4  ||
-           _playerPosition == 6  ||
-           _playerPosition == 7  ||
-           _playerPosition == 8  ||
-           _playerPosition == 10 ||
-           _playerPosition == 12 ||
-           _playerPosition == 14 ||
-           _playerPosition == 15 ||
-           _playerPosition == 16 ||
-           _playerPosition == 18 ||
-           _playerPosition == 20) {
-               const disableBtn = $('button[name=suggestBtn]');
-               disableBtn.prop('disabled', true);
+        if ([LOCATIONS.HALLWAY_STUDY_HALL,
+            LOCATIONS.HALLWAY_HALL_LOUNGE,
+            LOCATIONS.HALLWAY_STUDY_LIBRARY,
+            LOCATIONS.HALLWAY_HALL_BILLIARD,
+            LOCATIONS.HALLWAY_LOUNGE_DINING,
+            LOCATIONS.HALLWAY_LIBRARY_BILLIARD,
+            LOCATIONS.HALLWAY_BILLIARD_DINING,
+            LOCATIONS.HALLWAY_LIBRARY_CONSERVATORY,
+            LOCATIONS.HALLWAY_BILLIARD_BALLROOM,
+            LOCATIONS.HALLWAY_DINING_KITCHEN,
+            LOCATIONS.HALLWAY_CONSERVATORY_BALLROOM,
+            LOCATIONS.HALLWAY_BALLROOM_KITCHEN].includes(_playerPosition)) {
+            console.log('Moving to hallway, disabling suggest button');
+            $('button[name=suggestBtn]').prop('disabled', true);
+        } else {
+            $('button[name=suggestBtn]').prop('disabled', false);
         }
-    } else {
 
+        // Disable move for player after successfully moving
+        $('button[name=moveBtn]').prop('disabled', true);
+    } else {
+        alert('You must select a location to move to');
     }
 }
 
 function makeSuggestion() {
-    if(!isAccusation){
+    if (!isAccusation) {
         console.log('Make suggestion');
     }
 
     // Enable all character cards and choose char
-    for(let charIdx=0; charIdx<6; charIdx++){
+    for (let charIdx = 0; charIdx < 6; charIdx++) {
         const charCard = $('input[name=charCardSelect][value=' + charIdx + ']');
 
         // @TODO if it hasn't been suggested/accused yet
@@ -249,11 +253,11 @@ function makeSuggestion() {
 }
 
 // Choose room card
-function chooseRoomCard(){
+function chooseRoomCard() {
     // First retrieve character card selected
     const testChoice = $('input[name=charCardSelect]:checked').val();
     if (testChoice) {
-        if(!isAccusation){
+        if (!isAccusation) {
             _suggestedChar = parseInt(testChoice);
             console.log('Suggested character: ' + _suggestedChar);
         } else {
@@ -267,30 +271,30 @@ function chooseRoomCard(){
     console.log('Choose a room');
 
     // Enable all room cards and choose room
-    if(!isAccusation){
+    if (!isAccusation) {
         _suggestedRoom = _playerPosition;
         chooseWeaponCard();
 
-    }  else {
-        for(let roomIdx=6; roomIdx<15; roomIdx++){
+    } else {
+        for (let roomIdx = 6; roomIdx < 15; roomIdx++) {
             const roomCard = $('input[name=roomCardSelect][value=' + roomIdx + ']');
 
-        // @TODO if it hasn't been suggested/accused yet
+            // @TODO if it hasn't been suggested/accused yet
             roomCard.prop('disabled', false);
             roomCard.prop('checked', false);
-          }
+        }
 
-    // Make dialog visible
-    $('#modalRoomCards').modal('show');
-  }
+        // Make dialog visible
+        $('#modalRoomCards').modal('show');
+    }
 }
 
 // Choose weapon card
-function chooseWeaponCard(){
+function chooseWeaponCard() {
     // Pull down room selected
     const testChoice = $('input[name=roomCardSelect]:checked').val();
     if (testChoice) {
-        if(!isAccusation){
+        if (!isAccusation) {
             console.log('Suggested room: ' + _suggestedRoom);
         } else {
             _accusedRoom = parseInt(testChoice);
@@ -303,7 +307,7 @@ function chooseWeaponCard(){
     console.log('Choose a weapon');
 
     // Enable all room cards and choose room
-    for(let weapIdx=15; weapIdx<21; weapIdx++){
+    for (let weapIdx = 15; weapIdx < 21; weapIdx++) {
         const weaponCard = $('input[name=weaponCardSelect][value=' + weapIdx + ']');
 
         // @TODO if it hasn't been suggested/accused yet
@@ -315,11 +319,11 @@ function chooseWeaponCard(){
     $('#modalWeaponCards').modal('show');
 }
 
-function endSuggestion(){
+function endSuggestion() {
     // Pull down selected weapon
     const testChoice = $('input[name=weaponCardSelect]:checked').val();
     if (testChoice) {
-        if(!isAccusation){
+        if (!isAccusation) {
             _suggestedWeapon = parseInt(testChoice);
             console.log('Suggested weapon: ' + _suggestedWeapon);
         } else {
@@ -331,7 +335,7 @@ function endSuggestion(){
     }
 
     // Kick off back end processing
-    if(!isAccusation){
+    if (!isAccusation) {
         console.log('Suggestion made for char: ' + _suggestedChar);
         console.log('Suggestion made for room: ' + _suggestedRoom);
         console.log('Suggestion made for weapon: ' + _suggestedWeapon);
@@ -355,7 +359,7 @@ function endSuggestion(){
 }
 
 // for peeking at hand
-function peekCards(){
+function peekCards() {
     $('#modalPlayerCards').modal('show');
     console.log('Showing player hand');
 }
@@ -366,7 +370,7 @@ function revealCard() {
 
     // Store selected card
     const choice = $('input[name=cardSelect]:checked').val();
-    if(choice){
+    if (choice) {
         console.log('Chose card: ' + choice);
         $('#modalPlayerCards').modal('hide');
         // Call reveal card
@@ -429,7 +433,7 @@ socket.on('state', function (players, playerThatMoved) {
     startAnimation(players, playerThatMoved);
 });
 
-function initMap(players){
+function initMap(players) {
     if (players) {
         context.clearRect(0, 0, 600, 600);
         for (let i=0; i< players.length; i++) {
@@ -536,15 +540,15 @@ function updatePosition(players, playerThatMoved){
     }
 
     context.clearRect(0, 0, 600, 600);
-    if(tempX > player.positionMap.x){
+    if (tempX > player.positionMap.x) {
         tempX--;
-    } else if (tempX < player.positionMap.x){
+    } else if (tempX < player.positionMap.x) {
         tempX++;
     }
 
-    if(tempY > player.positionMap.y){
+    if (tempY > player.positionMap.y) {
         tempY--;
-    } else if (tempY < player.positionMap.y){
+    } else if (tempY < player.positionMap.y) {
         tempY++;
     }
     context.fillStyle = playerColor(player.id);
@@ -553,8 +557,8 @@ function updatePosition(players, playerThatMoved){
     context.fill(); */
 }
 
-function playerColor(id){
-    switch(id){
+function playerColor(id) {
+    switch (id) {
         case 0:
             return 'red';
         case 1:
@@ -589,16 +593,16 @@ socket.on('usernames', function (usernames) {
 });
 
 // Receives players starting position
-socket.on('initPosition', function(position, locationMap) {
+socket.on('initPosition', function (position, locationMap) {
     _playerPosition = position;
     console.log('Initial position: ' + position);
     _locationMap = locationMap;
 
     // Print to console to make sure locationMap retrieved
-    for(let mapIdx=1; mapIdx<28; mapIdx++){
+    for (let mapIdx = 1; mapIdx < 28; mapIdx++) {
         console.log('If in location: ' + mapIdx);
         console.log('User can move to: ');
-        for(let chain=0; chain < _locationMap[mapIdx].length; chain++){
+        for (let chain = 0; chain < _locationMap[mapIdx].length; chain++) {
             let testLocation = _locationMap[mapIdx][chain];
             console.log('Location: ' + testLocation);
         }
@@ -620,7 +624,7 @@ socket.on('players', function (humanArr) {
     }
 
     // Check what cards player has
-    for(let j=0; j<_playerCards.length; j++){
+    for (let j = 0; j < _playerCards.length; j++) {
         // disable all cards by default
         const testCard = $('input[name=cardSelect][value=' + _playerCards[j].name + ']');
 
@@ -741,34 +745,63 @@ socket.on('player turn', function (id) {
     }
 
     // Enable/disable buttons based on current turn
-    $('.action').each(function () {
-        $(this).prop('disabled', !(_currentTurn === _character));
-    });
+    if (_currentTurn === _character) {
+        $('.action').each(function () {
+            if ($(this).prop('name') === 'suggestBtn') {
+                if ([LOCATIONS.HALLWAY_STUDY_HALL,
+                    LOCATIONS.HALLWAY_HALL_LOUNGE,
+                    LOCATIONS.HALLWAY_STUDY_LIBRARY,
+                    LOCATIONS.HALLWAY_HALL_BILLIARD,
+                    LOCATIONS.HALLWAY_LOUNGE_DINING,
+                    LOCATIONS.HALLWAY_LIBRARY_BILLIARD,
+                    LOCATIONS.HALLWAY_BILLIARD_DINING,
+                    LOCATIONS.HALLWAY_LIBRARY_CONSERVATORY,
+                    LOCATIONS.HALLWAY_BILLIARD_BALLROOM,
+                    LOCATIONS.HALLWAY_DINING_KITCHEN,
+                    LOCATIONS.HALLWAY_CONSERVATORY_BALLROOM,
+                    LOCATIONS.HALLWAY_BALLROOM_KITCHEN,
+                    LOCATIONS.SPAWN_SCARLET,
+                    LOCATIONS.SPAWN_MUSTARD,
+                    LOCATIONS.SPAWN_WHITE,
+                    LOCATIONS.SPAWN_GREEN,
+                    LOCATIONS.SPAWN_PEACOCK,
+                    LOCATIONS.SPAWN_PLUM].includes(_playerPosition)) {
+                    $(this).prop('disabled', true)
+                }
+            } else {
+                $(this).prop('disabled', false)
+            }
+        });
+    } else {
+        $('.action').each(function () {
+            $(this).prop('disabled', true);
+        });
+    }
 });
 
-socket.on('request suggestion', function(playerWithCard, character, room, weapon){
+socket.on('request suggestion', function (playerWithCard, character, room, weapon) {
     console.log('Player with card is: ' + playerWithCard.id);
     console.log('Current user is: ' + _player.id);
 
-    if(playerWithCard.id == _player.id) {
+    if (playerWithCard.id == _player.id) {
         // MAKE A BOX POP UP WITH THE SUGGESTIONS HERE
         // (disable selection of any card that isnt character,room or weapon
         // Check what cards player has
-        for(let j=0; j<_playerCards.length; j++){
+        for (let j = 0; j < _playerCards.length; j++) {
             console.log(_playerCards[j].name);
             // disable all cards by default
             const testCard = $('input[name=cardSelect][value=' + _playerCards[j].name + ']');
             testCard.prop('disabled', true);
 
-            if(_playerCards[j].name == character){
+            if (_playerCards[j].name == character) {
                 testCard.prop('disabled', false);
             }
 
-            if(_playerCards[j].name == room){
+            if (_playerCards[j].name == room) {
                 testCard.prop('disabled', false);
             }
 
-            if(_playerCards[j].name == weapon){
+            if (_playerCards[j].name == weapon) {
                 testCard.prop('disabled', false);
             }
 
@@ -786,19 +819,19 @@ socket.on('request suggestion', function(playerWithCard, character, room, weapon
     }
 });
 
-socket.on('show suggestion', function(username, card){
+socket.on('show suggestion', function (username, card) {
     console.log('Suggester: ' + username);
     console.log('This suggester: ' + _player.id);
 
-    if(username == _player.id) {
+    if (username == _player.id) {
         console.log('revealing card: ' + card);
         // Reveal card to user
-        for(let i=0; i<21; i++){
+        for (let i = 0; i < 21; i++) {
             const testCard = $('input[name=cardSelect][value=' + i + ']');
             testCard.prop('disabled', true);
 
             // show
-            if(i == card){
+            if (i == card) {
                 testCard.prop('disabled', false);
             }
 
@@ -810,7 +843,7 @@ socket.on('show suggestion', function(username, card){
     }
 });
 
-socket.on('end suggestion', function(suggester){
+socket.on('end suggestion', function (suggester) {
     if (suggester === _username) {
         chatMessages.innerHTML += '<i>' + 'Nobody had your suggestions' + '</i><br/>';
         scrollToBottom();
