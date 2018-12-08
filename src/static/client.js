@@ -423,41 +423,36 @@ socket.on('chat history', function (chatHistory) {
     }
 });
 
-socket.on('state', function (players) {
-    context.clearRect(0, 0, 600, 600);
-    for (let i=0; i< players.length; i++) {
-        context.fillStyle = playerColor(players[i].id);
-        if (players[i].isHuman) {
-            let player = players[i];
-            tempX = player.oldPosition.x;
-            tempY = player.oldPosition.y;
-            startAnimation(player);
-        }
-    }
+socket.on('state', function (players, playerThatMoved) {
+    tempX = players[playerThatMoved].oldPosition.x;
+    tempY = players[playerThatMoved].oldPosition.y;
+    startAnimation(players, playerThatMoved);
 });
 
 function initMap(players){
     if (players) {
         context.clearRect(0, 0, 600, 600);
         for (let i=0; i< players.length; i++) {
-            context.fillStyle = playerColor(players[i].id);
             if (players[i].isHuman) {
                 let player = players[i];
-                tempX = spawnLocation2map(i).x;
-                tempY = spawnLocation2map(i).y;
-                startAnimation(player);
+                tempX = spawnLocation2map(player.position).x;
+                tempY = spawnLocation2map(player.position).y;
+                context.beginPath();
+                context.fillStyle = playerColor(player.id);
+                context.arc(tempX, tempY, 10, 0, 2 * Math.PI);
+                context.fill();
             }
         }
     }
 }
 
 function spawnLocation2map(spawnLocation){
-    var position = {
+    let position = {
         'x':0,
         'y':0
     };
-
-    switch(spawnLocation){
+    // - 22 used to accommodate for offset of spawn locations (im lazy)
+    switch(spawnLocation - 22){
         case 0:
             position.x = 410;
             position.y = 25;
@@ -485,16 +480,59 @@ function spawnLocation2map(spawnLocation){
     }
 }
 
-function startAnimation(player){
+function startAnimation(players, playerThatMoved){
     animationTimer = setInterval(function () {
         // update position every 100 ms to create animation
-        updatePosition(player);
+        updatePosition(players, playerThatMoved);
     }, 5);
 }
 
-function updatePosition(player){
+function determineMovement(player){
     if(tempX === player.positionMap.x && tempY === player.positionMap.y){
+        return true;
+    }
+
+    if(tempX > player.positionMap.x){
+        tempX--;
+    } else if (tempX < player.positionMap.x){
+        tempX++;
+    }
+
+    if(tempY > player.positionMap.y){
+        tempY--;
+    } else if (tempY < player.positionMap.y){
+        tempY++;
+    }
+
+    return false;
+}
+
+function updatePosition(players, playerThatMoved){
+    context.clearRect(0, 0, 600, 600);
+    let endTimer = false;
+    //iterate over all players
+    for (let i=0; i < players.length; i++) {
+        if (players[i].isHuman) {
+            let player = players[i];
+            context.beginPath();
+            context.fillStyle = playerColor(player.id);
+            if(player.id === playerThatMoved){
+                endTimer = determineMovement(player);
+                context.arc(tempX, tempY, 10, 0, 2 * Math.PI);
+            } else{
+                context.arc(player.positionMap.x, player.positionMap.y, 10, 0, 2 * Math.PI);
+            }
+            context.fill();
+        }
+    }
+
+    if(endTimer)
         clearInterval(animationTimer);
+    /*if(tempX === player.positionMap.x && tempY === player.positionMap.y){
+        context.beginPath();
+        context.fillStyle = playerColor(player.id);
+        context.arc(tempX, tempY, 10, 0, 2 * Math.PI);
+        context.fill();
     }
 
     context.clearRect(0, 0, 600, 600);
@@ -512,7 +550,7 @@ function updatePosition(player){
     context.fillStyle = playerColor(player.id);
     context.beginPath();
     context.arc(tempX, tempY, 10, 0, 2 * Math.PI);
-    context.fill();
+    context.fill(); */
 }
 
 function playerColor(id){

@@ -249,7 +249,7 @@ io.on('connection', function (socket) {
             postToChat(socket.username + ' moved to the ' + location2string(newPlayerPos));
             let movepos = location2map(newPlayerPos);
             game.players[playerId].setPositionMap(movepos.x, movepos.y);
-            io.sockets.emit('state', game.getPlayers());
+            io.sockets.emit('state', game.getPlayers(), playerId);
         });
 
         function setOldPosition(playerId){
@@ -523,7 +523,7 @@ function location2map(location){
             return position;
         case locations.HALLWAY_HALL_BILLIARD:
             position.x = 300;
-            position.y = 190;
+            position.y = 415;
             return position;
         case locations.HALLWAY_LOUNGE_DINING:
             position.x = 520;
