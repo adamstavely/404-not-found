@@ -403,6 +403,12 @@ function endSuggestion(){
 
 }
 
+// for peeking at hand
+function peekCards(){
+    $('#modalPlayerCards').modal({backdrop: 'static', keyboard: false});
+    console.log('Showing player hand');
+}
+
 function revealCard() {
     console.log('Select card to reveal!');
     $('#modalPlayerCards').modal({backdrop: 'static', keyboard: false});

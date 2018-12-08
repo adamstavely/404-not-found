@@ -75,7 +75,7 @@ html(lang='en')
                     .modal-dialog
                         .modal-content
                             .modal-header
-                                h3 Player's Cards (Not Disabled)
+                                h3 Here Are Your Cards
                             .modal-body
                                 .text-center
                                     label
@@ -731,6 +731,8 @@ html(lang='en')
                         #timer
                     .text-center seconds left
                 #gameButtonsWrapper
+                    .text-center
+                        button.btn.btn-primary.action(type='submit' onclick='peekCards()' disabled) SHOW
                     .text-center
                         button.btn.btn-primary.action(type='submit' onclick='movePlayer()' disabled) MOVE
                     .text-center
