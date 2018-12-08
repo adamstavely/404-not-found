@@ -298,6 +298,23 @@ function endMove(){
         console.log('New player position: ' + _playerPosition);
         // @TODO probably need to emit this to the server
         socket.emit('updatePlayerPosition', _player.id, _playerPosition);
+
+        // Check if in hallway, disable suggestBtn
+        if(_playerPosition == 2  ||
+           _playerPosition == 4  ||
+           _playerPosition == 6  ||
+           _playerPosition == 7  ||
+           _playerPosition == 8  ||
+           _playerPosition == 10 ||
+           _playerPosition == 12 ||
+           _playerPosition == 14 ||
+           _playerPosition == 15 ||
+           _playerPosition == 16 ||
+           _playerPosition == 18 ||
+           _playerPosition == 20 ) {
+               const disableBtn = $('button[name=suggestBtn]');
+               disableBtn.prop('disabled', true);
+        }
     }
 }
 
