@@ -311,7 +311,7 @@ function endMove(){
            _playerPosition == 15 ||
            _playerPosition == 16 ||
            _playerPosition == 18 ||
-           _playerPosition == 20 ) {
+           _playerPosition == 20) {
                const disableBtn = $('button[name=suggestBtn]');
                disableBtn.prop('disabled', true);
         }
@@ -425,7 +425,7 @@ function endSuggestion(){
         console.log('Suggestion made for weapon: ' + _suggestedWeapon);
         // @TODO: Kick off processing of suggestion
         // use socket.emit to pass it off to server
-        socket.emit('suggestion', _username, _suggestedChar, _suggestedRoom, _suggestedWeapon);
+        socket.emit('suggestion', _player.id, _suggestedChar, _suggestedRoom, _suggestedWeapon);
 
     } else {
         console.log('Accusation made for char: ' + _accusedChar);
@@ -757,7 +757,10 @@ socket.on('player turn', function (id) {
 });
 
 socket.on('request suggestion', function(playerWithCard, character, room, weapon){
-    if(playerWithCard.id == _username) {
+    console.log('Player with card is: ' + playerWithCard.id);
+    console.log('Current user is: ' + _player.id);
+
+    if(playerWithCard.id == _player.id) {
         // MAKE A BOX POP UP WITH THE SUGGESTIONS HERE
         // (disable selection of any card that isnt character,room or weapon
         // Check what cards player has
@@ -765,6 +768,7 @@ socket.on('request suggestion', function(playerWithCard, character, room, weapon
             console.log(_playerCards[j].name);
             // disable all cards by default
             const testCard = $('input[name=cardSelect][value=' + _playerCards[j].name + ']');
+            testCard.prop('disabled', true);
 
             if(_playerCards[j].name == character){
                 testCard.prop('disabled', false);
@@ -788,7 +792,7 @@ socket.on('request suggestion', function(playerWithCard, character, room, weapon
         //suggestedCard =
 
         // then send the suggested card back to the server
-        socket.emit('suggestionToServer', suggestedCard);
+        //socket.emit('suggestionToServer', suggestedCard);
     }
 });
 
