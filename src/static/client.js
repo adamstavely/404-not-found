@@ -119,85 +119,85 @@ function movePlayer() {
     // Sorry for the massive switch statement
     switch(_playerPosition){
         case 1: // Study
-            $('#modalMoveFromStudy').modal({backdrop: 'static', keyboard: false});
+            $('#modalMoveFromStudy').modal('show');
             break;
         case 2:
-            $('#modalMoveFromStudyHallHW').modal({backdrop: 'static', keyboard: false});
+            $('#modalMoveFromStudyHallHW').modal('show');
             break;
         case 3:
-            $('#modalMoveFromHall').modal({backdrop: 'static', keyboard: false});
+            $('#modalMoveFromHall').modal('show');
             break;
         case 4:
-            $('#modalMoveFromHallLoungeHW').modal({backdrop: 'static', keyboard: false});
+            $('#modalMoveFromHallLoungeHW').modal('show');
             break;
         case 5:
-            $('#modalMoveFromLounge').modal({backdrop: 'static', keyboard: false});
+            $('#modalMoveFromLounge').modal('show');
             break;
         case 6:
-            $('#modalMoveFromStudyLibraryHW').modal({backdrop: 'static', keyboard: false});
+            $('#modalMoveFromStudyLibraryHW').modal('show');
             break;
         case 7:
-            $('#modalMoveFromHallBilliardHW').modal({backdrop: 'static', keyboard: false});
+            $('#modalMoveFromHallBilliardHW').modal('show');
             break;
         case 8:
-            $('#modalMoveFromLoungeDiningHW').modal({backdrop: 'static', keyboard: false});
+            $('#modalMoveFromLoungeDiningHW').modal('show');
             break;
         case 9:
-            $('#modalMoveFromLibrary').modal({backdrop: 'static', keyboard: false});
+            $('#modalMoveFromLibrary').modal('show');
             break;
         case 10:
-            $('#modalMoveFromLibraryBilliardHW').modal({backdrop: 'static', keyboard: false});
+            $('#modalMoveFromLibraryBilliardHW').modal('show');
             break;
         case 11:
-            $('#modalMoveFromBilliard').modal({backdrop: 'static', keyboard: false});
+            $('#modalMoveFromBilliard').modal('show');
             break;
         case 12:
-            $('#modalMoveFromBilliardDiningHW').modal({backdrop: 'static', keyboard: false});
+            $('#modalMoveFromBilliardDiningHW').modal('show');
             break;
         case 13:
-            $('#modalMoveFromDining').modal({backdrop: 'static', keyboard: false});
+            $('#modalMoveFromDining').modal('show');
             break;
         case 14:
-            $('#modalMoveFromLibraryConservatoryHW').modal({backdrop: 'static', keyboard: false});
+            $('#modalMoveFromLibraryConservatoryHW').modal('show');
             break;
         case 15:
-            $('#modalMoveFromBilliardBallroomHW').modal({backdrop: 'static', keyboard: false});
+            $('#modalMoveFromBilliardBallroomHW').modal('show');
             break;
         case 16:
-            $('#modalMoveFromDiningKitchenHW').modal({backdrop: 'static', keyboard: false});
+            $('#modalMoveFromDiningKitchenHW').modal('show');
             break;
         case 17:
-            $('#modalMoveFromConservatory').modal({backdrop: 'static', keyboard: false});
+            $('#modalMoveFromConservatory').modal('show');
             break;
         case 18:
-            $('#modalMoveFromConservatoryBallroomHW').modal({backdrop: 'static', keyboard: false});
+            $('#modalMoveFromConservatoryBallroomHW').modal('show');
             break;
         case 19:
-            $('#modalMoveFromBallroom').modal({backdrop: 'static', keyboard: false});
+            $('#modalMoveFromBallroom').modal('show');
             break;
         case 20:
-            $('#modalMoveFromBallroomKitchenHW').modal({backdrop: 'static', keyboard: false});
+            $('#modalMoveFromBallroomKitchenHW').modal('show');
             break;
         case 21:
-            $('#modalMoveFromKitchen').modal({backdrop: 'static', keyboard: false});
+            $('#modalMoveFromKitchen').modal('show');
             break;
         case 22:
-            $('#modalMoveFromScarletSpawn').modal({backdrop: 'static', keyboard: false});
+            $('#modalMoveFromScarletSpawn').modal('show');
             break;
         case 23:
-            $('#modalMoveFromMustardSpawn').modal({backdrop: 'static', keyboard: false});
+            $('#modalMoveFromMustardSpawn').modal('show');
             break;
         case 24:
-            $('#modalMoveFromWhiteSpawn').modal({backdrop: 'static', keyboard: false});
+            $('#modalMoveFromWhiteSpawn').modal('show');
             break;
         case 25:
-            $('#modalMoveFromGreenSpawn').modal({backdrop: 'static', keyboard: false});
+            $('#modalMoveFromGreenSpawn').modal('show');
             break;
         case 26:
-            $('#modalMoveFromPeacockSpawn').modal({backdrop: 'static', keyboard: false});
+            $('#modalMoveFromPeacockSpawn').modal('show');
             break;
         case 27:
-            $('#modalMoveFromPlumSpawn').modal({backdrop: 'static', keyboard: false});
+            $('#modalMoveFromPlumSpawn').modal('show');
             break;
     }
 }
@@ -336,7 +336,7 @@ function makeSuggestion() {
     }
 
     // Make dialog visible
-    $('#modalCharacterCards').modal({backdrop: 'static', keyboard: false});
+    $('#modalCharacterCards').modal('show');
 }
 
 // Choose room card
@@ -372,7 +372,7 @@ function chooseRoomCard(){
           }
 
     // Make dialog visible
-    $('#modalRoomCards').modal({backdrop: 'static', keyboard: false});
+    $('#modalRoomCards').modal('show');
   }
 }
 
@@ -403,7 +403,7 @@ function chooseWeaponCard(){
     }
 
     // Make dialog visible
-    $('#modalWeaponCards').modal({backdrop: 'static', keyboard: false});
+    $('#modalWeaponCards').modal('show');
 }
 
 function endSuggestion(){
@@ -447,7 +447,7 @@ function endSuggestion(){
 
 // for peeking at hand
 function peekCards(){
-    $('#modalPlayerCards').modal({backdrop: 'static', keyboard: false});
+    $('#modalPlayerCards').modal('show');
     console.log('Showing player hand');
 }
 
@@ -650,7 +650,7 @@ socket.on('players', function (humanArr) {
     }
 
     // Show cards
-    $('#modalPlayerCards').modal({backdrop: 'static', keyboard: false});
+    $('#modalPlayerCards').modal('show');
 });
 
 socket.on('game state', function (game) {
@@ -788,7 +788,7 @@ socket.on('request suggestion', function(playerWithCard, character, room, weapon
         }
 
         // Show cards
-        $('#modalPlayerCards').modal({backdrop: 'static', keyboard: false});
+        $('#modalPlayerCards').modal('show');
 
         isSuggestion = true;
         //figure out the card to be suggested
