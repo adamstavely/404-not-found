@@ -255,16 +255,15 @@ function makeSuggestion() {
 // Choose room card
 function chooseRoomCard() {
     // First retrieve character card selected
-    const testChoice = $('input[name=charCardSelect]:checked').val();
-    if (testChoice) {
+    const characterChoice = $('input[name=charCardSelect]:checked').val();
+    if (characterChoice) {
         if (!isAccusation) {
-            _suggestedChar = parseInt(testChoice);
+            _suggestedChar = parseInt(characterChoice);
             console.log('Suggested character: ' + _suggestedChar);
         } else {
-            _accusedChar = parseInt(testChoice);
+            _accusedChar = parseInt(characterChoice);
             console.log('Accused character: ' + _accusedChar);
         }
-
         $('#modalCharacterCards').modal('hide');
     }
 
@@ -274,7 +273,6 @@ function chooseRoomCard() {
     if (!isAccusation) {
         _suggestedRoom = _playerPosition;
         chooseWeaponCard();
-
     } else {
         for (let roomIdx = 6; roomIdx < 15; roomIdx++) {
             const roomCard = $('input[name=roomCardSelect][value=' + roomIdx + ']');
@@ -292,12 +290,12 @@ function chooseRoomCard() {
 // Choose weapon card
 function chooseWeaponCard() {
     // Pull down room selected
-    const testChoice = $('input[name=roomCardSelect]:checked').val();
-    if (testChoice) {
+    const roomChoice = $('input[name=roomCardSelect]:checked').val();
+    if (roomChoice) {
         if (!isAccusation) {
             console.log('Suggested room: ' + _suggestedRoom);
         } else {
-            _accusedRoom = parseInt(testChoice);
+            _accusedRoom = parseInt(roomChoice);
             console.log('Accused room: ' + _accusedRoom);
         }
 
@@ -321,13 +319,13 @@ function chooseWeaponCard() {
 
 function endSuggestion() {
     // Pull down selected weapon
-    const testChoice = $('input[name=weaponCardSelect]:checked').val();
-    if (testChoice) {
+    const weaponChoice = $('input[name=weaponCardSelect]:checked').val();
+    if (weaponChoice) {
         if (!isAccusation) {
-            _suggestedWeapon = parseInt(testChoice);
+            _suggestedWeapon = parseInt(weaponChoice);
             console.log('Suggested weapon: ' + _suggestedWeapon);
         } else {
-            _accusedWeapon = parseInt(testChoice);
+            _accusedWeapon = parseInt(weaponChoice);
             console.log('Accused weapon: ' + _accusedWeapon);
         }
 
@@ -349,13 +347,19 @@ function endSuggestion() {
         console.log('Accusation made for weapon: ' + _accusedWeapon);
         // @TODO: Kick off processing of accusation
         // use socket.emit to pass it off to server
-        socket.emit('accusation', _player.id, _accusedChar, _accusedRoom, _accusedWeapon);
+        _player.hasAccused = true;
+        socket.emit('accusation', _player.id, _accusedChar, _accusedRoom, _accusedWeapon, function(correct) {
+            if (correct) {
+                console.log("Marbles acquired!");
+            } else {
+                console.log("I suck!");
 
+            }
+        });
     }
 
     // Reset isAccusation
     isAccusation = false;
-
 }
 
 // for peeking at hand
@@ -383,9 +387,6 @@ function makeAccusation() {
     // Use same logic as makeSuggestion();
     isAccusation = true;
     makeSuggestion();
-
-    // After it returns, reset accusation
-    //isAccusation = false;
 }
 
 function endTurn() {

@@ -385,13 +385,17 @@ io.on('connection', function (socket) {
         });
 
         // Handle accusation
-        socket.on('accusation', function (accuserId, charId, roomId, weaponId) {
+        socket.on('accusation', function (accuserId, charId, roomId, weaponId, callback) {
             console.log('Accusation made by: ' + socket.username + ': ' + charId + ' ' + roomId + ' ' + weaponId);
             _isGameOver = game.handleAccusation(accuserId, charId, roomId, weaponId);
+            callback(_isGameOver);
 
             // Check
             if (_isGameOver) {
                 console.log('GAME OVER!!!! ' + socket.username + ' wins ALL the marbles!!');
+                io.sockets.emit('game over');
+            } else {
+                console.log(socket.username + ' accused incorrectly! What a LOSER!!');
             }
         });
 

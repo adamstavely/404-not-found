@@ -242,21 +242,17 @@ class Game {
         console.log(this.solution["Room"]);
         console.log(this.solution["Weapon"]);
 
+        this.players[accuserPlayer].setHasAccused(true);
+
         if (this.solution["Suspect"].name === suspect) {
             if (this.solution["Room"].name === roomInt) {
-                if (this.solution["Weapon"].name === weaponID) {
-                    // TODO: Game Over
-                    return true;
-                } else {
-                    return false;
-                }
+                return (this.solution["Weapon"].name === weaponID);
             } else {
                 return false;
             }
         } else {
             return false;
         }
-        accuserPlayer.hasAccused = true;
     }
 
     updateTimer(timeElapsed, timeIsUp) {
