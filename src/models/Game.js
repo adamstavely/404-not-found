@@ -175,7 +175,7 @@ class Game {
         }
     }
 
-    isMoveValid(player, destInt) {
+    findValidMoves(player, destInt) {
         // TODO: check for players in hallways
         let sourceInt = this.players[player].getPosition();
         return LOCATION_MAP[sourceInt].includes(destInt);
@@ -195,7 +195,7 @@ class Game {
             this.players[player].setPosition(destInt);
             return true;
         } else {
-            destInt = this.findValidMoves(player);
+            //destInt = this.findValidMoves(player);
             this.players[player].setPosition(destInt);
 
         }
