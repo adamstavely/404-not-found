@@ -159,6 +159,30 @@ canvas {
     vertical-align: middle;
 }
 
+#scarletPlayer{
+    color: red;
+}
+
+#mustardPlayer{
+    color: darkgoldenrod;
+}
+
+#whitePlayer{
+    color: black;
+}
+
+#greenPlayer{
+    color: green;
+}
+
+#peacockPlayer{
+    color: blue;
+}
+
+#plumPlayer{
+    color: purple;
+}
+
 .action {
     width: 100px;
     height: 50px;

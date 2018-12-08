@@ -22,7 +22,9 @@ let isAccusation = false;
 let isSuggestion = false;
 let _locationMap = {};
 let _playerPosition = 0;
-
+let animationTimer = null;
+let tempX = 0;
+let tempY = 0;
 // Variables for suggestions and accusations
 let _suggestedChar = null;
 let _suggestedRoom = null;
@@ -516,16 +518,110 @@ socket.on('chat history', function (chatHistory) {
 
 socket.on('state', function (players) {
     context.clearRect(0, 0, 600, 600);
-    context.fillStyle = 'green';
-    for (let id in players) {
-        if (players.hasOwnProperty(id)) {
-            let player = players[id];
-            context.beginPath();
-            context.arc(player.x, player.y, 10, 0, 2 * Math.PI);
-            context.fill();
+    for (let i=0; i< players.length; i++) {
+        context.fillStyle = playerColor(players[i].id);
+        if (players[i].isHuman) {
+            let player = players[i];
+            tempX = player.oldPosition.x;
+            tempY = player.oldPosition.y;
+            startAnimation(player);
         }
     }
 });
+
+function initMap(players){
+    context.clearRect(0, 0, 600, 600);
+    for (let i=0; i< players.length; i++) {
+        context.fillStyle = playerColor(players[i].id);
+        if (players[i].isHuman) {
+            let player = players[i];
+            tempX = spawnLocation2map(i).x;
+            tempY = spawnLocation2map(i).y;
+            startAnimation(player);
+        }
+    }
+}
+
+function spawnLocation2map(spawnLocation){
+    var position = {
+        'x':0,
+        'y':0
+    };
+
+    switch(spawnLocation){
+        case 0:
+            position.x = 410;
+            position.y = 25;
+            return position;
+        case 1:
+            position.x = 575;
+            position.y = 190;
+            return position;
+        case 2:
+            position.x = 410;
+            position.y = 575;
+            return position;
+        case 3:
+            position.x = 190;
+            position.y = 575;
+            return position;
+        case 4:
+            position.x = 30;
+            position.y = 410;
+            return position;
+        case 5:
+            position.x = 30;
+            position.y = 190;
+            return position;
+    }
+}
+
+function startAnimation(player){
+    animationTimer = setInterval(function () {
+        // update position every 100 ms to create animation
+        updatePosition(player);
+    }, 5);
+}
+
+function updatePosition(player){
+    if(tempX === player.positionMap.x && tempY === player.positionMap.y){
+        clearInterval(animationTimer);
+    }
+
+    context.clearRect(0, 0, 600, 600);
+    if(tempX > player.positionMap.x){
+        tempX--;
+    } else if (tempX < player.positionMap.x){
+        tempX++;
+    }
+
+    if(tempY > player.positionMap.y){
+        tempY--;
+    } else if (tempY < player.positionMap.y){
+        tempY++;
+    }
+    context.fillStyle = playerColor(player.id);
+    context.beginPath();
+    context.arc(tempX, tempY, 10, 0, 2 * Math.PI);
+    context.fill();
+}
+
+function playerColor(id){
+    switch(id){
+        case 0:
+            return 'red';
+        case 1:
+            return 'darkgoldenrod';
+        case 2:
+            return 'black';
+        case 3:
+            return 'green';
+        case 4:
+            return 'blue';
+        case 5:
+            return 'purple';
+    }
+}
 
 socket.on('username', function (username) {
     // Set local username
@@ -651,6 +747,8 @@ socket.on('players', function (humanArr) {
 
     // Show cards
     $('#modalPlayerCards').modal('show');
+
+    initMap(humanArr)
 });
 
 socket.on('game state', function (game) {
@@ -677,10 +775,13 @@ socket.on('game state', function (game) {
         }
 
         // Set the usernames for the characters
+        let j = 0;
         for (let player in game.players) {
             if (game.players.hasOwnProperty(player)) {
                 playerLabels[game.players[player].character].innerHTML = player;
+                playerLabels[game.players[player].character].fontColor = playerColor(j);
             }
+            j++;
         }
 
         // Check if client is a player in the game
@@ -724,6 +825,8 @@ socket.on('start game', function (usernames) {
         // Show the character select window
         $('#modalCharacterSelect').modal({backdrop: 'static', keyboard: false});
     }
+
+    initMap();
 });
 
 socket.on('character selected', function (character) {
@@ -749,7 +852,7 @@ socket.on('player turn', function (id) {
         if (i !== _currentTurn) {
             playerWrappers[i].style.border = 'none';
         } else {
-            playerWrappers[i].style.border = '2px solid black';
+            playerWrappers[i].style.border = '2px solid ' + playerColor(i);
         }
     }
 

@@ -11,6 +11,14 @@ class Player {
         this.hasAccused = false;
         this.characterName = characterName;
         this.isHuman = false;
+        this.positionMap = {
+            'x': 0,
+            'y': 0
+        };
+        this.oldPosition = {
+                'x':0,
+                'y':0
+        };
     }
 
     // Parameterized constructor
@@ -37,6 +45,28 @@ class Player {
 
     setPosition(newPosition) {
         this.position = newPosition;
+    }
+
+    getPositionMap(){
+        return this.positionMap;
+    }
+
+    setPositionMap(newPositionX, newPositionY) {
+        this.positionMap = {
+            'x':newPositionX,
+            'y':newPositionY
+        };
+    }
+
+    getOldPosition(){
+        return this.oldPosition;
+    }
+
+    setOldPosition(oldPositionX, oldPositionY) {
+        this.oldPosition = {
+            'x':oldPositionX,
+            'y':oldPositionY
+        };
     }
 
     getHasAccused() {

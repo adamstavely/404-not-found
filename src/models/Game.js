@@ -107,6 +107,10 @@ class Game {
         this.numPlayers = numPlayers;
     }
 
+    getPlayers(){
+        return this.players;
+    }
+
     initDeck() {
         for (let i = 0; i < this.deckSize; i++) {
             this.deck[i] = new Card(i);
@@ -160,6 +164,10 @@ class Game {
         if (characterId in Object.values(Characters)) {
             this.players[characterId].setPosition(INITIAL_POSITIONS[characterId]);
             this.players[characterId].setIsHuman(true);
+            
+            let mapPos = location2maps(INITIAL_POSITIONS[characterId]);
+            this.players[characterId].setPositionMap(mapPos.x, mapPos.y);
+            this.players[characterId].setOldPosition(mapPos.x, mapPos.y);
 
             return INITIAL_POSITIONS[characterId];
         } else {
@@ -291,7 +299,124 @@ class Game {
     getTurn() {
         return this.currentTurn;
     }
+}
 
+function location2maps(location){
+    let position = {
+        'x':0,
+        'y':0
+    };
+
+    switch(location){
+        case Locations.STUDY:
+            position.x = 35;
+            position.y = 80;
+            return position;
+        case Locations.HALLWAY_STUDY_HALL:
+            position.x = 190;
+            position.y = 75;
+            return position;
+        case Locations.HALL:
+            position.x = 265;
+            position.y = 80;
+            return position;
+        case Locations.HALLWAY_HALL_LOUNGE:
+            position.x = 410;
+            position.y = 75;
+            return position;
+        case Locations.LOUNGE:
+            position.x = 490;
+            position.y = 50;
+            return position;
+        case Locations.HALLWAY_STUDY_LIBRARY:
+            position.x = 80;
+            position.y = 190;
+            return position;
+        case Locations.HALLWAY_HALL_BILLIARD:
+            position.x = 300;
+            position.y = 190;
+            return position;
+        case Locations.HALLWAY_LOUNGE_DINING:
+            position.x = 520;
+            position.y = 190;
+            return position;
+        case Locations.LIBRARY:
+            position.x = 75;
+            position.y = 330;
+            return position;
+        case Locations.HALLWAY_LIBRARY_BILLIARD:
+            position.x = 190;
+            position.y = 300;
+            return position;
+        case Locations.BILLIARD_ROOM:
+            position.x = 280;
+            position.y = 330;
+            return position;
+        case Locations.HALLWAY_BILLIARD_DINING:
+            position.x = 405;
+            position.y = 300;
+            return position;
+        case Locations.DINING_ROOM:
+            position.x = 550;
+            position.y = 330;
+            return position;
+        case Locations.HALLWAY_LIBRARY_CONSERVATORY:
+            position.x = 80;
+            position.y = 410;
+            return position;
+        case Locations.HALLWAY_BILLIARD_BALLROOM:
+            position.x = 330;
+            position.y = 415;
+            return position;
+        case Locations.HALLWAY_DINING_KITCHEN:
+            position.x = 525;
+            position.y = 410;
+            return position;
+        case Locations.CONSERVATORY:
+            position.x = 80;
+            position.y = 490;
+            return position;
+        case Locations.HALLWAY_CONSERVATORY_BALLROOM:
+            position.x = 190;
+            position.y = 515;
+            return position;
+        case Locations.BALLROOM:
+            position.x = 300;
+            position.y = 550;
+            return position;
+        case Locations.HALLWAY_BALLROOM_KITCHEN:
+            position.x = 410;
+            position.y = 520;
+            return position;
+        case Locations.KITCHEN:
+            position.x = 495;
+            position.y = 550;
+            return position;
+        case Locations.SPAWN_SCARLET:
+            position.x = 410;
+            position.y = 25;
+            return position;
+        case Locations.SPAWN_MUSTARD:
+            position.x = 575;
+            position.y = 190;
+            return position;
+        case Locations.SPAWN_WHITE:
+            position.x = 410;
+            position.y = 575;
+            return position;
+        case Locations.SPAWN_GREEN:
+            position.x = 190;
+            position.y = 575;
+            return position;
+        case Locations.SPAWN_PEACOCK:
+            position.x = 30;
+            position.y = 410;
+            return position;
+        case Locations.SPAWN_PLUM:
+            position.x = 30;
+            position.y = 190;
+            return position;
+    }
 }
 
 module.exports = Game;
