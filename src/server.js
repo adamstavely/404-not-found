@@ -362,9 +362,9 @@ io.on('connection', function (socket) {
 
             if(playerWithCard != null){
                // send player and cards to clients
-                socket.emit('request suggestion', playerWithCard, character, room, weapon);
+                io.sockets.emit('request suggestion', playerWithCard, character, room, weapon);
             } else {
-                socket.emit('end suggestion', socket.username);
+                io.sockets.emit('end suggestion', socket.username);
             }
 
         });
