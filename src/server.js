@@ -368,6 +368,17 @@ io.on('connection', function (socket) {
         socket.on('suggestion', function (suggester, character, room, weapon) {
             console.log('Suggestion made by: ' + socket.username + ': ' + character + ' ' + room + ' ' + weapon);
             _currentSuggester = suggester;
+
+            //move suggested character
+            let playerId = character;
+            setOldPosition(playerId);
+            // isMoved = false because simply moving player position
+            game.movePlayer(playerId, room, false);
+            postToChat(findCharacterName(character) + ' moved to the ' + location2string(room));
+            let movepos = location2map(room);
+            game.players[playerId].setPositionMap(movepos.x, movepos.y);
+            io.sockets.emit('state', game.getPlayers(), playerId);
+
             let playerWithCard = game.handleSuggestion(suggester, character, room, weapon);
 
             if (playerWithCard != null) {
@@ -378,6 +389,23 @@ io.on('connection', function (socket) {
             }
 
         });
+
+        function findCharacterName(character){
+            switch(character){
+                case 0:
+                    return 'Miss Scarlet';
+                case 1:
+                    return 'Colonel Mustard';
+                case 2:
+                    return 'Mrs. White';
+                case 3:
+                    return 'Mr. Green';
+                case 4:
+                    return 'Mrs. Peacock';
+                case 5:
+                    return 'Professor Plum';
+            }
+        }
 
         socket.on('suggestionToServer', function (suggestedCard) {
             //receive the card and then send it to the correct client (_currentSuggester)
