@@ -353,7 +353,7 @@ function endSuggestion() {
                 console.log("Marbles acquired!");
             } else {
                 console.log("I suck!");
-                alert('Your accusation is incorrect! You suck!');
+                alert('Your accusation is incorrect!');
             }
         });
     }
