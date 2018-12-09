@@ -126,16 +126,25 @@ class Game {
         // create array of players to return
         let humanArray = new Array(this.numPlayers);
 
+        // Hardcode solution 
+        this.solution["Weapon"] = this.deck[19];
+        this.solution["Room"] = this.deck[6];
+        this.solution["Suspect"] = this.deck[2];
+
         let shuffledArray = Game.shuffleArray(this.deck);
-        for (let i = 0; i < this.deck.length; i++) {
+    /*    for (let i = 0; i < this.deck.length; i++) {
             if (this.solution["Suspect"] == null && this.deck[i].type === Card.TYPE.SUSPECT) {
                 this.solution["Suspect"] = this.deck[i];
+                //this.solution["Suspect"] = this.deck[2];
             } else if (this.solution["Room"] == null && this.deck[i].type === Card.TYPE.ROOM) {
                 this.solution["Room"] = this.deck[i];
+                //this.solution["Room"] = this.deck[6];
             } else if (this.solution["Weapon"] == null && this.deck[i].type === Card.TYPE.WEAPON) {
                 this.solution["Weapon"] = this.deck[i];
+                //this.solution["Weapon"] = this.deck[19];
             }
         }
+*/
 
         // console.log('Solution: ' + JSON.stringify(this.solution, null, 2));
 
