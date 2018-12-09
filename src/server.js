@@ -10,6 +10,7 @@ const Database = require('./models/Database');
 const User = require('./models/User');
 const characters = require('./models/characters');
 const Player = require('./models/Player');
+const Card = require('./models/Card');
 const Game = require('./models/Game');
 const locations = require('./models/locations');
 let timeElapsed = 0;
@@ -178,6 +179,10 @@ const user = new User(db);
 const game = new Game();
 
 user.createTable();
+
+function getKeyByValue(object, value) {
+    return Object.keys(object).find(key => object[key] === value);
+}
 
 io.on('connection', function (socket) {
     try {
@@ -415,15 +420,27 @@ io.on('connection', function (socket) {
         // Handle accusation
         socket.on('accusation', function (accuserId, charId, roomId, weaponId, callback) {
             console.log('Accusation made by: ' + socket.username + ': ' + charId + ' ' + roomId + ' ' + weaponId);
+            let eventMessage = 'Accusation made by: ' + socket.username + ': ' + charId + ' ' + roomId + ' ' + weaponId;
+            io.sockets.emit('event', eventMessage);
+
             _isGameOver = game.handleAccusation(accuserId, charId, roomId, weaponId);
             callback(_isGameOver);
 
             // Check
             if (_isGameOver) {
                 console.log('GAME OVER!!!! ' + socket.username + ' wins ALL the marbles!!');
-                io.sockets.emit('game over');
+                io.sockets.emit('game over', {
+                    'winner': socket.username,
+                    'character': String(getKeyByValue(Card.NAME, charId)).replace('_CARD', ''),
+                    'room': String(getKeyByValue(Card.NAME, roomId)).replace('_CARD', ''),
+                    'weapon': String(getKeyByValue(Card.NAME, weaponId)).replace('_CARD', '')
+                });
+                eventMessage = 'GAME OVER!!!! ' + socket.username + ' wins ALL the marbles!!';
+                io.sockets.emit('event', eventMessage);
             } else {
                 console.log(socket.username + ' accused incorrectly! What a LOSER!!');
+                eventMessage = socket.username + "'s accusation was incorrect!";
+                io.sockets.emit('event', eventMessage);
             }
         });
 

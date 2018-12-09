@@ -351,7 +351,6 @@ function endSuggestion() {
         socket.emit('accusation', _player.id, _accusedChar, _accusedRoom, _accusedWeapon, function(correct) {
             if (correct) {
                 console.log("Marbles acquired!");
-                alert('You are correct! Congratulations!');
             } else {
                 console.log("I suck!");
                 alert('Your accusation is incorrect! You suck!');
@@ -433,6 +432,16 @@ socket.on('state', function (players, playerThatMoved) {
     tempX = players[playerThatMoved].oldPosition.x;
     tempY = players[playerThatMoved].oldPosition.y;
     startAnimation(players, playerThatMoved);
+});
+
+socket.on('game over', function(data) {
+    alert('GAME OVER!!! ' + data.winner + ' correctly accused ' + data.character + ' in the ' + data.room + ' with a '
+        + data.weapon);
+
+    // Disable all buttons
+    $('.action').each(function () {
+        $(this).prop('disabled', true);
+    });
 });
 
 function initMap(players) {
